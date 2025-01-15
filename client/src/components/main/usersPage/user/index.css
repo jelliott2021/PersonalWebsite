@@ -1,0 +1,28 @@
+.user-card-style {
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  padding: 0px 16px 0px 16px;
+}
+
+.user-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-avator-style {
+  margin-right: 12px;
+  border: 2px solid #f0f2f5;
+  object-fit: cover;
+}
+
+.user-card-first-last-name {
+  text-align: left;
+}
+
+.ant-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}

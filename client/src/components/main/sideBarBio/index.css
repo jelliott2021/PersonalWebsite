@@ -1,0 +1,85 @@
+/* Main sidebar container */
+.sideBarNav {
+  width: 25%;
+  background: #001529; 
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: width 0.3s ease;
+  overflow: hidden;
+}
+
+.sideBarNav.collapsed {
+  width: 5%;
+}
+
+/* Profile section container */
+.profileSection {
+  padding: 1.5rem;
+  text-align: center;
+}
+
+/* Profile picture at the top */
+.profilePicture {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+}
+
+/* Name */
+.profileName {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0.3rem;
+}
+
+/* Title */
+.profileTitle {
+  font-size: 1rem;
+  color: #ccc;
+  margin-bottom: 1rem;
+}
+
+/* degree & school */
+.profileInfo {
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+}
+
+/* Social links row */
+.socialLinks {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+/* Social icon styles */
+.socialLinks a {
+  margin-top: auto;
+  margin-bottom: 0.5rem;
+  color: #fff;
+  transition: color 0.3s;
+}
+
+.socialLinks a:hover {
+  color: #3090e2;
+}
+
+/* Toggle button at the bottom of the sidebar */
+.toggleButton {
+  margin-top: auto;
+  margin-bottom: 1rem;
+}
+
+.downloadCV {
+  display: inline-block;
+  padding: 5% 25%;
+  background-color: #3090e2;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 6px;
+}
