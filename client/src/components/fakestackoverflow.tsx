@@ -12,6 +12,7 @@ import Verify from './verify';
 import PreLoginContext from '../contexts/PreLoginContext';
 import ProfilePage from './main/profilePage';
 import UsersPage from './main/usersPage';
+import AboutPage from './main/aboutPage';
 
 const ProtectedRoute = ({
   user,
@@ -75,7 +76,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
                   </ProtectedRoute>
                 }>
                 <>
-                  <Route path='/home' element={<div>Home</div>} />
+                  <Route path='/home' element={<AboutPage />} />
                   <Route path='/profile/:uid' element={<ProfilePage />} />
                   <Route path='/users' element={<UsersPage />} />
                 </>

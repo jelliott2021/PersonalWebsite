@@ -1,0 +1,103 @@
+/* Container for the entire About page */
+.about-container {
+    background-color: #f8f9fa;
+  }
+  
+  /* Cover Section - full-width banner with background image */
+  .cover-section {
+    width: 100%;
+    height: 300px; /* Adjust height as needed */
+    background-image: url("https://media.licdn.com/dms/image/v2/C4E1BAQHkj4ydYFgf4A/company-background_10000/company-background_10000/0/1584673584637/informsneu_cover?e=2147483647&v=beta&t=l3No7_lslq2V7nROP56VczYKRksyv6flhHM5VT2F5HU"); /* Replace with your image path */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+  }
+  
+  /* Text overlay on cover image */
+  .cover-text {
+    position: absolute;
+    top: 70%;
+    left: 30%;
+    transform: translate(-50%, -50%); /* Center the text vertically & horizontally */
+    color: #fff;
+    text-align: left;
+    font-size: 2rem; /* Adjust text size as needed */
+    font-weight: bold;
+  }
+
+.cover-text h1,
+.cover-text h2,
+.cover-text h3,
+.cover-text h4,
+.cover-text h5,
+.cover-text h6 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* Then target them individually for size and weight */
+.cover-text h1 {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.cover-text h5 {
+  font-size: 2rem;
+  font-weight: normal;
+}
+
+  
+  /* Common styling for Cards */
+  .about-card {
+    border-radius: 0px;
+    padding: 1rem 2rem; /* optional extra padding inside the card */
+  }
+  
+  /* Typography classes */
+  .about-title {
+    margin-bottom: 0.5rem;
+  }
+  
+  .about-subtitle {
+    margin-bottom: 1rem;
+  }
+  
+  .about-paragraph {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  
+  /* Divider styling */
+  .about-divider {
+    margin: 0.5rem 0;
+  }
+  
+  /* Row containing Education & Experience */
+  .edu-exp-row {
+    padding: 0 1rem;
+  }
+  
+  /* Spacing for each Column */
+  .col-spacing {
+    margin-bottom: 0rem; /* for extra spacing on smaller screens */
+  }
+  
+  /* Additional styling hooks (optional) */
+  .introduction-card {
+    background-color: aliceblue;
+  }
+  .background-card {}
+  .education-card {}
+  .experience-card {}
+  .skills-card {}
+  
+  /* Skills row styling */
+  .skills-row {
+    margin-top: 0rem;
+  }
+  
+  /* Skills subtitles */
+  .skills-subtitle {
+    margin-bottom: 0.5rem;
+  }
+  
