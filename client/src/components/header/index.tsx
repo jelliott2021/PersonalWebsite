@@ -17,7 +17,7 @@ const { confirm } = Modal;
  * when they press Enter.
  */
 const Header = () => {
-  const { val, handleInputChange, handleKeyDown, handleLogout } = useHeader();
+  const { handleLogout } = useHeader();
   const { user } = useUserContext();
   const navigate = useNavigate();
 
