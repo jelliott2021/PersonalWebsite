@@ -1,15 +1,10 @@
-import React from 'react';
-import { Avatar, Dropdown, Input, MenuProps, Typography, Modal, Menu } from 'antd';
+import { Avatar, Dropdown, MenuProps, Typography, Modal, Menu } from 'antd';
 import { FaConnectdevelop } from 'react-icons/fa';
-import { CiSearch, CiSquareQuestion } from 'react-icons/ci';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { FaCircleUser } from 'react-icons/fa6';
 import { PiCaretRight } from 'react-icons/pi';
 import { useNavigate } from 'react-router-dom';
 import './index.css';
-import { FiUsers } from 'react-icons/fi';
-import { GoTag } from 'react-icons/go';
-import { MdChatBubbleOutline } from 'react-icons/md';
 import useUserContext from '../../hooks/useUserContext';
 import useHeader from '../../hooks/useHeader';
 
