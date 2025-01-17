@@ -18,6 +18,16 @@ const AboutPage: React.FC = () => {
         </>
       ),
     },
+    {
+      label: 'Sep. 2017 – Apr. 2021',
+      children: (
+        <>
+          <strong>Milton Highschool, Milton, MA</strong>
+          <br />
+          Highschool Graduate, GPA 3.9/5.0
+        </>
+      ),
+    },
   ];
 
   // EXPERIENCE TIMELINE
@@ -56,7 +66,7 @@ const AboutPage: React.FC = () => {
 
   return (
     <div className='about-container'>
-      {/* Cover Section with name, location, contact info */}
+      {/* Cover Section */}
       <div className='cover-section'>
         <div className='cover-text'>
           <h5>Hello, I&apos;m</h5>
@@ -65,8 +75,8 @@ const AboutPage: React.FC = () => {
         </div>
       </div>
 
-      {/* About / Availability Section */}
-      <Card className='about-card introduction-card' hoverable>
+      {/* About */}
+      <Card className='about-card introduction-card'>
         <Title level={1} className='about-title'>
           About Me
         </Title>
@@ -80,8 +90,8 @@ const AboutPage: React.FC = () => {
         </Paragraph>
       </Card>
 
-      {/* Background / Activities */}
-      <Card className='about-card background-card' hoverable>
+      {/* Background */}
+      <Card className='about-card background-card'>
         <Title level={3} className='about-subtitle'>
           Background & Activities
         </Title>
@@ -95,26 +105,30 @@ const AboutPage: React.FC = () => {
       </Card>
 
       {/* Education & Experience */}
-      <Row gutter={24} className='edu-exp-row'>
-        <Col xs={24} lg={12} className='col-spacing'>
-          <Card className='about-card education-card' hoverable>
+      <Row gutter={0} className='edu-exp-row' style={{ margin: 0, padding: 0, width: '100%' }}>
+        <Col xs={24} lg={12} style={{ padding: 0, margin: 0 }}>
+          <Card
+            className='about-card education-card'
+            style={{ width: '100%', height: '100%', margin: 0 }}>
             <Title level={3} className='about-subtitle'>
               Education
             </Title>
-            <Timeline mode='left' items={educationTimeline} />
+            <Timeline mode='right' items={educationTimeline} />
           </Card>
         </Col>
-        <Col xs={24} lg={12} className='col-spacing'>
-          <Card className='about-card experience-card' hoverable>
+        <Col xs={24} lg={12} style={{ padding: 0, margin: 0 }}>
+          <Card
+            className='about-card experience-card'
+            style={{ width: '100%', height: '100%', margin: 0 }}>
             <Title level={3} className='about-subtitle'>
               Professional Experience
             </Title>
-            <Timeline mode='left' items={experienceTimeline} />
+            <Timeline mode='right' items={experienceTimeline} />
           </Card>
         </Col>
       </Row>
 
-      {/* Skills & Knowledge */}
+      {/* Skills */}
       <Card className='about-card skills-card' hoverable>
         <Title level={3} className='about-subtitle'>
           Technical Knowledge
@@ -150,10 +164,11 @@ const AboutPage: React.FC = () => {
               Systems & Applications
             </Title>
             <Paragraph className='about-paragraph'>
-              Windows, Linux, Ubuntu Server, Mac OS X<br />
+              Windows, Linux, Ubuntu, Mac OS
+              <br />
               Git, Jira, Jenkins, Confluence
               <br />
-              IntelliJ IDEA, VS Code, DataGrip
+              IntelliJ IDEA, VS Code, DataGrip, PostMan
             </Paragraph>
           </Col>
         </Row>

@@ -1,0 +1,52 @@
+.project-container {
+  padding: 40px;
+}
+
+.project-card {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-bottom: 5rem;
+}
+
+.project-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.project-card .ant-card-body {
+  padding: 20px;
+}
+
+.project-card iframe {
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
+.ant-btn-link {
+  color: #1890ff;
+  font-weight: 500;
+}
+
+.ant-btn-link:hover {
+  color: #40a9ff;
+}
+
+/* Adjust spacing between cards */
+.ant-row > .ant-col {
+  display: flex;
+  justify-content: center;
+}
+
+/* Limit the max width of cards for better layout */
+.project-card {
+  max-width: 500px;
+  width: 100%;
+}
+
+/* Responsive padding */
+@media (max-width: 768px) {
+  .project-container {
+    padding: 20px;
+  }
+}
