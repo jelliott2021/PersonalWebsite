@@ -32,6 +32,15 @@ jobs:
           api_location: "" # Api source code path - optional
           output_location: "build" # Built app content directory - optional
           ###### End of Repository/Build Configurations ######
+        env: # Add environment variables here
+          REACT_APP_SERVER_URL: johnedwardelliott-g7h8akgufuh6a7eq.eastus2-01.azurewebsites.net
+          MODE: production
+          SMTP_HOST: smtp.gmail.com
+          SMTP_PORT: 587
+          SMTP_SECURE: false
+          SMTP_USER: fakeso110f24@gmail.com
+          SMTP_PASS: mmbtpqgsjojlxppj
+          EMAIL_FROM: fakeso110f24@gmail.com
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
