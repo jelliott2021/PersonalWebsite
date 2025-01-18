@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "homepage": ".",
-  "proxy": "http://localhost:5000",
   "dependencies": {
     "@ant-design/icons": "^5.5.2",
     "@cypress/instrument-cra": "^1.4.0",
@@ -17,7 +16,8 @@
     "socket.io-client": "^4.7.5"
   },
   "scripts": {
-    "build": "react-scripts -r @cypress/instrument-cra start",
+    "start": "react-scripts -r @cypress/instrument-cra start",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint": "eslint .",
@@ -55,7 +55,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.35.0",
-    "prettier": "^3.3.3",
+    "prettier": "^3.4.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
   },
