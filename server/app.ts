@@ -26,7 +26,7 @@ dotenv.config();
 
 const emailService = new EmailService();
 
-const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017'}/fake_so`;
+const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017'}/johnedwardelliott`;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
 const port = parseInt(process.env.PORT || '8000');
 
