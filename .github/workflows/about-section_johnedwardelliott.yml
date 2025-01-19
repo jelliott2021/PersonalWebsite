@@ -12,6 +12,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      CLIENT_URL: ${{ secrets.CLIENT_URL }}
+      PORT: ${{ secrets.PORT }}
     defaults:
       run:
         working-directory: ./server
