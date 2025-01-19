@@ -16,6 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Navigate to /server directory
+      - name: Change to server directory
+        working-directory: ./server
+        run: echo "Moved to server folder"
+
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
