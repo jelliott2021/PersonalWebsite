@@ -33,6 +33,11 @@ jobs:
         run: |
           zip -r release.zip ./dist package.json package-lock.json README.md LICENSE
 
+      - name: List directory contents
+        run: |
+          echo "Current directory structure:"
+          ls -R # List files recursively
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
