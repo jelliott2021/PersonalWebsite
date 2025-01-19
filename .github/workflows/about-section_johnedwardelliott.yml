@@ -34,7 +34,7 @@ jobs:
           npm run build --if-present
       - name: Zip artifact for deployment
         run: |
-          zip -r release.zip ./dist package.json package-lock.json README.md LICENSE
+          zip -r release.zip ./dist/* package.json package-lock.json
       - name: List directory contents
         run: |
           echo "Current directory structure:"
