@@ -36,7 +36,6 @@ jobs:
         run: |
           cp ./package.json ./dist
           cp ./package-lock.json ./dist
-          cp -r ./node_modules ./dist
           cd ./dist
           zip -r ../release.zip ./*
 
