@@ -28,19 +28,31 @@ const emailService = new EmailService();
 
 const MONGO_URL = `${process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017'}/johnedwardelliott`;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:3000';
+const CUSTOM_DOMAIN = process.env.CUSTOM_DOMAIN || 'http://localhost:3000';
 const port = parseInt(process.env.PORT || '8000');
 
 mongoose
   .connect(MONGO_URL)
   .catch(err => console.log('MongoDB connection error: ', err));
 
+  const allowedOrigins = [
+    CLIENT_URL,
+    CUSTOM_DOMAIN,
+  ];
+
 const app = express();
 const server = http.createServer(app);
 const socket: FakeSOSocket = new Server(server, {
-  cors: { 
-    origin: CLIENT_URL,
+  cors: ({ 
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
     credentials: true,
-  },
+  }),
 });
 const sessionMiddleware = session({
   secret: 'fakeso_secret',
