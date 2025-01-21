@@ -2,6 +2,8 @@
   display: flex;
   flex-direction: row;
   height: 91%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .right_main {
@@ -16,6 +18,7 @@
 
 .right_padding {
   padding: 2% 0 2% 2%;
+  box-sizing: border-box;
 }
 
 .bold_title {
@@ -29,8 +32,10 @@
   color: #ffffff;
   border: #000000 1px solid;
   font-size: 20px;
-  padding: 10px 10px 10px 10px;
+  padding: 10px;
   margin-right: 5%;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
 }
 
 .bluebtn:hover {
@@ -40,7 +45,7 @@
 .btn_indicator_container {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* This will push child elements to the extremes of the container */
+  justify-content: space-between;
   width: 100%;
 }
 
@@ -51,10 +56,49 @@
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .mandatory_indicator {
   font-size: 0.8rem;
   color: red;
   margin-top: 10px;
+}
+
+@media (max-width: 768px) {
+  .main {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  .right_main {
+    width: 100%;
+  }
+
+  .right_padding {
+    padding: 4% 2%;
+  }
+
+  .bold_title {
+    font-size: 20px;
+    line-height: 32px;
+  }
+
+  .bluebtn {
+    font-size: 16px;
+    padding: 8px;
+    margin-right: 2%;
+  }
+
+  .btn_indicator_container {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .form_postBtn {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+  
 }
