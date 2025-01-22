@@ -51,13 +51,18 @@ const useLogin = () => {
     try {
       const user = await login(username, password);
       setUser(user);
-      navigate('/home');
+      navigate('/');
     } catch (e) {
       setError('Invalid username or password');
     }
   };
 
-  return { username, password, error, handleUsernameChange, handlePasswordChange, handleSubmit };
+  const handleGuest = async () => {
+    setUser(null);
+    navigate('/');
+  };
+
+  return { username, password, error, handleUsernameChange, handlePasswordChange, handleSubmit, handleGuest };
 };
 
 export default useLogin;

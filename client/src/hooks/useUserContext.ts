@@ -11,8 +11,8 @@ import UserContext, { UserContextType } from '../contexts/UserContext';
 const useUserContext = (): UserContextType => {
   const context = useContext(UserContext);
 
-  if (context === null) {
-    throw new Error('User context is null.');
+  if (!context) {
+    throw new Error('useUserContext must be used within a UserContextProvider');
   }
 
   return context;

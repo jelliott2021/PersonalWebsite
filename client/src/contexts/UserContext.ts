@@ -8,8 +8,8 @@ import { FakeSOSocket, User } from '../types';
  * - socket - the WebSocket connection associated with the current user.
  */
 export interface UserContextType {
-  user: User;
-  socket: FakeSOSocket;
+  user: User | null;
+  socket: FakeSOSocket | null;
 }
 
 const UserContext = createContext<UserContextType | null>(null);
