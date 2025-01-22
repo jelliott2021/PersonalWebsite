@@ -2,19 +2,17 @@ import React, { useEffect, useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import Layout from './layout';
-import Login from './login';
 import { FakeSOSocket, User } from '../types';
 import LoginContext from '../contexts/LoginContext';
 import UserContext from '../contexts/UserContext';
-import Register from './register';
 import { validate } from '../services/authService';
-import Verify from './verify';
 import PreLoginContext from '../contexts/PreLoginContext';
 import ProfilePage from './main/profilePage';
 import UsersPage from './main/usersPage';
 import AboutPage from './main/aboutPage';
 import ProjectPage from './main/projectPage';
 import UnderConstructionPage from './main/underConstructionPage';
+import LoginRegister from './loginRegister';
 
 const ProtectedRoute = ({
   user,
@@ -68,9 +66,7 @@ const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
           <UserContext.Provider value={{ user, socket }}>
             <Routes>
               {/* Public Routes */}
-              <Route path='/login' element={<Login />} />
-              <Route path='/register' element={<Register />} />
-              <Route path='/verify' element={<Verify />} />
+              <Route path='/login' element={<LoginRegister />} />
 
               {/* Routes with Layout */}
               <Route element={<Layout />}>

@@ -1,7 +1,8 @@
 import './index.css';
 import { Button, Input, Typography, Form } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import useLogin from '../../hooks/useLogin';
+import { FiUser } from 'react-icons/fi';
+import { IoLockClosedOutline } from 'react-icons/io5';
+import useLogin from '../../../hooks/useLogin';
 
 const { Text } = Typography;
 
@@ -15,48 +16,53 @@ const { Text } = Typography;
 const Login = () => {
   const { username, password, error, handleUsernameChange, handlePasswordChange, handleSubmit, handleGuest } =
     useLogin();
-  const navigate = useNavigate();
-
-  const handleGuestLogin = () => {
-    handleGuest();
-  };
 
   return (
-    <div className='container'>
-      <h2>John Edward Elliott</h2>
+    <div className='login-container'>
+      <h2>Login!</h2>
       <Form
         layout='vertical'
         labelCol={{ span: 8 }}
-        style={{ maxWidth: '30%' }}
+        style={{ maxWidth: '50%' }}
         onFinish={handleSubmit}>
         <Form.Item
           label='Username'
           name={'username'}
           rules={[{ required: true, message: 'Please input your username!' }]}>
-          <Input value={username} onChange={handleUsernameChange} />
+          <Input
+            className='login-input-text'
+            prefix={<FiUser />}
+            value={username}
+            onChange={handleUsernameChange}
+            placeholder='Enter your username...'
+          />
         </Form.Item>
         <Form.Item
           label='Password'
           name='password'
           rules={[{ required: true, message: 'Please input your password!' }]}>
-          <Input.Password value={password} onChange={handlePasswordChange} />
+          <Input.Password
+            className='login-input-text'
+            prefix={<IoLockClosedOutline />}
+            value={password}
+            onChange={handlePasswordChange}
+            placeholder='Enter your password...'
+          />
         </Form.Item>
         <Text type='danger'>{error}</Text>
         <Form.Item>
           <Button type='primary' htmlType='submit'>
-            Submit
+            Login
+          </Button>
+        </Form.Item>
+        <Form.Item>
+          <Button type='default' onClick={handleGuest}>
+            Login as Guest
           </Button>
         </Form.Item>
       </Form>
-      <button className='register-button' onClick={() => navigate('/register')}>
-        Don&apos;t have an account? Register here!
-      </button>
-      <button className='guest-login-button' onClick={handleGuestLogin}>
-        Login as Guest
-      </button>
     </div>
   );
 };
 
 export default Login;
-
