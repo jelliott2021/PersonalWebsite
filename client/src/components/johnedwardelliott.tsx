@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import Layout from './layout';
 import Login from './login';
@@ -26,72 +26,83 @@ const ProtectedRoute = ({
   children: JSX.Element;
 }) => {
   if (!user || !socket || !user.verified) {
-    return <Navigate to='/' />;
+    return <Navigate to='/login' />;
   }
 
-  return <UserContext.Provider value={{ user, socket }}>{children}</UserContext.Provider>;
+  // No need to wrap this with UserContext.Provider here, as it's already handled in the main app.
+  return children;
 };
 
 /**
  * Represents the main component of the application.
- * It manages the state for search terms and the main title.
  */
 const FakeStackOverflow = ({ socket }: { socket: FakeSOSocket | null }) => {
   const [user, setUser] = useState<User | null>(null);
   const [preLoginUser, setPreLoginUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const checkSession = async () => {
       try {
         const validatedUser = await validate();
         setUser(validatedUser);
-        setLoading(false);
-        navigate('/home');
       } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('Session validation failed:', e);
+      } finally {
         setLoading(false);
       }
     };
 
-    if (loading) {
-      checkSession();
-    }
-  }, [navigate, loading]);
+    checkSession();
+  }, []);
 
-  return !loading ? (
+  if (loading) {
+    return null; // Show a loading spinner or fallback UI if needed
+  }
+
+  return (
     <ConfigProvider>
       <LoginContext.Provider value={{ setUser }}>
         <PreLoginContext.Provider value={{ user: preLoginUser, setUser: setPreLoginUser }}>
-          <Routes>
-            {/* Public Route */}
-            <Route path='/' element={<Login />} />
-            <Route path='/register' element={<Register />} />
-            <Route path='/verify' element={<Verify />} />
+          <UserContext.Provider value={{ user, socket }}>
+            <Routes>
+              {/* Public Routes */}
+              <Route path='/login' element={<Login />} />
+              <Route path='/register' element={<Register />} />
+              <Route path='/verify' element={<Verify />} />
 
-            {/* Protected Routes */}
-            {
-              <Route
-                element={
-                  <ProtectedRoute user={user} socket={socket}>
-                    <Layout />
-                  </ProtectedRoute>
-                }>
-                <>
-                  <Route path='/home' element={<AboutPage />} />
-                  <Route path='/profile/:uid' element={<ProfilePage />} />
-                  <Route path='/users' element={<UsersPage />} />
-                  <Route path='/projects' element={<ProjectPage />} />
-                  <Route path='/skills' element={<UnderConstructionPage />} />
-                  <Route path='/experience' element={<UnderConstructionPage />} />
-                </>
+              {/* Routes with Layout */}
+              <Route element={<Layout />}>
+                <Route path='/projects' element={<ProjectPage />} />
+                <Route path='/skills' element={<UnderConstructionPage />} />
+                <Route path='/experience' element={<UnderConstructionPage />} />
+                <Route path='/' element={<AboutPage />} />
+
+                {/* Protected Routes */}
+                <Route
+                  path='/profile/:uid'
+                  element={
+                    <ProtectedRoute user={user} socket={socket}>
+                      <ProfilePage />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path='/users'
+                  element={
+                    <ProtectedRoute user={user} socket={socket}>
+                      <UsersPage />
+                    </ProtectedRoute>
+                  }
+                />
               </Route>
-            }
-          </Routes>
+            </Routes>
+          </UserContext.Provider>
         </PreLoginContext.Provider>
       </LoginContext.Provider>
     </ConfigProvider>
-  ) : null;
+  );
 };
 
 export default FakeStackOverflow;

@@ -12,7 +12,9 @@ const useProfilePage = () => {
   const [activeTab, setActiveTab] = useState<ProfileTabs>('profile');
   const [textErr, setTextErr] = useState<string>('');
   const { setUser } = useLoginContext();
-  const { user, socket } = useUserContext();
+  const UserContext = useUserContext();
+  const user = UserContext?.user;
+  const socket = UserContext?.socket;
   const canEdit = uid === user?._id;
 
   useEffect(() => {
@@ -72,12 +74,12 @@ const useProfilePage = () => {
       }
     };
 
-    socket.on('followUpdate', handleFollowUpdate);
+    socket?.on('followUpdate', handleFollowUpdate);
 
     return () => {
-      socket.off('followUpdate', handleFollowUpdate);
+      socket?.off('followUpdate', handleFollowUpdate);
     };
-  }, [uid, socket, user._id]);
+  }, [uid, socket, user?._id]);
 
   return {
     profile,

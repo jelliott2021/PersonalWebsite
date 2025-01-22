@@ -48,7 +48,7 @@ const useHeader = () => {
   const handleLogout = async () => {
     try {
       await logout();
-      navigate('/');
+      navigate('/login');
     } catch (e) {
       // eslint-disable-next-line no-console
       console.error('Error logging out:', e);

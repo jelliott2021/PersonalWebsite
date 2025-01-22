@@ -4,12 +4,15 @@ import useUserContext from './useUserContext';
 import { User } from '../types';
 
 const useFollowStatus = ({ profile }: { profile: User }) => {
-  const { user } = useUserContext();
+  const UserContext = useUserContext();
+  const user = UserContext ? UserContext.user : null;
   const [isFollowed, setIsFollowed] = useState<boolean>();
 
   const handleFollowUser = async () => {
     try {
-      await followUser(user._id, profile._id);
+      if (user) {
+        await followUser(user._id, profile._id);
+      }
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error('Error following user:', error);
@@ -17,12 +20,12 @@ const useFollowStatus = ({ profile }: { profile: User }) => {
   };
 
   useEffect(() => {
-    if (profile.followers.some(u => u._id === user._id)) {
+    if (user && profile.followers.some(u => u._id === user._id)) {
       setIsFollowed(true);
     } else {
       setIsFollowed(false);
     }
-  }, [user._id, profile.followers]);
+  }, [user, profile.followers]);
 
   return {
     isFollowed,

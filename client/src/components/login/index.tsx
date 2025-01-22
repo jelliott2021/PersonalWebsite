@@ -13,13 +13,17 @@ const { Text } = Typography;
  * otherwise, an error message is displayed.
  */
 const Login = () => {
-  const { username, password, error, handleUsernameChange, handlePasswordChange, handleSubmit } =
+  const { username, password, error, handleUsernameChange, handlePasswordChange, handleSubmit, handleGuest } =
     useLogin();
   const navigate = useNavigate();
 
+  const handleGuestLogin = () => {
+    handleGuest();
+  };
+
   return (
     <div className='container'>
-      <h2>Welcome to FakeStackOverflow!</h2>
+      <h2>John Edward Elliott</h2>
       <Form
         layout='vertical'
         labelCol={{ span: 8 }}
@@ -47,8 +51,12 @@ const Login = () => {
       <button className='register-button' onClick={() => navigate('/register')}>
         Don&apos;t have an account? Register here!
       </button>
+      <button className='guest-login-button' onClick={handleGuestLogin}>
+        Login as Guest
+      </button>
     </div>
   );
 };
 
 export default Login;
+

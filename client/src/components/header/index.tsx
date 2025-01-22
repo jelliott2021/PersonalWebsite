@@ -15,14 +15,16 @@ const { confirm } = Modal;
 
 const Header = () => {
   const { handleLogout } = useHeader();
-  const { user } = useUserContext();
+  const UserContext = useUserContext();
+  const user = UserContext ? UserContext.user : null;
+  // eslint-disable-next-line no-console
+  console.log('user:', user);
   const navigate = useNavigate();
   const location = useLocation();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-
-  const [selectedKey, setSelectedKey] = useState('/home');
+  const [selectedKey, setSelectedKey] = useState('/');
 
   useEffect(() => {
     setSelectedKey(location.pathname);
@@ -43,7 +45,7 @@ const Header = () => {
   type MenuItem = Required<MenuProps>['items'][number];
 
   const menuItems = (): MenuItem[] => [
-    { key: '/home', label: 'About Me' },
+    { key: '/', label: 'About Me' },
     { key: '/experience', label: 'Education & Experience' },
     { key: '/skills', label: 'Skills' },
     { key: '/projects', label: 'Projects' },
@@ -54,41 +56,56 @@ const Header = () => {
     navigate(e.key);
   };
 
-  const profileItems: MenuProps['items'] = [
-    {
-      key: 'title',
-      label: 'My Account',
-      disabled: true,
-      className: 'dropdown-item-disabled',
-    },
-    {
-      type: 'divider',
-    },
-    {
-      key: 'profile',
-      label: (
-        <div onClick={() => navigate(`/profile/${user._id}`)} className="dropdown-item">
-          <span className="dropdown-align">
-            <FaCircleUser className="dropdown-icon" />
-            <span>Profile</span>
-          </span>
-          <PiCaretRight className="dropdown-arrow" />
-        </div>
-      ),
-    },
-    {
-      key: 'logout',
-      label: (
-        <div onClick={showLogoutConfirm} className="dropdown-item">
-          <span className="dropdown-align">
-            <IoLogOutOutline className="dropdown-icon" />
-            <span>Logout</span>
-          </span>
-          <PiCaretRight className="dropdown-arrow" />
-        </div>
-      ),
-    },
-  ];
+  const profileItems: MenuProps['items'] = user
+    ? [
+        {
+          key: 'title',
+          label: 'My Account',
+          disabled: true,
+          className: 'dropdown-item-disabled',
+        },
+        {
+          type: 'divider',
+        },
+        {
+          key: 'profile',
+          label: (
+            <div onClick={() => navigate(`/profile/${user._id}`)} className="dropdown-item">
+              <span className="dropdown-align">
+                <FaCircleUser className="dropdown-icon" />
+                <span>Profile</span>
+              </span>
+              <PiCaretRight className="dropdown-arrow" />
+            </div>
+          ),
+        },
+        {
+          key: 'logout',
+          label: (
+            <div onClick={showLogoutConfirm} className="dropdown-item">
+              <span className="dropdown-align">
+                <IoLogOutOutline className="dropdown-icon" />
+                <span>Logout</span>
+              </span>
+              <PiCaretRight className="dropdown-arrow" />
+            </div>
+          ),
+        },
+      ]
+    : [
+        {
+          key: 'signin',
+          label: (
+            <div onClick={() => navigate('/login')} className="dropdown-item">
+              <span className="dropdown-align">
+                <FaCircleUser className="dropdown-icon" />
+                <span>Sign In</span>
+              </span>
+              <PiCaretRight className="dropdown-arrow" />
+            </div>
+          ),
+        },
+      ];
 
   useEffect(() => {
     const handleResize = () => {
@@ -110,9 +127,7 @@ const Header = () => {
   return (
     <div className="custom-header">
       <div onClick={() => navigate('/home')} className="logo-container">
-        <Title
-          level={2}
-          className="logo-text">
+        <Title level={2} className="logo-text">
           <FaConnectdevelop /> John Edward Elliott
         </Title>
       </div>
@@ -159,9 +174,9 @@ const Header = () => {
           <Avatar
             size={36}
             shape="circle"
-            src={user.picture}
-            icon={!user.picture && <FaCircleUser size={'10x'} color="#1e1e2f" />}
-            alt={`${user.username} profile`}
+            src={user?.picture}
+            icon={!user?.picture && <FaCircleUser size={'10x'} color="#1e1e2f" />}
+            alt={user ? `${user.username} profile` : 'Guest'}
             className="profile-avatar"
           />
         </Dropdown>
