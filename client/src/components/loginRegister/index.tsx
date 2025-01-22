@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './index.css';
-import { Button , Typography } from 'antd';
-import { FaConnectdevelop } from 'react-icons/fa';
+import { Button } from 'antd';
 import Login from './login';
 import Register from './register';
 import Verify from './verify';
