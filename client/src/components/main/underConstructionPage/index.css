@@ -1,0 +1,78 @@
+/* UnderConstruction.css */
+
+.construction-container {
+    height: 100vh;
+    width: 100%;
+    background-color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+  
+  .content {
+    text-align: center;
+    color: #1a1a1a;
+    z-index: 2;
+  }
+  
+  .content h1 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    animation: fadeIn 2s ease-in-out;
+  }
+  
+  .content p {
+    font-size: 1.5rem;
+    animation: fadeIn 3s ease-in-out;
+  }
+  
+  /* Loader Animation */
+  .loader {
+    margin: 2rem auto;
+    border: 6px solid #333;
+    border-top: 6px solid #f1c40f;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+  }
+  
+  /* Glowing Lights Background */
+  .lights-effect::before,
+  .lights-effect::after {
+    content: '';
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: pulse 5s infinite alternate;
+  }
+  
+  .lights-effect::before {
+    top: -100px;
+    left: -100px;
+  }
+  
+  .lights-effect::after {
+    bottom: -100px;
+    right: -100px;
+  }
+  
+  /* Animations */
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  
+  @keyframes pulse {
+    0% { transform: scale(1); opacity: 0.7; }
+    100% { transform: scale(1.5); opacity: 0.3; }
+  }
+  

@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
 import { io } from 'socket.io-client';
 import { useEffect, useState } from 'react';
-import FakeStackOverflow from './components/fakestackoverflow';
+import FakeStackOverflow from './components/johnedwardelliott';
 import { FakeSOSocket } from './types';
 
 const container = document.getElementById('root');

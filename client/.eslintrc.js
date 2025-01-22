@@ -29,7 +29,6 @@ module.exports = {
   },
   ignorePatterns: ['/*.*', '*.js'],
   rules: {
-    'prettier/prettier': 'error',
     'no-underscore-dangle': 0,
     'no-param-reassign': 0,
     'no-restricted-syntax': 0,

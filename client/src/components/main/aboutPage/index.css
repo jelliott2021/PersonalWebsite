@@ -1,0 +1,151 @@
+/* Container for the entire About page */
+.about-container {
+  background-color: #f8f9fa;
+}
+
+/* Cover Section */
+.cover-section {
+  width: 100%;
+  height: 400px;
+  background-image: url("https://media.licdn.com/dms/image/v2/C4E1BAQHkj4ydYFgf4A/company-background_10000/company-background_10000/0/1584673584637/informsneu_cover?e=2147483647&v=beta&t=l3No7_lslq2V7nROP56VczYKRksyv6flhHM5VT2F5HU"); /* Replace with your image path */
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+@keyframes fadeSlideIn {
+  0% {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Text overlay */
+.cover-text {
+  animation: fadeSlideIn 1.5s ease-out forwards;
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 20%;
+  transform: translate(-50%, -50%);
+  color: #fff;
+  text-align: left;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.cover-text h1,
+.cover-text h2,
+.cover-text h3,
+.cover-text h4,
+.cover-text h5,
+.cover-text h6 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+.cover-text h1 {
+  font-size: 4rem;
+  font-weight: bold;
+}
+
+.cover-text h5 {
+  font-size: 2rem;
+  font-weight: normal;
+}
+
+.about-card {
+  border-radius: 0px;
+  padding: 1rem 2rem;
+}
+
+/* Typography classes */
+.about-title {
+  margin-bottom: 0.5rem;
+}
+
+.about-subtitle {
+  margin-bottom: 1rem;
+}
+
+.about-paragraph {
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+/* Divider styling */
+.about-divider {
+  margin: 0.5rem 0;
+}
+
+/* Education & Experience */
+.edu-exp-row {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+.col-spacing {
+  margin-bottom: 0rem;
+  padding: 0;
+}
+
+.about-card {
+  margin: 0;
+  padding: 0;
+  border: none;
+  box-shadow: none;
+}
+
+.ant-row {
+  margin: 0;
+  padding: 0;
+}
+
+.ant-col {
+  padding: 0;
+  margin: 0;
+}
+
+.introduction-card {
+  background-color: aliceblue;
+}
+
+.background-card {}
+.education-card {
+  text-align: center;
+}
+.experience-card {
+  text-align: center;
+}
+.skills-card {
+  text-align: center;
+}
+
+/* Skills */
+.skills-row {
+  margin-top: 0rem;
+}
+
+.skills-subtitle {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .cover-text {
+    animation: fadeSlideIn 1.5s ease-out forwards;
+    opacity: 0;
+    position: absolute;
+    top: 40%;
+    left: 10%;
+    transform: translate(-50%, -50%);
+    color: #fff;
+    text-align: left;
+    font-size: 2rem;
+    font-weight: bold;
+  }
+}

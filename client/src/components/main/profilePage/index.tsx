@@ -35,11 +35,11 @@ const ProfilePage = () => {
   const getEmptyTitle = (type: 'followers' | 'following') => {
     if (type === 'followers') {
       return canEdit
-        ? "You don't have any followers yet"
+        ? 'You don\'t have any followers yet'
         : `${profile.username} doesn't have any followers yet`;
     }
     return canEdit
-      ? "You're not following anyone yet"
+      ? 'You\'re not following anyone yet'
       : `${profile.username} isn't following anyone yet`;
   };
 

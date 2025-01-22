@@ -4,15 +4,12 @@ import { Outlet } from 'react-router-dom';
 import SideBarBio from '../main/sideBarBio';
 import Header from '../header';
 
-/**
- * Main component represents the layout of the main page, including a sidebar and the main content area.
- */
-const Layout = () => (
+const Layout: React.FC = () => (
   <>
     <Header />
-    <div id='main' className='main'>
+    <div id="main" className="main">
       <SideBarBio />
-      <div id='right_main' className='right_main' style={{ backgroundColor: 'whitesmoke' }}>
+      <div id="right_main" className="right_main">
         <Outlet />
       </div>
     </div>
@@ -20,3 +17,4 @@ const Layout = () => (
 );
 
 export default Layout;
+

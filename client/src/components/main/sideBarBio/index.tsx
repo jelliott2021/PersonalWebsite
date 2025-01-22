@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from 'antd';
 import { GoSidebarCollapse } from 'react-icons/go';
-import { FiGithub, FiLinkedin } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
 import './index.css';
 
 const SideBarBio = () => {
@@ -41,6 +41,9 @@ const SideBarBio = () => {
               target='_blank'
               rel='noopener noreferrer'>
               <FiLinkedin size={20} />
+            </a>
+            <a href='mailto:elliott.joh@northeastern.edu' target='_blank' rel='noopener noreferrer'>
+              <FiMail size={20} />
             </a>
           </div>
 

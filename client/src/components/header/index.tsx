@@ -1,30 +1,32 @@
-import React from 'react';
-import { Avatar, Dropdown, Input, MenuProps, Typography, Modal, Menu } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Avatar, Dropdown, MenuProps, Typography, Modal, Menu, Drawer, Button } from 'antd';
 import { FaConnectdevelop } from 'react-icons/fa';
-import { CiSearch, CiSquareQuestion } from 'react-icons/ci';
 import { IoLogOutOutline } from 'react-icons/io5';
 import { FaCircleUser } from 'react-icons/fa6';
 import { PiCaretRight } from 'react-icons/pi';
-import { useNavigate } from 'react-router-dom';
+import { MenuOutlined } from '@ant-design/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
-import { FiUsers } from 'react-icons/fi';
-import { GoTag } from 'react-icons/go';
-import { MdChatBubbleOutline } from 'react-icons/md';
 import useUserContext from '../../hooks/useUserContext';
 import useHeader from '../../hooks/useHeader';
 
 const { Title } = Typography;
 const { confirm } = Modal;
 
-/**
- * Header component that renders the main title and a search bar.
- * The search bar allows the user to input a query and navigate to the search results page
- * when they press Enter.
- */
 const Header = () => {
-  const { val, handleInputChange, handleKeyDown, handleLogout } = useHeader();
+  const { handleLogout } = useHeader();
   const { user } = useUserContext();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isSmallScreen, setIsSmallScreen] = useState(false);
+
+  const [selectedKey, setSelectedKey] = useState('/home');
+
+  useEffect(() => {
+    setSelectedKey(location.pathname);
+  }, [location.pathname]);
 
   const showLogoutConfirm = () => {
     confirm({
@@ -34,10 +36,6 @@ const Header = () => {
       cancelText: 'No',
       onOk() {
         handleLogout();
-      },
-      onCancel() {
-        // eslint-disable-next-line no-console
-        console.log('OK');
       },
     });
   };
@@ -51,7 +49,8 @@ const Header = () => {
     { key: '/projects', label: 'Projects' },
   ];
 
-  const handleClick: MenuProps['onClick'] = e => {
+  const handleMenuClick: MenuProps['onClick'] = e => {
+    setSelectedKey(e.key);
     navigate(e.key);
   };
 
@@ -68,59 +67,102 @@ const Header = () => {
     {
       key: 'profile',
       label: (
-        <div onClick={() => navigate(`/profile/${user._id}`)} className='dropdown-item'>
-          <span className='dropdown-align'>
-            <FaCircleUser className='dropdown-icon' />
+        <div onClick={() => navigate(`/profile/${user._id}`)} className="dropdown-item">
+          <span className="dropdown-align">
+            <FaCircleUser className="dropdown-icon" />
             <span>Profile</span>
           </span>
-          <PiCaretRight className='dropdown-arrow' />
+          <PiCaretRight className="dropdown-arrow" />
         </div>
       ),
     },
     {
       key: 'logout',
       label: (
-        <div onClick={showLogoutConfirm} className='dropdown-item'>
-          <span className='dropdown-align'>
-            <IoLogOutOutline className='dropdown-icon' />
+        <div onClick={showLogoutConfirm} className="dropdown-item">
+          <span className="dropdown-align">
+            <IoLogOutOutline className="dropdown-icon" />
             <span>Logout</span>
           </span>
-          <PiCaretRight className='dropdown-arrow' />
+          <PiCaretRight className="dropdown-arrow" />
         </div>
       ),
     },
   ];
 
+  useEffect(() => {
+    const handleResize = () => {
+      const smallScreen = window.innerWidth <= 768;
+      setIsSmallScreen(smallScreen);
+      if (!smallScreen) {
+        setIsDrawerOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    handleResize();
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
   return (
-    <div className='custom-header'>
-      <div onClick={() => navigate('/home')} className='logo-container'>
+    <div className="custom-header">
+      <div onClick={() => navigate('/home')} className="logo-container">
         <Title
           level={2}
-          className='logo-text'
-          style={{ color: '#ffffff', alignItems: 'center', margin: 0 }}>
+          className="logo-text">
           <FaConnectdevelop /> John Edward Elliott
         </Title>
       </div>
-      <Menu
-        defaultSelectedKeys={['/home']}
-        mode='horizontal'
-        theme='dark'
-        items={menuItems()}
-        onClick={handleClick}
-      />
-      <div className='header-actions'>
+
+      {isSmallScreen ? (
+        <>
+          <Button
+            icon={<MenuOutlined />}
+            onClick={() => setIsDrawerOpen(true)}
+            className="menu-toggle-btn"
+          />
+          <Drawer
+            title="Menu"
+            placement="left"
+            onClose={() => setIsDrawerOpen(false)}
+            open={isDrawerOpen}
+            className="menu-drawer">
+            <Menu
+              mode="vertical"
+              theme="dark"
+              items={menuItems()}
+              onClick={handleMenuClick}
+              selectedKeys={[selectedKey]}
+            />
+          </Drawer>
+        </>
+      ) : (
+        <Menu
+          mode="horizontal"
+          theme="dark"
+          items={menuItems()}
+          onClick={handleMenuClick}
+          selectedKeys={[selectedKey]}
+          className="desktop-menu"
+        />
+      )}
+
+      <div className="header-actions">
         <Dropdown
           menu={{ items: profileItems }}
           trigger={['click']}
-          placement='bottomRight'
+          placement="bottomRight"
           arrow={{ pointAtCenter: true }}>
           <Avatar
             size={36}
-            shape='circle'
+            shape="circle"
             src={user.picture}
-            icon={!user.picture && <FaCircleUser size={'10x'} color='#1e1e2f' />}
+            icon={!user.picture && <FaCircleUser size={'10x'} color="#1e1e2f" />}
             alt={`${user.username} profile`}
-            className='profile-avatar'
+            className="profile-avatar"
           />
         </Dropdown>
       </div>
