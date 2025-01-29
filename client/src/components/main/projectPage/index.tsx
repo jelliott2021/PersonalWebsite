@@ -1,5 +1,6 @@
 import React from 'react';
-import { Card, Row, Col, Button } from 'antd';
+import Masonry from 'react-masonry-css';
+import { Card, Button, Tag } from 'antd';
 import { GithubOutlined, LinkOutlined } from '@ant-design/icons';
 import './index.css';
 
@@ -9,75 +10,107 @@ const PROJECTS = [
   {
     title: 'This Website',
     description: 'A brief description of Project One.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    videoUrl: '',
     githubUrl: 'https://github.com/jelliott2021/PersonalWebsite',
-    liveUrl: 'http://localhost:3000/projects',
+    liveUrl: 'https://johnedwardelliott.com',
+    tags: ['Typescript', 'React', 'Node.js', 'HTML',  'CSS', 'MongoDB'],
   },
   {
-    title: 'Fake StackOverflow',
-    description: 'A brief description of Project Two.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    title: 'Husky Connection',
+    description: 'Husky Connection is a web platform built to connect Northeastern students by enabling personalized profiles, real-time chat, and notification services for questions, comments, and updates. Developed using React, TypeScript, Node.js, Express, and MongoDB, the project employs a modular, service-oriented design to ensure scalability and maintainability, with features like customizable user accounts, group chats, and email/on-site notifications implemented as independent modules.',
+    videoUrl: '/videos/HuskyConnect.mp4',
     githubUrl: 'https://github.com/jelliott2021/Fake-StackOverflow',
-    liveUrl: 'https://projecttwo.com',
+    liveUrl: 'https://cs4530-f24-110.onrender.com',
+    extra: `Hosted on OnRender might take a few seconds to load
+Test Account
+User: jelliott 
+Password: 1234`,
+    tags: ['Typescript', 'React', 'Node.js', 'Jest', 'HTML',  'CSS', 'MongoDB'],
   },
   {
     title: 'Canvas Quiz',
-    description: 'A brief description of Project Three.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
+    description: 'A full-stack web application replicating the core functionality of Canvas, featuring role-based authentication for students, faculty, and administrators. Administrators can manage courses, modules, assignments, and quizzes, while faculty can create and configure quizzes with various settings for students to complete. Independently developed the quiz functionality, ensuring customizable quiz settings and seamless student interaction.',
+    videoUrl: '/videos/canvas-quiz.mp4',
     githubUrl: 'https://github.com/jelliott2021/Canvas-Quiz-React',
     liveUrl: 'https://projectthree.com',
+    extra: 'Hosted on OnRender might take a few seconds to load',
+    tags: ['Typescript', 'React', 'Node.js', 'HTML',  'CSS', 'MongoDB'],
   },
   {
     title: 'Photo Editor',
     description: 'A brief description of Project Four.',
-    videoUrl: 'https://www.youtube.com/embed/dQw4w9WgXcQ',
-    githubUrl: 'https://github.com/jelliott2021/Photo-Editor',
-    liveUrl: 'https://projectfour.com',
+    videoUrl: '/videos/PhotoEditor.mp4',
+    githubUrl: 'https://github.com/jelliott2021/PhotoEditor',
+    liveUrl: '',
+    tags: ['React', 'Photo', 'Editor'],
   },
 ];
 
 const ProjectPage: React.FC = () => (
   <div className='project-container'>
-    <Row gutter={[24, 24]}>
+    <Masonry breakpointCols={{default: 2, 768: 1}}
+      className="masonry-grid"
+      columnClassName="masonry-grid_column"
+    >
       {PROJECTS.map((project, index) => (
-        <Col xs={24} sm={12} md={12} lg={12} xl={12} key={index}>
+        <div key={index}>
           <Card
             hoverable
             className='project-card'
             cover={
-              <iframe
-                width='100%'
-                height='200px'
-                src={project.videoUrl}
+              project.videoUrl ? (
+                <video controls>
+                  <source src={project.videoUrl} type='video/mp4' />
+                  Your browser does not support the video tag.
+                </video>
+                ) : null
+              }
+              actions={[
+                project.githubUrl && (
+                <Button
+                  key={`github-${index}`}
+                  type='link'
+                  href={project.githubUrl}
+                  target='_blank'
+                  icon={<GithubOutlined />}
+                >
+                  GitHub
+                </Button>
+                ),
+                project.liveUrl && (
+                <Button
+                  key={`live-${index}`}
+                  type='link'
+                  href={project.liveUrl}
+                  target='_blank'
+                  icon={<LinkOutlined />}
+                >
+                  Visit Site
+                </Button>
+                ),
+              ].filter(Boolean)}
+              >
+              <Meta
                 title={project.title}
-                frameBorder='0'
-                allow='accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
-                allowFullScreen
-              />
-            }
-            actions={[
-              <Button
-                key={`github-${index}`}
-                type='link'
-                href={project.githubUrl}
-                target='_blank'
-                icon={<GithubOutlined />}>
-                GitHub
-              </Button>,
-              <Button
-                key={`live-${index}`}
-                type='link'
-                href={project.liveUrl}
-                target='_blank'
-                icon={<LinkOutlined />}>
-                Visit Site
-              </Button>,
-            ]}>
-            <Meta title={project.title} description={project.description} />
+                description={
+                <>
+                  <p>{project.description}</p>
+                  <br />
+                  {project.tags.map((tag, tagIndex) => (
+                    <Tag key={tagIndex}>{tag}</Tag>
+                  ))}
+                  {project.extra && (
+                    <div>
+                      <br /><pre>{project.extra}</pre>
+                    </div>
+                  )}
+                </>
+              }
+            />
           </Card>
-        </Col>
+        </div>
       ))}
-    </Row>
+    </Masonry>
   </div>
 );
 
