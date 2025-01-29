@@ -1,12 +1,22 @@
+#just-line-break {
+  white-space: pre-line;
+}
+
 .project-container {
   padding: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  width: 100%;
 }
 
 .project-card {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  margin-bottom: 5rem;
+  margin-bottom: 24px;
+  flex-grow: 1;
+  max-width: 700px;
 }
 
 .project-card:hover {
@@ -15,7 +25,7 @@
 }
 
 .project-card .ant-card-body {
-  padding: 20px;
+  padding: 75px;
 }
 
 .project-card iframe {
@@ -32,21 +42,27 @@
   color: #40a9ff;
 }
 
-/* Adjust spacing between cards */
-.ant-row > .ant-col {
+.masonry-grid {
   display: flex;
-  justify-content: center;
+  gap: 24px;
+  margin: 0 auto;
 }
 
-/* Limit the max width of cards for better layout */
-.project-card {
-  max-width: 500px;
-  width: 100%;
+.masonry-grid_column {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Responsive padding */
+/* Responsive adjustments for smaller screens */
 @media (max-width: 768px) {
   .project-container {
-    padding: 20px;
+    flex-direction: column;
+    align-items: center; /* Center cards */
+  }
+
+  .project-card {
+    width: 100%; /* Make each card take full width */
+    max-width: 400px; /* Optional: Limit card width */
   }
 }
+
