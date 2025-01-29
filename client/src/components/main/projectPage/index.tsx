@@ -8,8 +8,8 @@ const { Meta } = Card;
 
 const PROJECTS = [
   {
-    title: 'This Website',
-    description: 'A brief description of Project One.',
+    title: 'John Edward Elliott Portfolio Website',
+    description: 'This current website',
     videoUrl: '',
     githubUrl: 'https://github.com/jelliott2021/PersonalWebsite',
     liveUrl: 'https://johnedwardelliott.com',
@@ -38,11 +38,11 @@ Password: 1234`,
   },
   {
     title: 'Photo Editor',
-    description: 'A brief description of Project Four.',
+    description: 'The Photo Editor is a Java-based GUI application following the MVC design pattern, allowing users to open, edit, and save images in PNG, JPG, JPEG, BMP, and PPM formats. Users can adjust brightness, apply various greyscale filters (red, green, blue, luma, intensity, value), enhance images with blur, sharpen, greyscale, and sepia effects, flip images horizontally or vertically, and create a mosaic effect with a specified number of panels. Once edits are complete, the modified image can be saved in a supported format.',
     videoUrl: '/videos/PhotoEditor.mp4',
     githubUrl: 'https://github.com/jelliott2021/PhotoEditor',
     liveUrl: '',
-    tags: ['React', 'Photo', 'Editor'],
+    tags: ['Java', 'JFrame', 'JUnit'],
   },
 ];
 
