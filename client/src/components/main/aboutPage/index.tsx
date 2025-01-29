@@ -96,11 +96,13 @@ const AboutPage: React.FC = () => {
           Background & Activities
         </Title>
         <Paragraph className='about-paragraph'>
-          I am currently pursuing a B.Sc. in Computer Science at Northeastern University. During my
-          studies, I’ve participated in Club Spikeball, Club Skiing, and Intramural Tennis. My
-          coursework spans Fundamental of Software Engineering, Network Fundamentals, Web
-          Development, Object-Oriented Design, Algorithms and Data, Computer Systems, Programming in
-          C++, and Database Design.
+          After three and a half years, I have recently graduated with a B.Sc. in Computer Science at Northeastern University. During my
+          studies, I have gained experience in software development through my 6-month co-op at MFS Investments, where I worked
+          as a QA Automation Engineer. I have also worked as a Teaching Assistant for the CS3200 Database Design course at Northeastern.
+        </Paragraph>
+        <Paragraph className='about-paragraph'>
+          In my free time, I enjoy playing golf, spikeball, tennis, and pickleball, and have worked as a Tennis/Pickleball Director 
+          in Wellfleet, MA for six years.
         </Paragraph>
       </Card>
 
