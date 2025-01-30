@@ -13,7 +13,7 @@ const PROJECTS = [
     videoUrl: '',
     githubUrl: 'https://github.com/jelliott2021/PersonalWebsite',
     liveUrl: 'https://johnedwardelliott.com',
-    tags: ['Typescript', 'React', 'Node.js', 'HTML',  'CSS', 'MongoDB'],
+    tags: ['Typescript', 'React', 'Node.js', 'HTML',  'CSS', 'MongoDB', 'Azure'],
   },
   {
     title: 'Husky Connection',
@@ -30,10 +30,13 @@ Password: 1234`,
   {
     title: 'Canvas Quiz',
     description: 'A full-stack web application replicating the core functionality of Canvas, featuring role-based authentication for students, faculty, and administrators. Administrators can manage courses, modules, assignments, and quizzes, while faculty can create and configure quizzes with various settings for students to complete. Independently developed the quiz functionality, ensuring customizable quiz settings and seamless student interaction.',
-    videoUrl: '/videos/canvas-quiz.mp4',
+    videoUrl: '/videos/CanvasQuiz.mp4',
     githubUrl: 'https://github.com/jelliott2021/Canvas-Quiz-React',
-    liveUrl: 'https://projectthree.com',
-    extra: 'Hosted on OnRender might take a few seconds to load',
+    liveUrl: 'https://fake-canvas-react.onrender.com/#/Kanbas/Account/Signin',
+    extra: `Hosted on OnRender might take a few seconds to load
+Test Account
+User: Jack
+Password: 1234`,
     tags: ['Typescript', 'React', 'Node.js', 'HTML',  'CSS', 'MongoDB'],
   },
   {
