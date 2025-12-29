@@ -1,6 +1,7 @@
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router } from 'react-router-dom';
 import './index.css';
+import ReactGA from 'react-ga';
 import { io } from 'socket.io-client';
 import { useEffect, useState } from 'react';
 import FakeStackOverflow from './components/johnedwardelliott';
@@ -10,6 +11,14 @@ const container = document.getElementById('root');
 
 const App: React.FC = () => {
   const [socket, setSocket] = useState<FakeSOSocket | null>(null);
+
+  const googleId = process.env.GOOGLE_CLIENT_ID;
+
+  if (googleId) {
+    ReactGA.initialize(googleId);
+  } else {
+    throw new Error("Environment variable 'GOOGLE_CLIENT_ID' must be defined");
+  }
 
   const serverURL = process.env.REACT_APP_SERVER_URL;
 

@@ -6,7 +6,7 @@ const UnderConstructionPage: React.FC = () => (
     <div className='lights-effect'></div>
     <div className='content'>
       <h1>🚧 Under Construction 🚧</h1>
-      <p>Pardon our appearance while being approved</p>
+      <p>Pardon our appearance while being improved</p>
       <div className='loader'></div>
     </div>
   </div>
