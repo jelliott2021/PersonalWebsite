@@ -1,16 +1,44 @@
 /* Container for the entire About page */
 .about-container {
-  background-color: #f8f9fa;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  min-height: 100vh;
+  padding-bottom: 3rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Scroll offset for anchor links */
+#about-me,
+#education-experience,
+#skills {
+  scroll-margin-top: 100px;
 }
 
 /* Cover Section */
 .cover-section {
   width: 100%;
-  height: 400px;
+  height: 600px;
   background-image: url("https://media.licdn.com/dms/image/v2/C4E1BAQHkj4ydYFgf4A/company-background_10000/company-background_10000/0/1584673584637/informsneu_cover?e=2147483647&v=beta&t=l3No7_lslq2V7nROP56VczYKRksyv6flhHM5VT2F5HU");
   background-size: cover;
   background-position: center;
   position: relative;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.cover-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(30, 30, 30, 0.7) 0%, rgba(50, 50, 50, 0.5) 100%);
+  z-index: 1;
+  backdrop-filter: blur(2px);
 }
 
 @keyframes fadeSlideIn {
@@ -24,18 +52,26 @@
   }
 }
 
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
 /* Text overlay */
 .cover-text {
-  animation: fadeSlideIn 1.5s ease-out forwards;
+  animation: fadeSlideIn 1.5s ease-out forwards, float 3s ease-in-out infinite 1.5s;
   opacity: 0;
-  position: absolute;
-  top: 50%;
-  left: 20%;
-  transform: translate(-50%, -50%);
   color: #fff;
-  text-align: left;
+  text-align: center;
   font-size: 2rem;
   font-weight: bold;
+  z-index: 2;
+  text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  letter-spacing: 1px;
 }
 
 .cover-text h1,
@@ -49,32 +85,94 @@
 }
 
 .cover-text h1 {
-  font-size: 4rem;
-  font-weight: bold;
+  font-size: 5rem;
+  font-weight: 900;
+  color: #ffffff;
+  margin-bottom: 0.5rem;
 }
 
 .cover-text h5 {
   font-size: 2rem;
-  font-weight: normal;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #f8f9fa;
 }
 
 .about-card {
-  border-radius: 0px;
-  padding: 1rem 2rem;
+  border-radius: 24px;
+  padding: 2.5rem 3rem;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s;
+}
+
+.about-card:hover::before {
+  left: 100%;
+}
+
+.about-card:hover {
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.01);
+  border: 1px solid rgba(255, 255, 255, 0.5);
 }
 
 /* Typography classes */
 .about-title {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+  color: #2d3748;
+  font-weight: 800;
+  position: relative;
+  padding-bottom: 1rem;
+  font-size: 3rem;
+  text-align: center;
+}
+
+.about-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 5px;
+  background: linear-gradient(90deg, #4a5568 0%, #718096 100%);
+  border-radius: 3px;
 }
 
 .about-subtitle {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  color: #4a5568;
+  font-weight: 700;
+  font-size: 1.8rem;
+  text-align: center;
 }
 
 .about-paragraph {
-  font-size: 1rem;
-  line-height: 1.6;
+  font-size: 1.05rem;
+  line-height: 1.8;
+  color: #4a5568;
+  margin-bottom: 1rem;
+  font-weight: 400;
+  text-align: center;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 /* Divider styling */
@@ -84,21 +182,16 @@
 
 /* Education & Experience */
 .edu-exp-row {
-  margin: 0;
+  margin: 2rem auto !important;
   padding: 0;
   width: 100%;
+  max-width: 1200px;
+  gap: 0;
 }
 
 .col-spacing {
   margin-bottom: 0rem;
   padding: 0;
-}
-
-.about-card {
-  margin: 0;
-  padding: 0;
-  border: none;
-  box-shadow: none;
 }
 
 .ant-row {
@@ -112,40 +205,201 @@
 }
 
 .introduction-card {
-  background-color: aliceblue;
+  background: rgba(255, 255, 255, 0.95);
+  margin: 2rem auto;
+  max-width: 1200px;
+  backdrop-filter: blur(20px);
 }
 
-.background-card {}
+.background-card {
+  margin: 2rem auto;
+  max-width: 1200px;
+}
+
 .education-card {
   text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  height: 100%;
+  border-radius: 24px 0 0 24px !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 2.5rem 3rem;
 }
+
 .experience-card {
   text-align: center;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  height: 100%;
+  border-radius: 0 24px 24px 0 !important;
+  padding: 2.5rem 3rem;
 }
+
 .skills-card {
-  text-align: center;
+  margin: 2rem auto;
+  max-width: 1200px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
 }
 
 /* Skills */
 .skills-row {
-  margin-top: 0rem;
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
 }
 
 .skills-subtitle {
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  color: #2d3748;
+  font-weight: 700;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.skills-card .ant-col {
+  padding: 2rem;
+  background: rgba(248, 249, 250, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  margin: 0.5rem;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.skills-card .ant-col::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(0, 0, 0, 0.02), transparent);
+  transform: rotate(45deg);
+  transition: all 0.5s;
+}
+
+.skills-card .ant-col:hover::after {
+  left: 100%;
+}
+
+.skills-card .ant-col:hover {
+  background: rgba(255, 255, 255, 0.95);
+  transform: translateY(-8px) scale(1.05);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.12);
+  border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+/* Timeline styling */
+.ant-timeline {
+  margin-top: 2rem;
+}
+
+.ant-timeline-item-label {
+  font-weight: 600;
+  color: #4a5568 !important;
+  font-size: 0.95rem;
+  text-align: left !important;
+}
+
+.ant-timeline-item-content {
+  color: #4a5568;
+  line-height: 1.8;
+  font-size: 1rem;
+  text-align: left !important;
+}
+
+.ant-timeline-item-head {
+  background-color: #4a5568 !important;
+  border-color: #4a5568 !important;
+}
+
+.ant-timeline-item-tail {
+  border-left: 2px solid rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Divider styling */
+.about-divider {
+  margin: 1rem 0 1.5rem 0;
+  border-top: 2px solid rgba(0, 0, 0, 0.08);
 }
 
 @media (max-width: 768px) {
+  .cover-section {
+    height: 400px;
+    clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+  }
+
   .cover-text {
-    animation: fadeSlideIn 1.5s ease-out forwards;
+    animation: fadeSlideIn 1.5s ease-out forwards, float 3s ease-in-out infinite 1.5s;
     opacity: 0;
-    position: absolute;
-    top: 40%;
-    left: 10%;
-    transform: translate(-50%, -50%);
     color: #fff;
-    text-align: left;
-    font-size: 2rem;
+    text-align: center;
+    font-size: 1.5rem;
     font-weight: bold;
+    z-index: 2;
+    text-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    letter-spacing: 1px;
+    padding: 0 1rem;
+  }
+
+  .cover-text h1 {
+    font-size: 3rem !important;
+  }
+
+  .cover-text h5 {
+    font-size: 1.2rem !important;
+    letter-spacing: 2px;
+  }
+
+  .about-card {
+    padding: 1.5rem;
+    margin: 1rem 1rem;
+    border-radius: 20px;
+  }
+
+  .about-title {
+    font-size: 2rem;
+  }
+
+  .about-subtitle {
+    font-size: 1.5rem;
+  }
+
+  .about-paragraph {
+    text-align: center;
+  }
+
+  .education-card,
+  .experience-card {
+    border-radius: 20px !important;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+  }
+
+  .ant-col {
+    padding: 0.5rem;
+  }
+
+  .skills-card .ant-col {
+    padding: 1.5rem;
+    margin: 0.3rem;
+  }
+
+  .introduction-card,
+  .background-card,
+  .skills-card {
+    margin: 1rem 1rem;
+  }
+
+  .edu-exp-row {
+    margin: 1rem 1rem !important;
   }
 }

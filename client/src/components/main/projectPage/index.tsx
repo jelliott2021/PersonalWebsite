@@ -16,6 +16,21 @@ const PROJECTS = [
     tags: ['Typescript', 'React', 'Node.js', 'HTML',  'CSS', 'MongoDB', 'Azure'],
   },
   {
+    title: 'Multiplayer Party Game Website',
+    description: 'Lobby based multiplayer party game website where users can create or join game rooms to play various mini-games with friends in real-time. Built with React, TypeScript, Node.js, Express, and Socket.io for seamless real-time communication. Features include user authentication, dynamic game room management, and interactive gameplay mechanics.',
+    videoUrl: '/videos/BoozeBrawlDemo.mp4',
+    liveUrl: 'https://boozebrawl.com',
+    tags: ['Typescript', 'React', 'Node.js', 'HTML',  'CSS', 'Azure'],
+    extra: `Code can be shown upon request`
+  },
+  {
+    title: 'Docker Wake Up',
+    description: 'Open-source reverse proxy that automatically starts Docker containers on-demand when they receive HTTP requests. Provides seamless, zero-downtime proxying with startup loading pages while services boot, intelligent idle management to stop unused containers after a configurable timeout to save CPU and memory, and automatic generation of SSL-enabled NGINX reverse proxy configurations. Services are defined in a single JSON file and the project includes a one-command installer for automated setup.',
+    videoUrl: '',
+    githubUrl: 'https://github.com/jelliott2021/DockerWakeUp',
+    tags: ['Open Source', 'Typescript', 'Node.js', 'Docker', 'NGINX', 'HTML',  'CSS'],
+  },
+  {
     title: 'Husky Connection',
     description: 'Husky Connection is a web platform built to connect Northeastern students by enabling personalized profiles, real-time chat, and notification services for questions, comments, and updates. Developed using React, TypeScript, Node.js, Express, and MongoDB, the project employs a modular, service-oriented design to ensure scalability and maintainability, with features like customizable user accounts, group chats, and email/on-site notifications implemented as independent modules.',
     videoUrl: '/videos/HuskyConnect.mp4',

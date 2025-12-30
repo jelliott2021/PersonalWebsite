@@ -33,12 +33,22 @@ const AboutPage: React.FC = () => {
   // EXPERIENCE TIMELINE
   const experienceTimeline: TimelineItemProps[] = [
     {
+      label: 'May. 2025 – Current',
+      children: (
+        <>
+          <strong>MEDITECH, Canton, MA</strong>
+          <br />
+          Software Developer
+        </>
+      ),
+    },
+    {
       label: 'Jul. 2023 – Dec. 2023',
       children: (
         <>
           <strong>MFS Investments, Boston, MA</strong>
           <br />
-          QA Automation Co-op
+          Software Engineer Co-op
         </>
       ),
     },
@@ -76,12 +86,12 @@ const AboutPage: React.FC = () => {
       </div>
 
       {/* About */}
-      <Card className='about-card introduction-card'>
+      <Card className='about-card introduction-card' id='about-me'>
         <Title level={1} className='about-title'>
           About Me
         </Title>
         <Paragraph className='about-paragraph'>
-          I’m a passionate software developer with a strong background in QA Automation, web
+          I’m a passionate software developer with a strong background in Full-Stack, QA Automation, web
           development, and object-oriented design. I enjoy working on innovative projects, exploring
           new technologies, and collaborating with cross-functional teams.
         </Paragraph>
@@ -98,7 +108,7 @@ const AboutPage: React.FC = () => {
         <Paragraph className='about-paragraph'>
           After three and a half years, I have recently graduated with a B.Sc. in Computer Science at Northeastern University. During my
           studies, I have gained experience in software development through my 6-month co-op at MFS Investments, where I worked
-          as a QA Automation Engineer. I have also worked as a Teaching Assistant for the CS3200 Database Design course at Northeastern.
+          as a QA Automation Software Engineer. I have also worked as a Teaching Assistant for the CS3200 Database Design course at Northeastern.
         </Paragraph>
         <Paragraph className='about-paragraph'>
           In my free time, I enjoy playing golf, spikeball, tennis, and pickleball, and have worked as a Tennis/Pickleball Director 
@@ -107,7 +117,7 @@ const AboutPage: React.FC = () => {
       </Card>
 
       {/* Education & Experience */}
-      <Row gutter={0} className='edu-exp-row' style={{ margin: 0, padding: 0, width: '100%' }}>
+      <Row gutter={0} className='edu-exp-row' id='education-experience' style={{ margin: 0, padding: 0, width: '100%' }}>
         <Col xs={24} lg={12} style={{ padding: 0, margin: 0 }}>
           <Card
             className='about-card education-card'
@@ -131,7 +141,7 @@ const AboutPage: React.FC = () => {
       </Row>
 
       {/* Skills */}
-      <Card className='about-card skills-card' hoverable>
+      <Card className='about-card skills-card' hoverable id='skills'>
         <Title level={3} className='about-subtitle'>
           Technical Knowledge
         </Title>
@@ -142,9 +152,9 @@ const AboutPage: React.FC = () => {
               Languages & Frameworks
             </Title>
             <Paragraph className='about-paragraph'>
-              Java, C/C++, TypeScript, JavaScript, Python
+              TypeScript, Java, C/C++, JavaScript
               <br />
-              React, Node.js, Flask
+              React, Angular, Node.js, Flask
               <br />
               HTML, CSS
             </Paragraph>
@@ -170,7 +180,7 @@ const AboutPage: React.FC = () => {
               <br />
               Git, Jira, Jenkins, Confluence
               <br />
-              IntelliJ IDEA, VS Code, DataGrip, PostMan
+              IntelliJ IDEA, VS Code, DataGrip, Postman, WireShark
             </Paragraph>
           </Col>
         </Row>

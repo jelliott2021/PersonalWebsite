@@ -1,111 +1,101 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Dropdown, MenuProps, Typography, Modal, Menu, Drawer, Button } from 'antd';
+import { MenuProps, Typography, Menu, Drawer, Button } from 'antd';
 import { FaConnectdevelop } from 'react-icons/fa';
-import { IoLogOutOutline } from 'react-icons/io5';
-import { FaCircleUser } from 'react-icons/fa6';
-import { PiCaretRight } from 'react-icons/pi';
 import { MenuOutlined } from '@ant-design/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './index.css';
-import useUserContext from '../../hooks/useUserContext';
-import useHeader from '../../hooks/useHeader';
 
 const { Title } = Typography;
-const { confirm } = Modal;
 
 const Header = () => {
-  const { handleLogout } = useHeader();
-  const UserContext = useUserContext();
-  const user = UserContext ? UserContext.user : null;
   // eslint-disable-next-line no-console
-  console.log('user:', user);
   const navigate = useNavigate();
   const location = useLocation();
 
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
-  const [selectedKey, setSelectedKey] = useState('/');
+  const [selectedKey, setSelectedKey] = useState('#about-me');
 
   useEffect(() => {
-    setSelectedKey(location.pathname);
+    if (location.pathname === '/') {
+      setSelectedKey('#about-me');
+    } else if (location.pathname === '/projects') {
+      setSelectedKey('/projects');
+    }
   }, [location.pathname]);
 
-  const showLogoutConfirm = () => {
-    confirm({
-      title: 'Are you sure you want to logout?',
-      okText: 'Yes',
-      okType: 'danger',
-      cancelText: 'No',
-      onOk() {
-        handleLogout();
-      },
-    });
-  };
+  useEffect(() => {
+    const scrollContainer = document.getElementById('right_main');
+    if (!scrollContainer) return undefined;
+
+    const handleScroll = () => {
+      // Only track scroll on home page
+      if (location.pathname !== '/') return;
+
+      const sections = ['about-me', 'education-experience', 'skills'];
+      const scrollPosition = scrollContainer.scrollTop + 150; // Offset for header
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sections[i]);
+        if (section && section.offsetTop <= scrollPosition) {
+          setSelectedKey(`#${sections[i]}`);
+          break;
+        }
+      }
+    };
+
+    scrollContainer.addEventListener('scroll', handleScroll);
+    handleScroll();
+
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+    };
+  }, [location.pathname]);
 
   type MenuItem = Required<MenuProps>['items'][number];
 
   const menuItems = (): MenuItem[] => [
-    { key: '/', label: 'About Me' },
-    { key: '/experience', label: 'Education & Experience' },
-    { key: '/skills', label: 'Skills' },
+    { key: '#about-me', label: 'About Me' },
+    { key: '#education-experience', label: 'Education & Experience' },
+    { key: '#skills', label: 'Skills' },
     { key: '/projects', label: 'Projects' },
   ];
 
-  const handleMenuClick: MenuProps['onClick'] = e => {
-    setSelectedKey(e.key);
-    navigate(e.key);
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    const scrollContainer = document.getElementById('right_main');
+    
+    if (element && scrollContainer) {
+      const headerOffset = 100;
+      const elementPosition = element.offsetTop;
+      const offsetPosition = elementPosition - headerOffset;
+
+      scrollContainer.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
   };
 
-  const profileItems: MenuProps['items'] = user
-    ? [
-        {
-          key: 'title',
-          label: 'My Account',
-          disabled: true,
-          className: 'dropdown-item-disabled',
-        },
-        {
-          type: 'divider',
-        },
-        {
-          key: 'profile',
-          label: (
-            <div onClick={() => navigate(`/profile/${user._id}`)} className="dropdown-item">
-              <span className="dropdown-align">
-                <FaCircleUser className="dropdown-icon" />
-                <span>Profile</span>
-              </span>
-              <PiCaretRight className="dropdown-arrow" />
-            </div>
-          ),
-        },
-        {
-          key: 'logout',
-          label: (
-            <div onClick={showLogoutConfirm} className="dropdown-item">
-              <span className="dropdown-align">
-                <IoLogOutOutline className="dropdown-icon" />
-                <span>Logout</span>
-              </span>
-              <PiCaretRight className="dropdown-arrow" />
-            </div>
-          ),
-        },
-      ]
-    : [
-        {
-          key: 'signin',
-          label: (
-            <div onClick={() => navigate('/login')} className="dropdown-item">
-              <span className="dropdown-align">
-                <FaCircleUser className="dropdown-icon" />
-                <span>Sign In</span>
-              </span>
-              <PiCaretRight className="dropdown-arrow" />
-            </div>
-          ),
-        },
-      ];
+  const handleMenuClick: MenuProps['onClick'] = e => {
+    setSelectedKey(e.key);
+    setIsDrawerOpen(false);
+    
+    if (e.key.startsWith('#')) {
+      const sectionId = e.key.substring(1);
+      
+      // If not on home page, navigate there first, then scroll
+      if (location.pathname !== '/') {
+        navigate('/');
+        setTimeout(() => scrollToSection(sectionId), 100);
+      } else {
+        scrollToSection(sectionId);
+      }
+    } else {
+      // Regular navigation
+      navigate(e.key);
+    }
+  };
 
   useEffect(() => {
     const handleResize = () => {
@@ -164,23 +154,6 @@ const Header = () => {
           className="desktop-menu"
         />
       )}
-
-      <div className="header-actions">
-        <Dropdown
-          menu={{ items: profileItems }}
-          trigger={['click']}
-          placement="bottomRight"
-          arrow={{ pointAtCenter: true }}>
-          <Avatar
-            size={36}
-            shape="circle"
-            src={user?.picture}
-            icon={!user?.picture && <FaCircleUser size={'10x'} color="#1e1e2f" />}
-            alt={user ? `${user.username} profile` : 'Guest'}
-            className="profile-avatar"
-          />
-        </Dropdown>
-      </div>
     </div>
   );
 };

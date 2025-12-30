@@ -16,7 +16,7 @@ const SideBarBio = () => {
       {!collapsed && (
         <div className='profileSection'>
           <img
-            src='https://media.licdn.com/dms/image/v2/D4E03AQHyTh2KXvNwSg/profile-displayphoto-shrink_200_200/profile-displayphoto-shrink_200_200/0/1706148227186?e=2147483647&v=beta&t=s7i-Kibr3t0PNb3Bx3sB09nboUwJE4vr1GOqz-yGNqA'
+            src='https://media.licdn.com/dms/image/v2/D4E03AQHFR5MMCr6hhA/profile-displayphoto-scale_200_200/B4EZsgFm6BIoAY-/0/1765769900494?e=1768435200&v=beta&t=XPIAQhX-ZvV1NU5Fix22mcN1WwtHM0T-SbfyW7LSy1c'
             alt='Profile'
             className='profilePicture'
           />

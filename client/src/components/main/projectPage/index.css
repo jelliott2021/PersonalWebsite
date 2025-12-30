@@ -28,6 +28,15 @@
   padding: 75px;
 }
 
+.project-card video {
+  max-height: 400px;
+  width: 100%;
+  object-fit: contain;
+  background-color: #000;
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+}
+
 .project-card iframe {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
