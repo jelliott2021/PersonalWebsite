@@ -1,11 +1,14 @@
 import React from 'react';
-import { Card, Typography, Divider, Row, Col, Timeline } from 'antd';
+import { Card, Typography, Divider, Row, Col, Timeline, Button } from 'antd';
 import type { TimelineItemProps } from 'antd/es/timeline/TimelineItem';
+import { useNavigate } from 'react-router-dom';
+import { ArrowRightOutlined } from '@ant-design/icons';
 import './index.css';
 
 const { Title, Paragraph } = Typography;
 
 const AboutPage: React.FC = () => {
+  const navigate = useNavigate();
   // EDUCATION TIMELINE
   const educationTimeline: TimelineItemProps[] = [
     {
@@ -185,6 +188,23 @@ const AboutPage: React.FC = () => {
           </Col>
         </Row>
       </Card>
+
+      {/* View Projects Section */}
+      <div className='projects-nav-section'>
+        <div className='projects-nav-title'>Ready to See My Work?</div>
+        <div className='projects-nav-description'>
+          Check out my portfolio of projects showcasing full-stack development, automation, and innovative solutions
+        </div>
+        <Button
+          type='primary'
+          size='large'
+          onClick={() => navigate('/projects')}
+          icon={<ArrowRightOutlined />}
+          className='projects-nav-button'
+        >
+          View My Projects
+        </Button>
+      </div>
     </div>
   );
 };
