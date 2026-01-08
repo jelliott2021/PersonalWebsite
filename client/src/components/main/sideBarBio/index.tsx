@@ -47,8 +47,8 @@ const SideBarBio = () => {
             </a>
           </div>
 
-          <a href='/John-Elliott-CV.pdf' download className='downloadCV'>
-            Download CV
+          <a href='/John-Elliott-Resume.pdf' download className='downloadCV'>
+            Download Resume
           </a>
         </div>
       )}
