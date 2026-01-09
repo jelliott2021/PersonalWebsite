@@ -116,7 +116,7 @@ const Header = () => {
 
   return (
     <div className="custom-header">
-      <div onClick={() => navigate('/home')} className="logo-container">
+      <div onClick={() => navigate('/')} className="logo-container">
         <Title level={2} className="logo-text">
           <FaConnectdevelop /> John Edward Elliott
         </Title>
