@@ -98,9 +98,6 @@ const AboutPage: React.FC = () => {
           development, and object-oriented design. I enjoy working on innovative projects, exploring
           new technologies, and collaborating with cross-functional teams.
         </Paragraph>
-        <Paragraph className='about-paragraph'>
-          <strong>Available:</strong> January 2025
-        </Paragraph>
       </Card>
 
       {/* Background */}
