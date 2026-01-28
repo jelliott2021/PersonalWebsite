@@ -16,7 +16,7 @@ const SideBarBio = () => {
       {!collapsed && (
         <div className='profileSection'>
           <img
-            src='https://media.licdn.com/dms/image/v2/D4E03AQHFR5MMCr6hhA/profile-displayphoto-scale_200_200/B4EZsgFm6BIoAY-/0/1765769900494?e=1768435200&v=beta&t=XPIAQhX-ZvV1NU5Fix22mcN1WwtHM0T-SbfyW7LSy1c'
+            src='/linkedin.jpg'
             alt='Profile'
             className='profilePicture'
           />
