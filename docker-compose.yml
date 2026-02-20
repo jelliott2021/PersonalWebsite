@@ -1,18 +1,18 @@
 services:
-  backend:
-    container_name: personalwebsite-backend
-    build:
-      context: .
-      dockerfile: Dockerfile.backend
-    env_file: ../.env
-    ports:
-      - "8001:8001"
-    environment:
-      - NODE_ENV=production
-    networks:
-      - app-network
+  # personalwebsite-backend:
+  #   container_name: personalwebsite-backend
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile.backend
+  #   env_file: ../.env
+  #   ports:
+  #     - "8001:8001"
+  #   environment:
+  #     - NODE_ENV=production
+  #   networks:
+  #     - app-network
 
-  frontend:
+  personalwebsite-frontend:
     container_name: personalwebsite-frontend
     build:
       context: .
