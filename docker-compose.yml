@@ -19,8 +19,6 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "3001:3001"
-    depends_on:
-      - backend
     networks:
       - app-network
 networks:
