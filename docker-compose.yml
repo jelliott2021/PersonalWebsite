@@ -1,5 +1,6 @@
 services:
   # personalwebsite-backend:
+  #   restart: unless-stopped
   #   container_name: personalwebsite-backend
   #   build:
   #     context: .
@@ -13,6 +14,7 @@ services:
   #     - app-network
 
   personalwebsite-frontend:
+    restart: unless-stopped
     container_name: personalwebsite-frontend
     build:
       context: .
