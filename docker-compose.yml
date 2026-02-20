@@ -10,8 +10,6 @@ services:
   #     - "8001:8001"
   #   environment:
   #     - NODE_ENV=production
-  #   networks:
-  #     - app-network
 
   personalwebsite-frontend:
     restart: unless-stopped
@@ -21,7 +19,3 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "3001:3001"
-    networks:
-      - app-network
-networks:
-  app-network:
