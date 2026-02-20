@@ -1,0 +1,15 @@
+# Dockerfile.frontend
+FROM node:18
+
+WORKDIR /app
+
+COPY client/package*.json ./
+RUN npm install
+
+COPY client/ .
+
+RUN npm run build
+
+# Serve with a simple static server
+RUN npm install -g serve
+CMD ["serve", "-s", "build", "-l", "3001"]

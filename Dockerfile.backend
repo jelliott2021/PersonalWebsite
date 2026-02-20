@@ -1,0 +1,15 @@
+# Dockerfile.backend
+FROM node:18
+
+WORKDIR /app
+
+COPY server/package*.json ./
+RUN npm install
+
+COPY server/ .
+
+RUN npm run build
+COPY server/data ./dist/data
+
+EXPOSE 8001
+CMD ["node", "dist/server.js"]
