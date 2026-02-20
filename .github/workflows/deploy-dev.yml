@@ -1,0 +1,37 @@
+name: Deploy Main Branch Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Deploy to Server
+      run: |
+        set -e
+
+        # Variables
+        WORKDIR=/home/deploy/personalwebsite/dev
+        ENV_FILE=/home/deploy/personalwebsite/.env
+
+        # Prepare folder
+        rm -rf $WORKDIR
+        mkdir -p $WORKDIR
+
+        # Copy checked out code to working directory
+        cp -r $GITHUB_WORKSPACE/* $WORKDIR/
+        cp $ENV_FILE $WORKDIR/server/.env
+        cp $ENV_FILE $WORKDIR/client/.env
+
+        # Rebuild and restart containers
+        cd $WORKDIR
+        docker compose down || true
+        docker compose up -d --build
