@@ -33,5 +33,6 @@ jobs:
 
         # Rebuild and restart containers
         cd $WORKDIR
-        docker compose down || true
-        docker compose up -d --build
+        docker compose down --remove-orphans || true
+        docker container prune -f
+        docker compose up -d --build --remove-orphans
