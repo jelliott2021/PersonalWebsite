@@ -8,13 +8,20 @@
 }
 
 html {
-  height: 99%;
+  height: 100%;
   scroll-behavior: smooth;
 }
 
-body,
-#root {
+body {
   margin: 0;
   padding: 0;
   height: 100%;
+}
+
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }

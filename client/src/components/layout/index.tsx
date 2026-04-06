@@ -5,7 +5,7 @@ import SideBarBio from '../main/sideBarBio';
 import Header from '../header';
 
 const Layout: React.FC = () => (
-  <>
+  <div style={{ display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
     <Header />
     <div id="main" className="main">
       <SideBarBio />
@@ -13,7 +13,7 @@ const Layout: React.FC = () => (
         <Outlet />
       </div>
     </div>
-  </>
+  </div>
 );
 
 export default Layout;
