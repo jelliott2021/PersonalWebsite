@@ -9,9 +9,9 @@ interface ProjectMediaProps {
 }
 
 /**
- * Media tile for a project. Demo videos are large, so nothing is downloaded
- * until the visitor presses play; until then a tinted tile with the project
- * icon stands in.
+ * Media tile for a project. Animated GIFs are small and show immediately.
+ * Demo videos are large, so nothing is downloaded until the visitor presses
+ * play; until then a tinted tile with the project icon stands in.
  */
 const ProjectMedia = ({ project, compact = false }: ProjectMediaProps) => {
   const [playing, setPlaying] = useState(false);
@@ -26,6 +26,14 @@ const ProjectMedia = ({ project, compact = false }: ProjectMediaProps) => {
           Your browser does not support embedded video.{' '}
           <a href={project.video}>Download the demo instead.</a>
         </video>
+      </div>
+    );
+  }
+
+  if (project.gif) {
+    return (
+      <div className={`media media--gif ${sizeClass}`} style={style}>
+        <img src={project.gif} alt={`Animated demo of ${project.title}`} />
       </div>
     );
   }

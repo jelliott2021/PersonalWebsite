@@ -71,7 +71,9 @@ Everything visitors see comes from `client/src/data/`:
 - **New job or promotion**: add an entry to `experience.ts`, then update `role`, `company`, and the
   `about` paragraphs in `profile.ts`.
 - **New project**: add an entry to `projects.ts`. Set `featured: true` for the large showcase cards.
-  Drop a demo video in `client/public/videos/` and reference it with `video` and `videoSize`.
+  Drop a demo video in `client/public/videos/` and reference it with `video` and `videoSize`, or use
+  `gif` for a small animated GIF that shows immediately. Set `repo` (`owner/name`) and `stars` to
+  show a GitHub star badge; the count is fetched live and falls back to the static `stars` value.
 - **New skill**: add it to the right group in `skills.ts` (an icon is optional).
 - **New resume**: replace `client/public/John-Elliott-Resume.pdf`.
 - **Show the phone number on the page**: set `showPhone: true` in `profile.ts`.

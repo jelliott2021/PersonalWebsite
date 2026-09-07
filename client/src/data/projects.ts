@@ -1,8 +1,8 @@
 import type { IconType } from 'react-icons';
 import { SiDocker } from 'react-icons/si';
-import { FiCode, FiImage, FiLayers, FiMessageSquare, FiUsers } from 'react-icons/fi';
+import { FiCode, FiImage, FiLayers, FiMessageSquare, FiServer, FiUsers } from 'react-icons/fi';
 
-export type ProjectStatus = 'live' | 'open-source' | 'private' | 'archived';
+export type ProjectStatus = 'live' | 'open-source' | 'self-hosted' | 'private' | 'archived';
 
 export interface ProjectCredentials {
   user: string;
@@ -19,14 +19,21 @@ export interface Project {
   period?: string;
   status: ProjectStatus;
   featured: boolean;
-  /** Icon used for the media tile when there is no demo video. */
+  /** Icon used for the media tile when there is no demo video or GIF. */
   icon: IconType;
   /** Hue (0-360) that tints the media tile so each project reads distinctly. */
   hue: number;
   github?: string;
+  /** GitHub "owner/name" slug. When set, the star count is fetched live. */
+  repo?: string;
+  /** Star count shown if the live fetch fails (or before it completes). */
+  stars?: number;
   live?: string;
+  /** MP4 demo; downloaded only when the visitor presses play. */
   video?: string;
   videoSize?: string;
+  /** Animated GIF demo; small enough to show immediately. */
+  gif?: string;
   note?: string;
   credentials?: ProjectCredentials;
 }
@@ -35,12 +42,12 @@ export const PROJECTS: Project[] = [
   {
     id: 'boozebrawl',
     title: 'BoozeBrawl',
-    tagline: 'Lobby-based multiplayer party game website.',
+    tagline: 'A browser-based party game you play with friends in real time.',
     description:
-      'Players create or join game rooms and play a rotation of mini-games with friends in real time. The React frontend and Node.js backend coordinate game state, player actions, and session lifecycles over Socket.io.',
+      'Players create or join a room, then play a rotation of mini-games together. The React frontend and Node.js backend keep game state, player actions, and sessions in sync over Socket.io.',
     highlights: [
-      'Architected and deployed the full stack: real-time lobby creation, session management, and gameplay.',
-      'Backend manages authoritative game state and player actions so every client stays in sync.',
+      'Designed and deployed the full stack: real-time lobbies, session management, and gameplay.',
+      'The backend owns the game state, so every player sees the same thing at the same moment.',
       'Runs in Docker on its own isolated network alongside this site.',
     ],
     tech: ['TypeScript', 'React', 'Node.js', 'Express', 'Socket.io', 'Docker', 'Azure'],
@@ -59,30 +66,55 @@ export const PROJECTS: Project[] = [
     title: 'Docker Wake Up',
     tagline: 'A reverse proxy that starts Docker containers on demand.',
     description:
-      'Open-source wake-on-request proxy: when a request arrives for a stopped service, it starts the container, shows a loading page while it boots, then proxies traffic through. Idle services are stopped after a configurable timeout to free CPU and memory.',
+      'An open-source wake-on-request proxy. When a request arrives for a stopped service, it starts the container, shows a loading page while it boots, then proxies the traffic through. Services that sit idle are stopped after a configurable timeout, so containers only run when someone is actually using them.',
     highlights: [
-      'Zero-downtime proxying with a startup page while services come online.',
-      'Health checks and idle shutdown policies keep the host lean.',
-      'Generates SSL-enabled NGINX reverse-proxy configs from a single JSON service definition, with a one-command installer.',
+      'Live startup page with streaming docker compose logs and a progress estimate that auto-reloads when the service is ready, or bring your own HTML.',
+      'Wake-on-connect for TCP services too, so Minecraft and other game servers start on the first connection.',
+      'Generates the reverse-proxy config for you: NGINX site configs, or a Caddyfile and caddy-docker-proxy labels.',
+      'Start and stop hooks run your own commands around each service, which also lets it manage non-Docker services.',
+      'Every service lives in one JSON file, and a setup script installs the whole thing with a single command.',
     ],
-    tech: ['TypeScript', 'Node.js', 'Docker', 'NGINX', 'Linux'],
+    tech: ['TypeScript', 'Node.js', 'Docker', 'NGINX', 'Caddy', 'Linux'],
     period: 'Jan 2024 – Mar 2024',
     status: 'open-source',
     featured: true,
     icon: SiDocker,
     hue: 200,
     github: 'https://github.com/jelliott2021/DockerWakeUp',
+    repo: 'jelliott2021/DockerWakeUp',
+    stars: 243,
+    gif: '/videos/dockerwakeup.gif',
+  },
+  {
+    id: 'home-server',
+    title: 'Ubuntu Home Server',
+    tagline: 'The self-managed Ubuntu Server that hosts this site, BoozeBrawl, and my other projects.',
+    description:
+      'A production-style server I administer entirely from the command line. Every service runs in Docker Compose on its own isolated network, sits behind a reverse proxy with automatic TLS, and redeploys on its own when I push to GitHub. I treat it the way I would treat production: locked-down access, only the ports that need to be open, and logs and metrics I actually look at.',
+    highlights: [
+      'Each project gets its own Compose file and bridge network, so BoozeBrawl and this site cannot see each other’s containers.',
+      'A self-hosted GitHub Actions runner rebuilds and restarts the affected containers on every push to main, with no manual steps.',
+      'Docker Wake Up fronts the services: reverse proxy with TLS, containers started on demand and stopped when idle.',
+      'Hardened like production: SSH keys only, a non-root deploy user, a firewall that exposes only what is needed, and unattended security updates.',
+      'Day-to-day work over SSH: systemd services, Docker networking, DNS, logs, and disk and network troubleshooting.',
+    ],
+    tech: ['Ubuntu Server', 'Docker Compose', 'NGINX', 'Linux', 'GitHub Actions', 'Networking', 'SSH'],
+    period: '2021 – Present',
+    status: 'self-hosted',
+    featured: true,
+    icon: FiServer,
+    hue: 160,
   },
   {
     id: 'husky-connection',
     title: 'Husky Connection',
     tagline: 'A Q&A community platform for Northeastern students.',
     description:
-      'Connects students through personalized profiles, real-time chat, and notifications for questions, comments, and updates. Built with a modular, service-oriented design so accounts, group chats, and email/on-site notifications each ship as independent modules.',
+      'A question-and-answer community with personalized profiles, real-time chat, and notifications for questions, comments, and updates. Accounts, group chats, and email and on-site notifications are built as independent modules so each can evolve on its own.',
     highlights: [
       'Real-time messaging and follow updates over Socket.io.',
-      'Email and on-site notification services built as independent modules.',
-      'Backed by a Jest test suite with mutation testing via Stryker.',
+      'Email and on-site notifications built as independent services.',
+      'Jest test suite with mutation testing through Stryker.',
     ],
     tech: ['TypeScript', 'React', 'Node.js', 'Express', 'MongoDB', 'Socket.io', 'Jest'],
     period: 'Fall 2024',
@@ -100,9 +132,9 @@ export const PROJECTS: Project[] = [
   {
     id: 'canvas-quiz',
     title: 'Canvas Quiz',
-    tagline: 'A Canvas-style LMS with role-based quizzes.',
+    tagline: 'A Canvas-style learning platform with role-based quizzes.',
     description:
-      'Replicates the core of Canvas with role-based access for students, faculty, and administrators. Admins manage courses, modules, and assignments; faculty build quizzes with configurable settings; students take them. I owned the quiz functionality end to end.',
+      'A Canvas-style learning platform with separate roles for students, faculty, and administrators. Admins manage courses, modules, and assignments; faculty build quizzes with configurable settings; students take them. I built the quiz feature end to end.',
     tech: ['TypeScript', 'React', 'Node.js', 'MongoDB'],
     status: 'live',
     featured: false,
@@ -120,7 +152,7 @@ export const PROJECTS: Project[] = [
     title: 'Photo Editor',
     tagline: 'A Java Swing image editor built on the MVC pattern.',
     description:
-      'Open, edit, and save PNG, JPG, BMP, and PPM images. Supports brightness adjustment, greyscale filters (red, green, blue, luma, intensity, value), blur, sharpen, sepia, flips, and a configurable mosaic effect.',
+      'Opens, edits, and saves PNG, JPG, BMP, and PPM images. Includes brightness adjustment, greyscale and sepia filters, blur, sharpen, horizontal and vertical flips, and a configurable mosaic effect.',
     tech: ['Java', 'Swing', 'JUnit', 'MVC'],
     status: 'open-source',
     featured: false,
@@ -135,7 +167,7 @@ export const PROJECTS: Project[] = [
     title: 'This website',
     tagline: 'The portfolio you are reading right now.',
     description:
-      'A data-driven React + TypeScript single-page site with light and dark themes, scroll-aware navigation, and lazy-loaded demo videos. Built with Docker and deployed automatically from GitHub Actions.',
+      'A data-driven React and TypeScript single page with light and dark themes, scroll-aware navigation, and demo videos that load only on request. Built with Docker and deployed automatically from GitHub Actions.',
     tech: ['TypeScript', 'React', 'CSS', 'Docker', 'GitHub Actions'],
     period: 'Nov 2024 – Present',
     status: 'open-source',
@@ -150,6 +182,7 @@ export const PROJECTS: Project[] = [
 export const statusLabels: Record<ProjectStatus, string> = {
   'live': 'Live',
   'open-source': 'Open source',
+  'self-hosted': 'Self-hosted',
   'private': 'Private',
   'archived': 'Archived',
 };

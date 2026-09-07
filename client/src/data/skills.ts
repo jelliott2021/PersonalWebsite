@@ -4,6 +4,7 @@ import { VscAzure, VscVscode } from 'react-icons/vsc';
 import {
   SiAngular,
   SiAppsmith,
+  SiCaddy,
   SiConfluence,
   SiCplusplus,
   SiCss,
@@ -35,6 +36,7 @@ import {
   SiSelenium,
   SiSocketdotio,
   SiSqlite,
+  SiSwift,
   SiTypescript,
   SiUbuntu,
 } from 'react-icons/si';
@@ -61,6 +63,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { name: 'JavaScript', icon: SiJavascript },
       { name: 'Java', icon: FaJava },
       { name: 'Python', icon: SiPython },
+      { name: 'Swift', icon: SiSwift },
       { name: 'C / C++', icon: SiCplusplus },
       { name: 'SQL', icon: SiMysql },
       { name: 'HTML', icon: SiHtml5 },
@@ -71,7 +74,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
   {
     id: 'frameworks',
     title: 'Frameworks & libraries',
-    blurb: 'Full-stack web, from component trees to REST and real-time APIs.',
+    blurb: 'Frontend frameworks plus the Node and Python backends behind them.',
     skills: [
       { name: 'React', icon: SiReact },
       { name: 'Angular', icon: SiAngular },
@@ -80,6 +83,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { name: 'Flask', icon: SiFlask },
       { name: 'Socket.io', icon: SiSocketdotio },
       { name: 'RESTful APIs' },
+      { name: 'FHIR APIs' },
     ],
   },
   {
@@ -97,10 +101,12 @@ export const SKILL_GROUPS: SkillGroup[] = [
   {
     id: 'cloud',
     title: 'Cloud, DevOps & infrastructure',
-    blurb: 'Comfortable owning the deploy: containers, proxies, pipelines, and Linux servers.',
+    blurb: 'Comfortable owning the deploy: containers, proxies, pipelines, and a Linux server I run like production.',
     skills: [
       { name: 'Docker', icon: SiDocker },
+      { name: 'Docker Compose' },
       { name: 'NGINX', icon: SiNginx },
+      { name: 'Caddy', icon: SiCaddy },
       { name: 'Azure', icon: VscAzure },
       { name: 'Google Cloud', icon: SiGooglecloud },
       { name: 'Jenkins', icon: SiJenkins },
@@ -108,12 +114,14 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { name: 'Linux', icon: SiLinux },
       { name: 'Ubuntu Server', icon: SiUbuntu },
       { name: 'Ngrok', icon: SiNgrok },
+      { name: 'SSH & server hardening' },
+      { name: 'Networking & DNS' },
     ],
   },
   {
     id: 'data',
     title: 'Databases',
-    blurb: 'Document and relational, including teaching the fundamentals.',
+    blurb: 'Document and relational stores. I also taught the fundamentals as a TA.',
     skills: [
       { name: 'MongoDB', icon: SiMongodb },
       { name: 'MySQL', icon: SiMysql },
@@ -133,6 +141,7 @@ export const SKILL_GROUPS: SkillGroup[] = [
       { name: 'VS Code', icon: VscVscode },
       { name: 'DataGrip', icon: SiDatagrip },
       { name: 'AppSmith', icon: SiAppsmith },
+      { name: 'Linux / Ubuntu', icon: SiUbuntu },
       { name: 'Windows / macOS', icon: FaWindows },
     ],
   },

@@ -19,6 +19,22 @@
   background: #000;
 }
 
+/* Animated GIF demos show immediately, letterboxed on a dark tinted tile. */
+.media--gif {
+  background: linear-gradient(
+    150deg,
+    hsl(var(--tile-hue) 45% 20%),
+    hsl(calc(var(--tile-hue) + 25) 55% 11%)
+  );
+}
+
+.media--gif img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
 .media--tile {
   display: flex;
   align-items: center;
@@ -59,8 +75,18 @@
   font-size: clamp(2.4rem, 6vw, 3.5rem);
 }
 
+/* On playable tiles the icon is a faint watermark behind the play button. */
 .media--playable {
   cursor: pointer;
+}
+
+.media--playable .media__icon {
+  font-size: clamp(6rem, 15vw, 10rem);
+  opacity: 0.22;
+}
+
+.media--compact.media--playable .media__icon {
+  font-size: clamp(4rem, 10vw, 6.5rem);
 }
 
 .media--playable:hover .media__icon {
@@ -114,14 +140,4 @@
 
 .media__size {
   opacity: 0.75;
-}
-
-/* On playable tiles the icon is a faint watermark behind the play button. */
-.media--playable .media__icon {
-  font-size: clamp(6rem, 15vw, 10rem);
-  opacity: 0.22;
-}
-
-.media--compact.media--playable .media__icon {
-  font-size: clamp(4rem, 10vw, 6.5rem);
 }

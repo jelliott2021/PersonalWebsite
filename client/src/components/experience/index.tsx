@@ -20,8 +20,12 @@ const Experience = () => (
           <Reveal tag='li' key={item.id} className='timeline__item' delay={index * 60}>
             <div className='timeline__period'>
               <span>{item.start}</span>
-              <span className='timeline__period-sep' aria-hidden='true' />
-              <span>{item.end}</span>
+              {item.end && (
+                <>
+                  <span className='timeline__period-sep' aria-hidden='true' />
+                  <span>{item.end}</span>
+                </>
+              )}
             </div>
 
             <div className='timeline__marker' aria-hidden='true' />

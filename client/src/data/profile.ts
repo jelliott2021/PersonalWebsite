@@ -17,7 +17,7 @@ export const profile = {
   company: 'MEDITECH',
   companyUrl: 'https://ehr.meditech.com/',
   location: 'Boston, MA',
-  email: 'elliott.joh@northeastern.edu',
+  email: 'j.elliott2021@gmail.com',
   phone: '(617) 615-7955',
   /** The phone number is in the résumé PDF; flip this to show it on the page too. */
   showPhone: false,
@@ -32,25 +32,26 @@ export const profile = {
 
   headline: 'I build full-stack software for systems people depend on.',
   intro:
-    'Software developer at MEDITECH, where I design RESTful backend services and the Angular ' +
-    'tooling that configures them for production healthcare software. I work mostly in ' +
-    'TypeScript across Angular, React, and Node.js, and I care about clear APIs, solid tests, ' +
-    'and shipping things that hold up in the real world.',
+    'I’m a software developer at MEDITECH, building REST and FHIR APIs, authentication flows, ' +
+    'and the Angular admin tools behind healthcare software used by more than 1,000 ' +
+    'organizations. I work mostly in TypeScript across Angular, React, and Node.js, and I care ' +
+    'about clear APIs, thorough tests, and code that holds up in production.',
 
   about: [
-    'I’m a software developer at MEDITECH in Canton, MA, where I work across the stack: ' +
-      'designing RESTful backend services and building the Angular-based administrative ' +
-      'application used to create, update, and manage the configuration those services run on. ' +
-      'The software I contribute to is deployed across more than 1,000 healthcare organizations, ' +
-      'so reliability, clean interfaces, and tests that catch problems early matter a lot to me.',
-    'I graduated from Northeastern University’s Khoury College of Computer Sciences in ' +
-      'December 2024 with a B.S. in Computer Science. Along the way I spent a six-month co-op at ' +
-      'MFS Investment Management building Java and Selenium test automation, and I was a ' +
-      'teaching assistant for CS3200 Database Design, supporting 287 students through office ' +
-      'hours and grading.',
+    'At MEDITECH in Canton, MA, I work across the stack on production healthcare software: ' +
+      'designing REST APIs, protocols, and new resources, building the Angular administrative ' +
+      'app that manages their configuration, and working on the MFA sign-in and authentication ' +
+      'flow. I’m also part of a small team on the Cloud Platform building a new API gateway and ' +
+      'the FHIR APIs it serves. Because that software runs in more than 1,000 healthcare ' +
+      'organizations, I put a premium on reliability, clean interfaces, and tests that catch ' +
+      'problems before release.',
+    'I earned my B.S. in Computer Science from Northeastern University’s Khoury College in ' +
+      'December 2024. During my degree I spent a six-month co-op at MFS Investment Management ' +
+      'writing Java and Selenium test automation, and I was a teaching assistant for CS3200 ' +
+      'Database Design, supporting 287 students through office hours and grading.',
     'Away from the keyboard I’m usually on a course or a court: golf, tennis, pickleball, ' +
-      'spikeball, skiing, and soccer. I also tinker with 3D printing and enjoy self-hosting my ' +
-      'side projects with Docker, which is where Docker Wake Up came from.',
+      'spikeball, skiing, and soccer. I also tinker with 3D printing and run my side projects ' +
+      'on a home Ubuntu server I manage myself, which is how Docker Wake Up started.',
   ],
 
   interests: [
@@ -68,7 +69,7 @@ export const profile = {
   stats: [
     { value: '1,000+', label: 'healthcare organizations run software I help build' },
     { value: '287', label: 'students supported as a Database Design TA' },
-    { value: '6', label: 'full-stack projects shipped, from party games to reverse proxies' },
+    { value: '240+', label: 'GitHub stars on Docker Wake Up, my open-source reverse proxy' },
   ] as Stat[],
 };
 
