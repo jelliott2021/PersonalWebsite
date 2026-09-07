@@ -1,0 +1,84 @@
+/* ---------------------------------------------------------------------------
+   Design tokens. Light theme is the default; dark theme overrides the same
+   variables. Components only ever reference these variables.
+   ------------------------------------------------------------------------- */
+
+:root {
+  color-scheme: light;
+
+  --font: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
+    sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --bg: #f7f8fb;
+  --bg-band: #eef1f6;
+  --bg-elev: #ffffff;
+  --bg-subtle: #f1f4f9;
+  --heading: #0f172a;
+  --text: #1e293b;
+  --text-2: #475569;
+  --text-3: #64748b;
+  --border: #e2e8f0;
+  --border-strong: #cbd5e1;
+
+  --accent: #2563eb;
+  --accent-strong: #1d4ed8;
+  --accent-contrast: #ffffff;
+  --accent-soft: rgba(37, 99, 235, 0.1);
+  --accent-glow: rgba(37, 99, 235, 0.22);
+
+  --success: #059669;
+  --success-soft: rgba(5, 150, 105, 0.12);
+  --warning: #b45309;
+  --warning-soft: rgba(180, 83, 9, 0.12);
+  --neutral-soft: rgba(100, 116, 139, 0.14);
+
+  --nav-bg: rgba(247, 248, 251, 0.82);
+  --nav-h: 68px;
+
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 10px 30px -10px rgba(15, 23, 42, 0.18);
+  --shadow-lg: 0 24px 50px -20px rgba(15, 23, 42, 0.28);
+
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 22px;
+
+  --max-w: 1120px;
+  --section-y: clamp(4rem, 9vw, 7rem);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0b1120;
+  --bg-band: #0e1629;
+  --bg-elev: #121b31;
+  --bg-subtle: #172242;
+  --heading: #f1f5f9;
+  --text: #dbe3ef;
+  --text-2: #a9b6cb;
+  --text-3: #7f8ca6;
+  --border: #223052;
+  --border-strong: #33456f;
+
+  --accent: #60a5fa;
+  --accent-strong: #93c5fd;
+  --accent-contrast: #0b1120;
+  --accent-soft: rgba(96, 165, 250, 0.14);
+  --accent-glow: rgba(96, 165, 250, 0.28);
+
+  --success: #34d399;
+  --success-soft: rgba(52, 211, 153, 0.14);
+  --warning: #fbbf24;
+  --warning-soft: rgba(251, 191, 36, 0.14);
+  --neutral-soft: rgba(148, 163, 184, 0.16);
+
+  --nav-bg: rgba(11, 17, 32, 0.78);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.6);
+  --shadow-lg: 0 24px 50px -20px rgba(0, 0, 0, 0.7);
+}

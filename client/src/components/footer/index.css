@@ -1,0 +1,35 @@
+.footer {
+  border-top: 1px solid var(--border);
+  padding: 2rem 0 2.5rem;
+  background: var(--bg);
+}
+
+.footer__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer__built {
+  margin: 0;
+  font-weight: 500;
+  color: var(--heading);
+}
+
+.footer__meta {
+  margin: 0.25rem 0 0;
+  font-size: 0.85rem;
+  color: var(--text-3);
+  font-family: var(--font-mono);
+}
+
+.footer__social {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.footer__top {
+  border: 1px solid var(--border);
+}

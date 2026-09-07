@@ -1,6 +1,7 @@
 {
   "short_name": "John Elliott",
-  "name": "John Edward Elliott",
+  "name": "John Elliott · Software Developer",
+  "description": "Portfolio and résumé of John Elliott, software developer in Boston, MA.",
   "icons": [
     {
       "src": "favicon.ico",
@@ -20,6 +21,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#0b1120",
+  "background_color": "#f7f8fb"
 }

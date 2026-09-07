@@ -2,39 +2,82 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="John Elliott" />
+    <title>John Elliott · Software Developer</title>
+    <meta
+      name="description"
+      content="Portfolio of John Elliott, a Boston-based software developer at MEDITECH building full-stack applications with TypeScript, Angular, React, and Node.js."
+    />
+    <meta name="author" content="John Elliott" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f8fb" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0b1120" />
+    <link rel="canonical" href="https://www.johnedwardelliott.com/" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <!--
-      manifest.json provides metadata used when your web app is installed on a
-      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
-    -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!--
-      Notice the use of %PUBLIC_URL% in the tags above.
-      It will be replaced with the URL of the `public` folder during the build.
-      Only files inside the `public` folder can be referenced from the HTML.
 
-      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
-      work correctly both with client-side routing and a non-root public URL.
-      Learn how to configure a non-root public URL by running `npm run build`.
-    -->
-    <title>John Elliott</title>
+    <!-- Social sharing -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="John Elliott" />
+    <meta property="og:title" content="John Elliott · Software Developer" />
+    <meta
+      property="og:description"
+      content="Boston-based software developer at MEDITECH building full-stack applications with TypeScript, Angular, React, and Node.js."
+    />
+    <meta property="og:url" content="https://www.johnedwardelliott.com/" />
+    <meta property="og:image" content="https://www.johnedwardelliott.com/logo512.png" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="John Elliott · Software Developer" />
+    <meta
+      name="twitter:description"
+      content="Boston-based software developer at MEDITECH building full-stack applications with TypeScript, Angular, React, and Node.js."
+    />
+    <meta name="twitter:image" content="https://www.johnedwardelliott.com/logo512.png" />
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Apply the saved (or system) theme before first paint to avoid a flash. -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var dark = saved
+            ? saved === 'dark'
+            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        } catch (e) {
+          /* ignore */
+        }
+      })();
+    </script>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "John Elliott",
+        "alternateName": "John Edward Elliott",
+        "url": "https://www.johnedwardelliott.com/",
+        "jobTitle": "Software Developer",
+        "worksFor": { "@type": "Organization", "name": "MEDITECH" },
+        "alumniOf": { "@type": "CollegeOrUniversity", "name": "Northeastern University" },
+        "address": { "@type": "PostalAddress", "addressLocality": "Boston", "addressRegion": "MA" },
+        "sameAs": [
+          "https://github.com/jelliott2021",
+          "https://www.linkedin.com/in/jelliott2002"
+        ]
+      }
+    </script>
   </head>
   <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <noscript>You need to enable JavaScript to view this site.</noscript>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
-
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
   </body>
 </html>
