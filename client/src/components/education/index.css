@@ -1,0 +1,106 @@
+.edu-list {
+  display: grid;
+  gap: 1.5rem;
+}
+
+.edu {
+  padding: 1.75rem 1.9rem;
+}
+
+.edu__head {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 1rem 1.1rem;
+  align-items: start;
+  margin-bottom: 1.25rem;
+}
+
+.edu__badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1.5rem;
+}
+
+.edu__school {
+  font-size: 1.3rem;
+}
+
+.edu__school a {
+  color: var(--heading);
+}
+
+.edu__school a:hover {
+  color: var(--accent);
+}
+
+.edu__college {
+  margin: 0.15rem 0 0;
+  color: var(--text-2);
+  font-weight: 500;
+}
+
+.edu__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.25rem 0 0;
+}
+
+.edu__period {
+  display: flex;
+  gap: 0.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-3);
+  white-space: nowrap;
+  padding-top: 0.35rem;
+}
+
+.edu__degree-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.edu__degree {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.edu__gpa {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: var(--success-soft);
+  color: var(--success);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.edu__highlights {
+  margin-bottom: 1.4rem;
+}
+
+@media (max-width: 640px) {
+  .edu {
+    padding: 1.35rem;
+  }
+
+  .edu__head {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .edu__period {
+    grid-column: 2;
+    padding-top: 0;
+  }
+}
