@@ -1,5 +1,5 @@
 import React from 'react';
-import { FiBookOpen, FiBriefcase, FiMail, FiMapPin } from 'react-icons/fi';
+import { FiBookOpen, FiBriefcase, FiHome, FiMail, FiMapPin } from 'react-icons/fi';
 import { profile } from '../../data/profile';
 import { EDUCATION } from '../../data/education';
 import SectionHeader from '../sectionHeader';
@@ -43,6 +43,12 @@ const About = () => {
                     <FiMapPin aria-hidden='true' /> Based in
                   </dt>
                   <dd>{profile.location}</dd>
+                </div>
+                <div className='about__fact'>
+                  <dt>
+                    <FiHome aria-hidden='true' /> From
+                  </dt>
+                  <dd>{profile.hometown}</dd>
                 </div>
                 <div className='about__fact'>
                   <dt>

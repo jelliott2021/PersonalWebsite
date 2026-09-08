@@ -17,6 +17,7 @@ export const profile = {
   company: 'MEDITECH',
   companyUrl: 'https://ehr.meditech.com/',
   location: 'Boston, MA',
+  hometown: 'Milton, MA',
   coordinates: '42.36° N, 71.06° W',
   email: 'j.elliott2021@gmail.com',
   phone: '(617) 615-7955',
@@ -50,6 +51,9 @@ export const profile = {
       'December 2024. During my degree I spent a six-month co-op at MFS Investment Management ' +
       'writing Java and Selenium test automation, and I was a teaching assistant for CS3200 ' +
       'Database Design, supporting 287 students through office hours and grading.',
+    'Massachusetts is home. I grew up in Milton, just south of Boston, and I’ve spent most of ' +
+      'my life around the city and the state, from summers working in Wellfleet on the Cape to ' +
+      'college at Northeastern and now building software in Canton.',
     'Away from the keyboard I’m usually on a course or a court: golf, tennis, pickleball, ' +
       'spikeball, skiing, and soccer. I also tinker with 3D printing and run my side projects ' +
       'on a home Ubuntu server I manage myself, which is how Docker Wake Up started.',
