@@ -17,6 +17,7 @@ export const profile = {
   company: 'MEDITECH',
   companyUrl: 'https://ehr.meditech.com/',
   location: 'Boston, MA',
+  coordinates: '42.36° N, 71.06° W',
   email: 'j.elliott2021@gmail.com',
   phone: '(617) 615-7955',
   /** The phone number is in the résumé PDF; flip this to show it on the page too. */

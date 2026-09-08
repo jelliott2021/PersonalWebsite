@@ -9,7 +9,7 @@ const Education = () => (
   <section id='education' className='section'>
     <div className='container'>
       <Reveal>
-        <SectionHeader index='05' title='Education' />
+        <SectionHeader index='05' title='Education' caption='Northeastern University' />
       </Reveal>
 
       <div className='edu-list'>

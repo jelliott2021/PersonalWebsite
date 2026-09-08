@@ -11,7 +11,7 @@ const Footer = () => {
       <div className='container footer__inner'>
         <div className='footer__left'>
           <p className='footer__built'>
-            Designed and built by <a href='#home'>{profile.name}</a>.
+            Designed and built in {profile.location} by <a href='#home'>{profile.name}</a>.
           </p>
           <p className='footer__meta'>
             React · TypeScript · Docker · GitHub Actions ·{' '}

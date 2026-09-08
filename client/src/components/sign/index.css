@@ -1,0 +1,129 @@
+.sign {
+  --line: var(--accent);
+  display: inline-flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-width: 16rem;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+}
+
+.sign--red {
+  --line: var(--t-red);
+}
+
+.sign--orange {
+  --line: var(--t-orange);
+}
+
+.sign--green {
+  --line: var(--t-green);
+}
+
+.sign--blue {
+  --line: var(--t-blue);
+}
+
+.sign--silver {
+  --line: var(--t-silver);
+}
+
+.sign--purple {
+  --line: var(--t-purple);
+}
+
+/* Line-color band with the title in white capitals. */
+.sign__band {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.6rem 1.6rem 0.55rem;
+  background: var(--line);
+}
+
+.sign__title {
+  margin: 0;
+  color: #fff;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  font-size: clamp(1.4rem, 2.8vw, 2rem);
+  line-height: 1.05;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* White strip with the caption in black capitals, like the neighborhood line. */
+.sign__foot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.34rem 2.6rem 0.4rem;
+  background: #fff;
+  color: #111;
+}
+
+.sign__caption {
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 0.84rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.sign__num {
+  position: absolute;
+  left: 0.65rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #8a8a8a;
+}
+
+/* Small variant for inline use, such as above the Contact heading. */
+.sign--sm {
+  min-width: 0;
+  box-shadow: var(--shadow-sm);
+}
+
+.sign--sm .sign__band {
+  padding: 0.35rem 1rem 0.32rem;
+}
+
+.sign--sm .sign__title {
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+}
+
+.sign--sm .sign__foot {
+  padding: 0.22rem 1.8rem 0.25rem;
+}
+
+.sign--sm .sign__caption {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+}
+
+.sign--sm .sign__num {
+  left: 0.5rem;
+  font-size: 0.52rem;
+}
+
+@media (max-width: 600px) {
+  .sign {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .sign__title {
+    white-space: normal;
+  }
+}

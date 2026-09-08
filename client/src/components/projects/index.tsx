@@ -192,6 +192,7 @@ const Projects = () => {
           <SectionHeader
             index='03'
             title='Things I’ve built'
+            caption='Projects'
             subtitle='Deployed products, open-source tooling, and coursework I’m proud of. Demo videos only download when you press play.'
           />
         </Reveal>

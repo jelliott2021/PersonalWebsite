@@ -33,32 +33,43 @@
   min-height: 100%;
 }
 
+/* The timeline is drawn like a transit line: a bold colored line with
+   white stops, the way the T map draws stations. */
 .timeline__marker::before {
   content: '';
   position: absolute;
   top: 0;
   bottom: -1.75rem;
   left: 50%;
-  width: 2px;
+  width: 4px;
   transform: translateX(-50%);
-  background: var(--border);
+  background: var(--t-red);
+  border-radius: 2px;
+}
+
+.timeline__item:first-child .timeline__marker::before {
+  top: 1.85rem;
+  border-radius: 2px 2px 0 0;
 }
 
 .timeline__item:last-child .timeline__marker::before {
-  bottom: 0;
+  bottom: auto;
+  height: 2.6rem;
+  border-radius: 0 0 2px 2px;
 }
 
 .timeline__marker::after {
   content: '';
   position: absolute;
-  top: 1.85rem;
+  top: 1.75rem;
   left: 50%;
-  width: 12px;
-  height: 12px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   transform: translate(-50%, 0);
-  background: var(--accent);
-  box-shadow: 0 0 0 4px var(--bg-band), 0 0 0 6px var(--accent-soft);
+  background: var(--bg-elev);
+  border: 3px solid var(--t-red);
+  box-shadow: 0 0 0 3px var(--bg-band);
 }
 
 .timeline__card {

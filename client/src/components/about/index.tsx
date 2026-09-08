@@ -13,7 +13,7 @@ const About = () => {
     <section id='about' className='section'>
       <div className='container'>
         <Reveal>
-          <SectionHeader index='01' title='About me' />
+          <SectionHeader index='01' title='About me' caption='Boston, MA' />
         </Reveal>
 
         <div className='about__grid'>

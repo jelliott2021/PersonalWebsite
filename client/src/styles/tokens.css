@@ -1,6 +1,9 @@
 /* ---------------------------------------------------------------------------
    Design tokens. Light theme is the default; dark theme overrides the same
    variables. Components only ever reference these variables.
+
+   Palette is drawn from Boston: cream paper, harbor navy, Beacon Hill brick,
+   State House gold, and sea glass for the night theme.
    ------------------------------------------------------------------------- */
 
 :root {
@@ -10,35 +13,52 @@
     sans-serif;
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 
-  --bg: #f7f8fb;
-  --bg-band: #eef1f6;
-  --bg-elev: #ffffff;
-  --bg-subtle: #f1f4f9;
-  --heading: #0f172a;
-  --text: #1e293b;
-  --text-2: #475569;
-  --text-3: #64748b;
-  --border: #e2e8f0;
-  --border-strong: #cbd5e1;
+  --bg: #f7f4ec;
+  --bg-band: #efeadf;
+  --bg-elev: #fffdf8;
+  --bg-subtle: #f1ece1;
+  --heading: #10203a;
+  --text: #1f2a3d;
+  --text-2: #4b5567;
+  --text-3: #6b7484;
+  --border: #e2dccf;
+  --border-strong: #c9c1b0;
 
-  --accent: #2563eb;
-  --accent-strong: #1d4ed8;
-  --accent-contrast: #ffffff;
-  --accent-soft: rgba(37, 99, 235, 0.1);
-  --accent-glow: rgba(37, 99, 235, 0.22);
+  /* Harbor navy */
+  --accent: #173463;
+  --accent-strong: #0f2447;
+  --accent-contrast: #fffdf8;
+  --accent-soft: rgba(23, 52, 99, 0.09);
+  --accent-glow: rgba(23, 52, 99, 0.2);
 
-  --success: #059669;
-  --success-soft: rgba(5, 150, 105, 0.12);
-  --warning: #b45309;
-  --warning-soft: rgba(180, 83, 9, 0.12);
-  --neutral-soft: rgba(100, 116, 139, 0.14);
+  /* Beacon Hill brick and State House gold */
+  --brick: #b5342d;
+  --brick-soft: rgba(181, 52, 45, 0.12);
+  --gold: #c9973b;
+  --gold-soft: rgba(201, 151, 59, 0.16);
 
-  --nav-bg: rgba(247, 248, 251, 0.82);
+  --success: #1f7a4d;
+  --success-soft: rgba(31, 122, 77, 0.12);
+  --warning: #a3711f;
+  --warning-soft: rgba(201, 151, 59, 0.18);
+  --neutral-soft: rgba(107, 116, 132, 0.14);
+
+  /* MBTA line colors and the black station-sign plate for section markers */
+  --t-red: #da291c;
+  --t-orange: #ed8b00;
+  --t-green: #00843d;
+  --t-blue: #003da5;
+  --t-silver: #7c878e;
+  --t-purple: #80276c;
+  --sign-plate: #161616;
+  --sign-border: rgba(0, 0, 0, 0.4);
+
+  --nav-bg: rgba(247, 244, 236, 0.85);
   --nav-h: 68px;
 
-  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.05), 0 1px 3px rgba(15, 23, 42, 0.06);
-  --shadow-md: 0 10px 30px -10px rgba(15, 23, 42, 0.18);
-  --shadow-lg: 0 24px 50px -20px rgba(15, 23, 42, 0.28);
+  --shadow-sm: 0 1px 2px rgba(32, 26, 14, 0.05), 0 1px 3px rgba(32, 26, 14, 0.07);
+  --shadow-md: 0 10px 30px -10px rgba(32, 26, 14, 0.2);
+  --shadow-lg: 0 24px 50px -20px rgba(32, 26, 14, 0.3);
 
   --radius-sm: 8px;
   --radius: 14px;
@@ -53,30 +73,45 @@
 [data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #0b1120;
-  --bg-band: #0e1629;
-  --bg-elev: #121b31;
-  --bg-subtle: #172242;
-  --heading: #f1f5f9;
-  --text: #dbe3ef;
-  --text-2: #a9b6cb;
-  --text-3: #7f8ca6;
-  --border: #223052;
-  --border-strong: #33456f;
+  --bg: #0a1424;
+  --bg-band: #0d1a2e;
+  --bg-elev: #12203a;
+  --bg-subtle: #182a48;
+  --heading: #f3efe6;
+  --text: #dcd6ca;
+  --text-2: #aab1bf;
+  --text-3: #7f889a;
+  --border: #22314d;
+  --border-strong: #34476a;
 
-  --accent: #60a5fa;
-  --accent-strong: #93c5fd;
-  --accent-contrast: #0b1120;
-  --accent-soft: rgba(96, 165, 250, 0.14);
-  --accent-glow: rgba(96, 165, 250, 0.28);
+  /* Sea glass on harbor night */
+  --accent: #79c2cf;
+  --accent-strong: #a3dbe4;
+  --accent-contrast: #0a1424;
+  --accent-soft: rgba(121, 194, 207, 0.14);
+  --accent-glow: rgba(121, 194, 207, 0.26);
 
-  --success: #34d399;
-  --success-soft: rgba(52, 211, 153, 0.14);
-  --warning: #fbbf24;
-  --warning-soft: rgba(251, 191, 36, 0.14);
+  --brick: #ef6b64;
+  --brick-soft: rgba(239, 107, 100, 0.14);
+  --gold: #e3b45c;
+  --gold-soft: rgba(227, 180, 92, 0.16);
+
+  --success: #4cc48a;
+  --success-soft: rgba(76, 196, 138, 0.14);
+  --warning: #e3b45c;
+  --warning-soft: rgba(227, 180, 92, 0.16);
   --neutral-soft: rgba(148, 163, 184, 0.16);
 
-  --nav-bg: rgba(11, 17, 32, 0.78);
+  --t-red: #f0524a;
+  --t-orange: #f5a33a;
+  --t-green: #2fb36a;
+  --t-blue: #4d7fe0;
+  --t-silver: #9aa5ad;
+  --t-purple: #b04ea0;
+  --sign-plate: #121212;
+  --sign-border: rgba(255, 255, 255, 0.12);
+
+  --nav-bg: rgba(10, 20, 36, 0.8);
 
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 1px 3px rgba(0, 0, 0, 0.35);
   --shadow-md: 0 10px 30px -10px rgba(0, 0, 0, 0.6);

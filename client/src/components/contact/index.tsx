@@ -10,6 +10,8 @@ import {
 } from 'react-icons/fi';
 import { profile } from '../../data/profile';
 import Reveal from '../reveal';
+import Sign from '../sign';
+import Skyline from '../skyline';
 import './index.css';
 
 const Contact = () => {
@@ -37,7 +39,13 @@ const Contact = () => {
     <section id='contact' className='section section--band contact'>
       <div className='container'>
         <Reveal className='contact__inner'>
-          <span className='eyebrow'>06. What’s next?</span>
+          <Sign
+            index='06'
+            title='What’s next?'
+            caption='Contact'
+            size='sm'
+            className='contact__sign'
+          />
           <h2 className='contact__title'>Let’s talk.</h2>
           <p className='contact__text'>
             I’m always happy to chat about software, new opportunities, or the best pickleball
@@ -82,6 +90,7 @@ const Contact = () => {
           </ul>
         </Reveal>
       </div>
+      <Skyline className='contact__skyline' />
     </section>
   );
 };

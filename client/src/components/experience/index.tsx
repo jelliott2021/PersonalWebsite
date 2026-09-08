@@ -11,6 +11,7 @@ const Experience = () => (
         <SectionHeader
           index='02'
           title='Where I’ve worked'
+          caption='Experience'
           subtitle='Production healthcare software, financial-services QA automation, and teaching databases to a few hundred students.'
         />
       </Reveal>

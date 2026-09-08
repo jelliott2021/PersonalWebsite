@@ -247,9 +247,10 @@ button {
   box-shadow: 0 6px 18px -6px var(--accent-glow);
 }
 
+/* Primary buttons warm from harbor navy to brick on hover. */
 .btn--primary:hover {
-  background: var(--accent-strong);
-  box-shadow: 0 10px 24px -8px var(--accent-glow);
+  background: var(--brick);
+  box-shadow: 0 10px 24px -8px var(--brick-soft);
 }
 
 .btn--secondary {

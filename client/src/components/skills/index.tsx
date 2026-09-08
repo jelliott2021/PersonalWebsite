@@ -11,6 +11,7 @@ const Skills = () => (
         <SectionHeader
           index='04'
           title='Skills & tools'
+          caption='Stack'
           subtitle='What I reach for day to day, grouped by where it fits in the stack.'
         />
       </Reveal>

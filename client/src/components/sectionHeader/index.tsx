@@ -1,24 +1,22 @@
 import React from 'react';
+import Sign from '../sign';
 import './index.css';
 
 interface SectionHeaderProps {
   index: string;
   title: string;
+  /** Second line of the sign, the way a station sign names its neighborhood. */
+  caption: string;
   subtitle?: string;
 }
 
 /**
- * Numbered heading used at the top of every section.
+ * Section heading styled as an MBTA platform sign, with an optional
+ * one-line subtitle beneath it.
  */
-const SectionHeader = ({ index, title, subtitle }: SectionHeaderProps) => (
+const SectionHeader = ({ index, title, caption, subtitle }: SectionHeaderProps) => (
   <div className='section-header'>
-    <div className='section-header__row'>
-      <span className='section-header__index' aria-hidden='true'>
-        {index}.
-      </span>
-      <h2 className='section-header__title'>{title}</h2>
-      <span className='section-header__line' aria-hidden='true' />
-    </div>
+    <Sign index={index} title={title} caption={caption} tag='h2' />
     {subtitle && <p className='section-header__subtitle'>{subtitle}</p>}
   </div>
 );
