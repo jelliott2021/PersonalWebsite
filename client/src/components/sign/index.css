@@ -127,3 +127,24 @@
     white-space: normal;
   }
 }
+
+/* Dark mode: the white strip becomes a night panel in the card tone so the
+   sign sits into the page, while the line band keeps its colour, dimmed a
+   touch so it doesn't glare against the navy. */
+[data-theme='dark'] .sign {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme='dark'] .sign__band {
+  filter: saturate(0.92) brightness(0.88);
+}
+
+[data-theme='dark'] .sign__foot {
+  background: var(--bg-elev);
+  color: var(--heading);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='dark'] .sign__num {
+  color: var(--text-3);
+}
