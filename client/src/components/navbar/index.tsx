@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FiFileText, FiMenu, FiMoon, FiSun, FiX } from 'react-icons/fi';
 import { profile } from '../../data/profile';
-import type { Theme } from '../../hooks/useTheme';
+import type { Theme, ToggleOrigin } from '../../hooks/useTheme';
 import './index.css';
 
 export interface NavLink {
@@ -21,7 +21,8 @@ export const NAV_LINKS: NavLink[] = [
 interface NavbarProps {
   activeId: string;
   theme: Theme;
-  onToggleTheme: () => void;
+  /** Called with the toggle's centre so the theme wipe can grow out of it. */
+  onToggleTheme: (origin?: ToggleOrigin) => void;
 }
 
 const Logo = () => (
@@ -114,11 +115,19 @@ const Navbar = ({ activeId, theme, onToggleTheme }: NavbarProps) => {
         <div className='navbar__actions'>
           <button
             type='button'
-            className='icon-btn'
-            onClick={onToggleTheme}
+            className='icon-btn theme-toggle'
+            onClick={event => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              onToggleTheme({ x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 });
+            }}
             aria-label={themeLabel}
             title={themeLabel}>
-            {theme === 'dark' ? <FiSun /> : <FiMoon />}
+            <span className='theme-toggle__icon theme-toggle__icon--sun' aria-hidden='true'>
+              <FiSun />
+            </span>
+            <span className='theme-toggle__icon theme-toggle__icon--moon' aria-hidden='true'>
+              <FiMoon />
+            </span>
           </button>
           <a
             className='btn btn--secondary btn--sm navbar__resume'

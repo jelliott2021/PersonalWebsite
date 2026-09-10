@@ -367,3 +367,19 @@ button {
     transform: none;
   }
 }
+
+/* Theme switch: the new theme wipes out from the toggle in a growing circle
+   (see useTheme). The default cross-fade is disabled so the clip does the work. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+::view-transition-old(root) {
+  z-index: 1;
+}
+
+::view-transition-new(root) {
+  z-index: 2;
+}

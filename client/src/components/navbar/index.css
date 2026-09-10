@@ -163,3 +163,31 @@
     transform: none;
   }
 }
+
+/* Theme toggle: the sun and moon trade places with a spin as the theme changes. */
+.theme-toggle {
+  position: relative;
+}
+
+.theme-toggle__icon {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  transition: transform 0.5s var(--ease), opacity 0.3s ease;
+}
+
+.theme-toggle__icon--sun {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.4);
+}
+
+[data-theme='dark'] .theme-toggle__icon--sun {
+  opacity: 1;
+  transform: none;
+}
+
+[data-theme='dark'] .theme-toggle__icon--moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+}
