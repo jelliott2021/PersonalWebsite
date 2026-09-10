@@ -78,10 +78,11 @@ const useTheme = () => {
 
       const x = origin?.x ?? window.innerWidth - 40;
       const y = origin?.y ?? 40;
-      const radius = Math.hypot(
-        Math.max(x, window.innerWidth - x),
-        Math.max(y, window.innerHeight - y),
-      );
+      // Distance to the farthest corner, plus a margin so the circle clears the
+      // corner while it is still moving instead of stalling on the last pixels.
+      const radius =
+        Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y)) * 1.05 +
+        24;
 
       const transition = doc.startViewTransition(() => {
         flushSync(() => setTheme(next));
@@ -95,8 +96,9 @@ const useTheme = () => {
               clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
             },
             {
-              duration: 650,
-              easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+              duration: 750,
+              easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+              fill: 'forwards',
               pseudoElement: '::view-transition-new(root)',
             },
           );
