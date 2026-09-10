@@ -1,11 +1,113 @@
 /*
  * Keeps the viewBox's 1440:220 ratio so the full silhouette is always visible.
  * Parents set a min-height for narrow screens, where `slice` crops the sides
- * instead of shrinking the drawing.
+ * instead of shrinking the drawing, and set --skyline-alpha for how faint
+ * the silhouette should be. Sun, moon, and windows carry their own colours.
  */
 .skyline {
   display: block;
   width: 100%;
   height: auto;
   aspect-ratio: 1440 / 220;
+  --skyline-alpha: 0.12;
+  color: var(--accent);
+  transition: color 1.2s ease;
+}
+
+.skyline--dusk {
+  color: var(--brick);
+}
+
+.skyline--night {
+  color: var(--heading);
+}
+
+[data-theme='dark'] .skyline--night {
+  color: var(--accent);
+}
+
+.skyline__city {
+  fill-opacity: var(--skyline-alpha);
+}
+
+.skyline__cables {
+  stroke-opacity: calc(var(--skyline-alpha) * 0.8);
+}
+
+/* Sun by day, moon by night, placed along an arc by the hour in Boston. */
+.skyline__sun {
+  fill: #f0a83a;
+  fill-opacity: 0.5;
+}
+
+.skyline__moon {
+  fill: #8e9db8;
+  fill-opacity: 0.7;
+}
+
+[data-theme='dark'] .skyline__sun {
+  fill-opacity: 0.35;
+}
+
+[data-theme='dark'] .skyline__moon {
+  fill: #f3efe3;
+  fill-opacity: 0.55;
+}
+
+/* Tower windows light up in dark mode; some stay dark, some twinkle. */
+.skyline__windows {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+[data-theme='dark'] .skyline__windows {
+  opacity: 1;
+}
+
+.skyline__window {
+  fill: #ffd27a;
+  fill-opacity: 0.7;
+}
+
+.skyline__window--dark {
+  fill-opacity: 0.06;
+}
+
+.skyline__window--twinkle {
+  animation: skyline-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes skyline-twinkle {
+  0%,
+  100% {
+    fill-opacity: 0.75;
+  }
+  50% {
+    fill-opacity: 0.1;
+  }
+}
+
+/* Sailboats rock gently on the harbour. */
+.skyline__boat {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: skyline-drift 8s ease-in-out infinite;
+}
+
+.skyline__boat--small {
+  animation-duration: 10.5s;
+  animation-delay: -3s;
+}
+
+@keyframes skyline-drift {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(5px) rotate(1.5deg);
+  }
+  75% {
+    transform: translateX(-4px) rotate(-1.5deg);
+  }
 }

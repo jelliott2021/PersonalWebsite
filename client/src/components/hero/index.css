@@ -14,8 +14,7 @@
   right: 0;
   bottom: 0;
   min-height: 110px;
-  color: var(--accent);
-  opacity: 0.12;
+  --skyline-alpha: 0.12;
   pointer-events: none;
   z-index: -1;
   mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
@@ -23,7 +22,7 @@
 }
 
 [data-theme='dark'] .hero__skyline {
-  opacity: 0.18;
+  --skyline-alpha: 0.18;
 }
 
 .hero__period {

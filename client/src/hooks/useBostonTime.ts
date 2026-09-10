@@ -7,6 +7,8 @@ export interface BostonTime {
   time: string;
   /** Time-of-day greeting based on the hour in Boston. */
   greeting: string;
+  /** Hour of the day in Boston as a fraction, such as 15.5 for 3:30 PM. */
+  hour: number;
 }
 
 const greetingFor = (hour: number): string => {
@@ -30,26 +32,33 @@ const read = (): BostonTime => {
       minute: '2-digit',
       timeZone: TIME_ZONE,
     }).format(now);
-    const hourText = new Intl.DateTimeFormat('en-US', {
+    const parts = new Intl.DateTimeFormat('en-US', {
       hour: 'numeric',
+      minute: 'numeric',
       hour12: false,
       timeZone: TIME_ZONE,
-    }).format(now);
-    const hour = Number.parseInt(hourText, 10) % 24;
-    return { time, greeting: greetingFor(Number.isNaN(hour) ? 12 : hour) };
+    }).formatToParts(now);
+    const part = (type: string) => Number.parseInt(parts.find(p => p.type === type)?.value ?? '', 10);
+    const hours = part('hour') % 24;
+    const minutes = part('minute');
+    const hour = Number.isNaN(hours) ? 12 : hours + (Number.isNaN(minutes) ? 0 : minutes / 60);
+    return { time, greeting: greetingFor(hour), hour };
   } catch {
     // Very old browsers without time-zone support: fall back to the visitor's clock.
     const now = new Date();
+    const hour = now.getHours() + now.getMinutes() / 60;
     return {
       time: now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
-      greeting: greetingFor(now.getHours()),
+      greeting: greetingFor(hour),
+      hour,
     };
   }
 };
 
 /**
  * The current time in Boston, refreshed every 30 seconds, plus a matching
- * greeting. A small sign of life for the hero.
+ * greeting and the fractional hour. A small sign of life for the hero and
+ * the skyline.
  */
 const useBostonTime = (): BostonTime => {
   const [value, setValue] = useState<BostonTime>(read);
