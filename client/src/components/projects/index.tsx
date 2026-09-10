@@ -7,7 +7,7 @@ import useGithubStars from '../../hooks/useGithubStars';
 import SectionHeader from '../sectionHeader';
 import Reveal from '../reveal';
 import ProjectMedia from '../projectMedia';
-import GithubActivity from '../githubActivity';
+import GithubCalendar from '../githubCalendar';
 import './index.css';
 
 interface ProjectLinksProps {
@@ -217,7 +217,7 @@ const Projects = () => {
           </>
         )}
 
-        <GithubActivity />
+        <GithubCalendar />
 
         <Reveal className='projects__cta'>
           <p>
