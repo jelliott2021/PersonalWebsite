@@ -11,19 +11,6 @@
   aspect-ratio: 1440 / 220;
   --skyline-alpha: 0.12;
   color: var(--accent);
-  transition: color 1.2s ease;
-}
-
-.skyline--dusk {
-  color: var(--brick);
-}
-
-.skyline--night {
-  color: var(--heading);
-}
-
-[data-theme='dark'] .skyline--night {
-  color: var(--accent);
 }
 
 .skyline__city {

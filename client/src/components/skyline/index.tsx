@@ -6,19 +6,6 @@ interface SkylineProps {
   className?: string;
 }
 
-export type SkyPeriod = 'day' | 'dusk' | 'night';
-
-/** Day, dusk (including dawn), or night for a fractional hour in Boston. */
-export const periodFor = (hour: number): SkyPeriod => {
-  if (hour >= 7 && hour < 17) {
-    return 'day';
-  }
-  if ((hour >= 17 && hour < 20) || (hour >= 5 && hour < 7)) {
-    return 'dusk';
-  }
-  return 'night';
-};
-
 /**
  * Where the sun (6 AM to 8 PM) or moon (8 PM to 6 AM) sits in the sky:
  * an arc from the left horizon to the right, peaking in the middle.
@@ -91,18 +78,17 @@ const WINDOWS: Window[] = FACADES.flatMap((facade, facadeIndex) => {
  * Bridge, Bunker Hill Monument, Custom House Tower, the Financial District,
  * Old North Church, the Prudential Tower, 200 Clarendon, Back Bay rowhouses,
  * and a couple of sailboats on the harbor. It keeps Boston time: a sun or
- * moon crosses the sky by the hour, the tint warms at dusk and cools at
- * night, the boats drift, and in dark mode the tower windows light up and
- * twinkle. Decorative only; the silhouette inherits `currentColor`.
+ * moon crosses the sky by the hour, the boats drift, and in dark mode the
+ * tower windows light up and twinkle. Decorative only; the silhouette
+ * inherits `currentColor`.
  */
 const Skyline = ({ className = '' }: SkylineProps) => {
   const { hour } = useBostonTime();
-  const period = periodFor(hour);
   const sky = skyPosition(hour);
 
   return (
     <svg
-      className={`skyline skyline--${period} ${className}`.trim()}
+      className={`skyline ${className}`.trim()}
       viewBox='0 0 1440 220'
       preserveAspectRatio='xMidYMax slice'
       aria-hidden='true'
