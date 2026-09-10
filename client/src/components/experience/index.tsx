@@ -8,10 +8,11 @@ import './index.css';
 const ANCHOR = 0.66;
 
 /**
- * Drives the transit-line effect: as the visitor scrolls, the red line grows
- * from the first stop to the last and each stop lights up when the line
- * reaches it. Positions are measured from the markers so the line follows
- * the layout at any breakpoint. Reduced motion shows the finished line.
+ * Drives the transit-line effect: as the visitor scrolls, the red line draws
+ * itself from the first stop towards the last, and each stop lights up and
+ * reveals its card the moment the line reaches it. Positions are measured
+ * from the markers so the line follows the layout at any breakpoint.
+ * Reduced motion shows the finished line and every card.
  */
 const useTimelineProgress = (ref: RefObject<HTMLDivElement>) => {
   useEffect(() => {
@@ -23,8 +24,9 @@ const useTimelineProgress = (ref: RefObject<HTMLDivElement>) => {
     const reduceMotion =
       typeof window.matchMedia === 'function' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const markers = Array.from(root.querySelectorAll<HTMLElement>('.timeline__marker'));
-    if (markers.length === 0) {
+    const items = Array.from(root.querySelectorAll<HTMLElement>('.timeline__item'));
+    const markers = items.map(item => item.querySelector<HTMLElement>('.timeline__marker'));
+    if (items.length === 0 || markers.some(marker => !marker)) {
       return undefined;
     }
 
@@ -37,10 +39,10 @@ const useTimelineProgress = (ref: RefObject<HTMLDivElement>) => {
 
       // Centre of each stop's dot, relative to the viewport.
       const centers = markers.map(marker => {
-        const dot = window.getComputedStyle(marker, '::after');
+        const dot = window.getComputedStyle(marker as HTMLElement, '::after');
         const offset = Number.parseFloat(dot.top) || 0;
         const size = Number.parseFloat(dot.height) || 16;
-        return marker.getBoundingClientRect().top + offset + size / 2;
+        return (marker as HTMLElement).getBoundingClientRect().top + offset + size / 2;
       });
 
       const first = centers[0];
@@ -52,9 +54,8 @@ const useTimelineProgress = (ref: RefObject<HTMLDivElement>) => {
       root.style.setProperty('--track-height', `${span}px`);
       root.style.setProperty('--timeline-progress', progress.toFixed(4));
 
-      markers.forEach((marker, index) => {
-        const reached = reduceMotion || centers[index] <= anchor;
-        marker.classList.toggle('is-reached', reached);
+      items.forEach((item, index) => {
+        item.classList.toggle('is-reached', reduceMotion || centers[index] <= anchor);
       });
     };
 
@@ -65,13 +66,10 @@ const useTimelineProgress = (ref: RefObject<HTMLDivElement>) => {
     };
 
     update();
-    // Measure again once the scroll-in reveals have settled.
-    const settle = window.setTimeout(update, 900);
     window.addEventListener('scroll', schedule, { passive: true });
     window.addEventListener('resize', schedule);
 
     return () => {
-      window.clearTimeout(settle);
       window.removeEventListener('scroll', schedule);
       window.removeEventListener('resize', schedule);
       if (frame) {
@@ -100,8 +98,8 @@ const Experience = () => {
         <div className='timeline' ref={timelineRef}>
           <div className='timeline__track' aria-hidden='true' />
           <ol className='timeline__list'>
-            {EXPERIENCE.map((item, index) => (
-              <Reveal tag='li' key={item.id} className='timeline__item' delay={index * 60}>
+            {EXPERIENCE.map(item => (
+              <li key={item.id} className='timeline__item'>
                 <div className='timeline__period'>
                   <span>{item.start}</span>
                   {item.end && (
@@ -157,7 +155,7 @@ const Experience = () => {
                     </ul>
                   )}
                 </article>
-              </Reveal>
+              </li>
             ))}
           </ol>
         </div>

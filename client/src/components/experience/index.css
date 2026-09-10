@@ -17,6 +17,20 @@
   align-items: start;
 }
 
+/* Dates and cards stay hidden until the line reaches their stop. */
+.timeline__period,
+.timeline__card {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+}
+
+.timeline__item.is-reached .timeline__period,
+.timeline__item.is-reached .timeline__card {
+  opacity: 1;
+  transform: none;
+}
+
 .timeline__period {
   display: flex;
   flex-direction: column;
@@ -25,11 +39,6 @@
   font-family: var(--font-mono);
   font-size: 0.82rem;
   color: var(--text-3);
-  transition: color 0.4s ease;
-}
-
-.timeline__item:has(.timeline__marker.is-reached) .timeline__period {
-  color: var(--text-2);
 }
 
 .timeline__period-sep {
@@ -45,33 +54,9 @@
   min-height: 100%;
 }
 
-/* The timeline is drawn like a transit line: a faint route that the red
-   line fills in as you scroll, with white stops the way the T map draws
-   stations. Each stop lights up when the line reaches it. */
-.timeline__marker::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: -1.75rem;
-  left: 50%;
-  width: 4px;
-  transform: translateX(-50%);
-  background: var(--t-red);
-  opacity: 0.2;
-  border-radius: 2px;
-}
-
-.timeline__item:first-child .timeline__marker::before {
-  top: 1.85rem;
-  border-radius: 2px 2px 0 0;
-}
-
-.timeline__item:last-child .timeline__marker::before {
-  bottom: auto;
-  height: 2.6rem;
-  border-radius: 0 0 2px 2px;
-}
-
+/* Stops are drawn like stations on the T map: empty until the red line
+   arrives, then lit red with a soft glow. There is no route drawn ahead of
+   the line; the line itself is the only track. */
 .timeline__marker::after {
   content: '';
   position: absolute;
@@ -87,15 +72,15 @@
   transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s var(--ease);
 }
 
-.timeline__marker.is-reached::after {
+.timeline__item.is-reached .timeline__marker::after {
   border-color: var(--t-red);
   transform: translate(-50%, 0) scale(1.12);
   box-shadow: 0 0 0 3px var(--bg-band), 0 0 0 8px rgba(218, 41, 28, 0.16);
   box-shadow: 0 0 0 3px var(--bg-band), 0 0 0 8px color-mix(in srgb, var(--t-red) 18%, transparent);
 }
 
-/* The red line that grows down the route as the visitor scrolls, with a soft
-   glow at its head like a train on the map. */
+/* The red line that draws itself down the route as the visitor scrolls,
+   with a soft glow at its head like a train on the map. */
 .timeline__track {
   position: absolute;
   z-index: 1;
@@ -196,5 +181,13 @@
   .timeline__card {
     grid-column: 2;
     padding: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .timeline__period,
+  .timeline__card {
+    opacity: 1;
+    transform: none;
   }
 }
