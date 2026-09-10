@@ -32,6 +32,8 @@ export interface Project {
   /** MP4 demo; downloaded only when the visitor presses play. */
   video?: string;
   videoSize?: string;
+  /** Short muted clip that plays on hover; a few hundred KB, cut from the demo. */
+  preview?: string;
   /** Animated GIF demo; small enough to show immediately. */
   gif?: string;
   note?: string;
@@ -59,6 +61,7 @@ export const PROJECTS: Project[] = [
     live: 'https://boozebrawl.com',
     video: '/videos/BoozeBrawlDemo.mp4',
     videoSize: '96 MB',
+    preview: '/videos/previews/boozebrawl.mp4',
     note: 'Source code available on request.',
   },
   {
@@ -126,6 +129,7 @@ export const PROJECTS: Project[] = [
     live: 'https://cs4530-f24-110.onrender.com',
     video: '/videos/HuskyConnect.mp4',
     videoSize: '16 MB',
+    preview: '/videos/previews/huskyconnect.mp4',
     note: 'Hosted on Render’s free tier, so the first load can take a few seconds.',
     credentials: { user: 'jelliott', password: '1234' },
   },
@@ -144,6 +148,7 @@ export const PROJECTS: Project[] = [
     live: 'https://fake-canvas-react.onrender.com/#/Kanbas/Account/Signin',
     video: '/videos/CanvasQuiz.mp4',
     videoSize: '24 MB',
+    preview: '/videos/previews/canvasquiz.mp4',
     note: 'Hosted on Render’s free tier, so the first load can take a few seconds.',
     credentials: { user: 'Jack', password: '1234' },
   },
@@ -161,6 +166,7 @@ export const PROJECTS: Project[] = [
     github: 'https://github.com/jelliott2021/PhotoEditor',
     video: '/videos/PhotoEditor.mp4',
     videoSize: '52 MB',
+    preview: '/videos/previews/photoeditor.mp4',
   },
   {
     id: 'portfolio',
