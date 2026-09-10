@@ -99,8 +99,13 @@
   }
 }
 
-/* Boston Light: in dark mode the lantern glows and a beam sweeps around it. */
+/* Boston Light: in dark mode the lantern glows and the beacon turns. Seen
+   side-on, a turning beam sweeps out to the right, foreshortens and flares
+   as it swings toward the viewer, sweeps out to the left, then dims as it
+   turns away, once every ten seconds like the real light. The horizontal
+   scale follows a cosine; the flare peaks when the beam points at us. */
 .skyline__beam,
+.skyline__flare,
 .skyline__lantern {
   opacity: 0;
   transition: opacity 0.8s ease;
@@ -114,30 +119,83 @@
   opacity: 1;
   transform-box: view-box;
   transform-origin: 1180px 160px;
-  animation: skyline-sweep 9s linear infinite;
+  animation: skyline-sweep 10s linear infinite;
+}
+
+[data-theme='dark'] .skyline__flare {
+  opacity: 0;
+  animation: skyline-flare 10s linear infinite;
 }
 
 [data-theme='dark'] .skyline__lantern {
   opacity: 1;
-  animation: skyline-flash 9s ease-in-out infinite;
+  animation: skyline-flash 10s linear infinite;
 }
 
 @keyframes skyline-sweep {
-  from {
-    transform: rotate(0deg);
+  0% {
+    transform: scale(1, 1);
+    opacity: 1;
   }
-  to {
-    transform: rotate(360deg);
+  12.5% {
+    transform: scale(0.707, 1.5);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0, 2.4);
+    opacity: 1;
+  }
+  37.5% {
+    transform: scale(-0.707, 1.5);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(-1, 1);
+    opacity: 1;
+  }
+  62.5% {
+    transform: scale(-0.707, 1.15);
+    opacity: 0.45;
+  }
+  75% {
+    transform: scale(0, 1.3);
+    opacity: 0.2;
+  }
+  87.5% {
+    transform: scale(0.707, 1.15);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+}
+
+@keyframes skyline-flare {
+  0%,
+  16%,
+  34%,
+  100% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.85;
   }
 }
 
 @keyframes skyline-flash {
   0%,
   100% {
-    fill-opacity: 0.45;
+    fill-opacity: 0.4;
   }
-  50% {
+  20% {
+    fill-opacity: 0.6;
+  }
+  25% {
     fill-opacity: 1;
+  }
+  30% {
+    fill-opacity: 0.6;
   }
 }
 

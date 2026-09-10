@@ -123,7 +123,9 @@ const Skyline = ({ className = '' }: SkylineProps) => {
   const sky = skyPosition(hour, sunrise, sunset);
   const condition = useBostonWeather()?.condition;
   // The skyline is drawn twice on the page, so gradient ids must not collide.
-  const beamId = `beam-${useId().replace(/:/g, '')}`;
+  const gradientId = useId().replace(/:/g, '');
+  const beamId = `beam-${gradientId}`;
+  const flareId = `flare-${gradientId}`;
 
   const cloudy = condition !== undefined && condition !== 'clear';
   const raining = condition === 'rain' || condition === 'storm';
@@ -267,14 +269,22 @@ const Skyline = ({ className = '' }: SkylineProps) => {
         fill='none'
       />
 
-      {/* Boston Light's lantern and sweeping beam, shown in dark mode */}
+      {/* Boston Light's lantern and beam, shown in dark mode. The beacon turns
+          like the real one: the beam sweeps right along the horizon, swings
+          toward the viewer and flares, sweeps left, dims as it turns away. */}
       <defs>
         <linearGradient id={beamId} x1='0' y1='0' x2='1' y2='0'>
           <stop offset='0' stopColor='#ffe9b3' stopOpacity='0.55' />
           <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
         </linearGradient>
+        <radialGradient id={flareId}>
+          <stop offset='0' stopColor='#fff6dc' stopOpacity='0.9' />
+          <stop offset='0.35' stopColor='#ffe9b3' stopOpacity='0.35' />
+          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
+        </radialGradient>
       </defs>
       <polygon className='skyline__beam' points='1180,160 1420,146 1420,174' fill={`url(#${beamId})`} />
+      <circle className='skyline__flare' cx='1180' cy='160' r='36' fill={`url(#${flareId})`} />
       <circle className='skyline__lantern' cx='1180' cy='160' r='2.6' />
 
       {/* Lit windows, shown in dark mode */}
