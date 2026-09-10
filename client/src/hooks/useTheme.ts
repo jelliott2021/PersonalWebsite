@@ -21,9 +21,14 @@ type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => { ready: Promise<void> };
 };
 
+const prefersDark = (): boolean =>
+  typeof window !== 'undefined' &&
+  typeof window.matchMedia === 'function' &&
+  window.matchMedia('(prefers-color-scheme: dark)').matches;
+
 /**
  * Reads the theme that the inline script in index.html already applied to
- * <html>. Light is the default; dark is only used when the visitor chose it.
+ * <html>, falling back to the system preference.
  */
 const getInitialTheme = (): Theme => {
   if (typeof document !== 'undefined') {
@@ -32,7 +37,7 @@ const getInitialTheme = (): Theme => {
       return attr;
     }
   }
-  return 'light';
+  return prefersDark() ? 'dark' : 'light';
 };
 
 /** Writes the theme to the document straight away, outside React's schedule. */
@@ -45,10 +50,10 @@ const applyTheme = (theme: Theme) => {
 };
 
 /**
- * Light/dark theme with persistence. The site opens in light mode and only
- * switches to dark when the visitor toggles it; that choice is remembered.
- * Where the browser supports view transitions, the new theme wipes across
- * the page in a circle that grows out of the toggle.
+ * Light/dark theme with persistence. A saved choice wins; otherwise the site
+ * follows the operating system and keeps following it if it changes. Where
+ * the browser supports view transitions, a toggled theme wipes across the
+ * page in a circle that grows out of the toggle.
  */
 const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
@@ -56,6 +61,26 @@ const useTheme = () => {
   useEffect(() => {
     applyTheme(theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (typeof window.matchMedia !== 'function') {
+      return undefined;
+    }
+    const media = window.matchMedia('(prefers-color-scheme: dark)');
+    const onChange = (event: MediaQueryListEvent) => {
+      let saved: string | null = null;
+      try {
+        saved = localStorage.getItem(STORAGE_KEY);
+      } catch {
+        // Storage can be unavailable (private mode, blocked cookies). Follow the system.
+      }
+      if (!saved) {
+        setTheme(event.matches ? 'dark' : 'light');
+      }
+    };
+    media.addEventListener('change', onChange);
+    return () => media.removeEventListener('change', onChange);
+  }, []);
 
   const toggle = useCallback(
     (origin?: ToggleOrigin) => {

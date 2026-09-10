@@ -9,7 +9,7 @@
       content="Portfolio of John Elliott, a Boston-based software developer at MEDITECH building full-stack applications with TypeScript, Angular, React, and Node.js."
     />
     <meta name="author" content="John Elliott" />
-    <meta name="color-scheme" content="light" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="theme-color" content="#f7f4ec" />
     <link rel="canonical" href="https://www.johnedwardelliott.com/" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -42,15 +42,20 @@
       rel="stylesheet"
     />
 
-    <!-- Apply the saved theme before first paint to avoid a flash. Light is the default. -->
+    <!-- Apply the saved theme, or the system preference, before first paint to avoid a flash. -->
     <script>
       (function () {
+        var dark = false;
         try {
           var saved = localStorage.getItem('theme');
-          var dark = saved === 'dark';
-          document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+          dark = saved ? saved === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
         } catch (e) {
-          /* ignore */
+          /* Storage or matchMedia unavailable: stay light. */
+        }
+        document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
+        var meta = document.querySelector('meta[name="theme-color"]');
+        if (meta) {
+          meta.content = dark ? '#0a1424' : '#f7f4ec';
         }
       })();
     </script>
