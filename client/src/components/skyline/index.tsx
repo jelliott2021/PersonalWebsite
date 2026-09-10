@@ -109,6 +109,32 @@ const Skyline = ({ className = '' }: SkylineProps) => {
         <circle className='skyline__sun' cx={sky.x} cy={sky.y} r='13' />
       )}
 
+      {/* Slow traffic behind the city: a ferry, a rowing shell, and a plane descending toward Logan */}
+      <g className='skyline__traffic'>
+        <g className='skyline__ferry'>
+          <polygon points='1400,214 1462,214 1456,206 1406,206' />
+          <rect x='1412' y='198' width='36' height='8' rx='1' />
+          <rect x='1418' y='193' width='14' height='5' rx='1' />
+          <rect x='1440' y='194' width='3' height='4' />
+        </g>
+        <g className='skyline__shell'>
+          <polygon points='1226,213 1288,213 1292,211 1222,211' />
+          <rect x='1254' y='205' width='3' height='6' rx='1' />
+          <g className='skyline__oars'>
+            <rect x='1243' y='208' width='11' height='1' />
+            <rect x='1257' y='208' width='11' height='1' />
+          </g>
+        </g>
+        <g className='skyline__plane'>
+          <rect x='0' y='0.4' width='12' height='1.6' rx='0.8' />
+          <polygon points='4,1.2 7.5,1.2 5.5,4.4' />
+          <polygon points='4,1.2 7.5,1.2 5.5,-2' />
+          <polygon points='0,1.2 2.2,1.2 0,-1.2' />
+          <circle className='skyline__beacon' cx='12.6' cy='1.2' r='1' />
+          <circle className='skyline__strobe' cx='5.5' cy='-2' r='0.9' />
+        </g>
+      </g>
+
       <g className='skyline__city' fill='currentColor'>
         {/* Zakim Bridge deck, towers, and masts */}
         <rect x='20' y='186' width='290' height='5' />

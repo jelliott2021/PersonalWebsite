@@ -140,3 +140,138 @@
     fill-opacity: 1;
   }
 }
+
+/* Slow traffic: a ferry, a rowing shell, and a plane on cycles of minutes,
+   so they reward lingering rather than demanding attention. Each starts
+   invisible and only its keyframes show it, which also keeps them hidden
+   under reduced motion. */
+.skyline__traffic {
+  fill: currentColor;
+  fill-opacity: var(--skyline-alpha);
+}
+
+.skyline__ferry,
+.skyline__shell,
+.skyline__plane {
+  opacity: 0;
+}
+
+.skyline__ferry {
+  animation: skyline-ferry 150s linear infinite;
+}
+
+.skyline__shell {
+  animation: skyline-shell 120s linear infinite;
+  animation-delay: -70s;
+}
+
+.skyline__oars {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: skyline-row 1.8s ease-in-out infinite;
+}
+
+.skyline__plane {
+  animation: skyline-flight 200s linear infinite;
+  animation-delay: -20s;
+}
+
+.skyline__beacon,
+.skyline__strobe {
+  opacity: 0;
+}
+
+[data-theme='dark'] .skyline__beacon {
+  fill: #ff5a5a;
+  fill-opacity: 1;
+  animation: skyline-blink 1.2s steps(2, jump-none) infinite;
+}
+
+[data-theme='dark'] .skyline__strobe {
+  fill: #ffffff;
+  fill-opacity: 1;
+  animation: skyline-blink 2s steps(2, jump-none) infinite;
+  animation-delay: 0.4s;
+}
+
+@keyframes skyline-ferry {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  56% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateX(-250px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-250px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-shell {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  34% {
+    transform: translateX(200px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(200px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-row {
+  0%,
+  100% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes skyline-flight {
+  0% {
+    transform: translate(-30px, 26px);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  27% {
+    opacity: 1;
+  }
+  30% {
+    transform: translate(1470px, 74px);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(1470px, 74px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-blink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
