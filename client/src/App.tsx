@@ -8,7 +8,6 @@ import Skills from './components/skills';
 import Education from './components/education';
 import Contact from './components/contact';
 import Footer from './components/footer';
-import FreedomTrail from './components/freedomTrail';
 import useTheme from './hooks/useTheme';
 import useActiveSection from './hooks/useActiveSection';
 import useLegacyRoutes from './hooks/useLegacyRoutes';
@@ -27,7 +26,6 @@ const App = () => {
         Skip to content
       </a>
       <Navbar activeId={activeId} theme={theme} onToggleTheme={toggle} />
-      <FreedomTrail />
       <main>
         <Hero />
         <About />
