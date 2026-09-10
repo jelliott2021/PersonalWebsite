@@ -4,6 +4,7 @@ import { profile } from '../../data/profile';
 import { EDUCATION } from '../../data/education';
 import SectionHeader from '../sectionHeader';
 import Reveal from '../reveal';
+import CountUp from '../countUp';
 import './index.css';
 
 const About = () => {
@@ -85,7 +86,7 @@ const About = () => {
         <ul className='about__stats'>
           {profile.stats.map((stat, index) => (
             <Reveal tag='li' key={stat.label} className='about__stat' delay={index * 90}>
-              <span className='about__stat-value'>{stat.value}</span>
+              <CountUp className='about__stat-value' value={stat.value} />
               <span className='about__stat-label'>{stat.label}</span>
             </Reveal>
           ))}
