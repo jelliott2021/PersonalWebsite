@@ -1,84 +1,169 @@
-import React from 'react';
+import React, { RefObject, useEffect, useRef } from 'react';
 import { EXPERIENCE } from '../../data/experience';
 import SectionHeader from '../sectionHeader';
 import Reveal from '../reveal';
 import './index.css';
 
-const Experience = () => (
-  <section id='experience' className='section section--band'>
-    <div className='container'>
-      <Reveal>
-        <SectionHeader
-          index='02'
-          title='Where I’ve worked'
-          caption='Experience'
-          subtitle='Production healthcare software, financial-services QA automation, and teaching databases to a few hundred students.'
-        />
-      </Reveal>
+/** Fraction of the viewport height where a stop lights up as it scrolls past. */
+const ANCHOR = 0.66;
 
-      <ol className='timeline'>
-        {EXPERIENCE.map((item, index) => (
-          <Reveal tag='li' key={item.id} className='timeline__item' delay={index * 60}>
-            <div className='timeline__period'>
-              <span>{item.start}</span>
-              {item.end && (
-                <>
-                  <span className='timeline__period-sep' aria-hidden='true' />
-                  <span>{item.end}</span>
-                </>
-              )}
-            </div>
+/**
+ * Drives the transit-line effect: as the visitor scrolls, the red line grows
+ * from the first stop to the last and each stop lights up when the line
+ * reaches it. Positions are measured from the markers so the line follows
+ * the layout at any breakpoint. Reduced motion shows the finished line.
+ */
+const useTimelineProgress = (ref: RefObject<HTMLDivElement>) => {
+  useEffect(() => {
+    const root = ref.current;
+    if (!root) {
+      return undefined;
+    }
 
-            <div className='timeline__marker' aria-hidden='true' />
+    const reduceMotion =
+      typeof window.matchMedia === 'function' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const markers = Array.from(root.querySelectorAll<HTMLElement>('.timeline__marker'));
+    if (markers.length === 0) {
+      return undefined;
+    }
 
-            <article className='card timeline__card'>
-              <header className='timeline__head'>
-                <h3 className='timeline__role'>
-                  {item.role}
-                  <span className='timeline__company'>
-                    <span aria-hidden='true'> @ </span>
-                    <span className='sr-only'> at </span>
-                    {item.companyUrl ? (
-                      <a href={item.companyUrl} target='_blank' rel='noopener noreferrer'>
-                        {item.company}
-                      </a>
-                    ) : (
-                      item.company
-                    )}
-                  </span>
-                </h3>
-                <p className='meta timeline__meta'>
-                  <span>{item.location}</span>
-                  <span aria-hidden='true'>·</span>
-                  <span>{item.type}</span>
-                </p>
-              </header>
+    let frame = 0;
 
-              {item.summary && <p className='timeline__summary'>{item.summary}</p>}
+    const update = () => {
+      frame = 0;
+      const rootTop = root.getBoundingClientRect().top;
+      const anchor = window.innerHeight * ANCHOR;
 
-              {item.bullets.length > 0 && (
-                <ul className='bullets'>
-                  {item.bullets.map(bullet => (
-                    <li key={bullet.slice(0, 32)}>{bullet}</li>
-                  ))}
-                </ul>
-              )}
+      // Centre of each stop's dot, relative to the viewport.
+      const centers = markers.map(marker => {
+        const dot = window.getComputedStyle(marker, '::after');
+        const offset = Number.parseFloat(dot.top) || 0;
+        const size = Number.parseFloat(dot.height) || 16;
+        return marker.getBoundingClientRect().top + offset + size / 2;
+      });
 
-              {item.tech.length > 0 && (
-                <ul className='chips timeline__tech' aria-label='Technologies'>
-                  {item.tech.map(tech => (
-                    <li key={tech} className='chip chip--tech'>
-                      {tech}
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </article>
-          </Reveal>
-        ))}
-      </ol>
-    </div>
-  </section>
-);
+      const first = centers[0];
+      const last = centers[centers.length - 1];
+      const span = Math.max(1, last - first);
+      const progress = reduceMotion ? 1 : Math.min(1, Math.max(0, (anchor - first) / span));
+
+      root.style.setProperty('--track-top', `${first - rootTop}px`);
+      root.style.setProperty('--track-height', `${span}px`);
+      root.style.setProperty('--timeline-progress', progress.toFixed(4));
+
+      markers.forEach((marker, index) => {
+        const reached = reduceMotion || centers[index] <= anchor;
+        marker.classList.toggle('is-reached', reached);
+      });
+    };
+
+    const schedule = () => {
+      if (!frame) {
+        frame = window.requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    // Measure again once the scroll-in reveals have settled.
+    const settle = window.setTimeout(update, 900);
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+
+    return () => {
+      window.clearTimeout(settle);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frame) {
+        window.cancelAnimationFrame(frame);
+      }
+    };
+  }, [ref]);
+};
+
+const Experience = () => {
+  const timelineRef = useRef<HTMLDivElement>(null);
+  useTimelineProgress(timelineRef);
+
+  return (
+    <section id='experience' className='section section--band'>
+      <div className='container'>
+        <Reveal>
+          <SectionHeader
+            index='02'
+            title='Where I’ve worked'
+            caption='Experience'
+            subtitle='Production healthcare software, financial-services QA automation, and teaching databases to a few hundred students.'
+          />
+        </Reveal>
+
+        <div className='timeline' ref={timelineRef}>
+          <div className='timeline__track' aria-hidden='true' />
+          <ol className='timeline__list'>
+            {EXPERIENCE.map((item, index) => (
+              <Reveal tag='li' key={item.id} className='timeline__item' delay={index * 60}>
+                <div className='timeline__period'>
+                  <span>{item.start}</span>
+                  {item.end && (
+                    <>
+                      <span className='timeline__period-sep' aria-hidden='true' />
+                      <span>{item.end}</span>
+                    </>
+                  )}
+                </div>
+
+                <div className='timeline__marker' aria-hidden='true' />
+
+                <article className='card timeline__card'>
+                  <header className='timeline__head'>
+                    <h3 className='timeline__role'>
+                      {item.role}
+                      <span className='timeline__company'>
+                        <span aria-hidden='true'> @ </span>
+                        <span className='sr-only'> at </span>
+                        {item.companyUrl ? (
+                          <a href={item.companyUrl} target='_blank' rel='noopener noreferrer'>
+                            {item.company}
+                          </a>
+                        ) : (
+                          item.company
+                        )}
+                      </span>
+                    </h3>
+                    <p className='meta timeline__meta'>
+                      <span>{item.location}</span>
+                      <span aria-hidden='true'>·</span>
+                      <span>{item.type}</span>
+                    </p>
+                  </header>
+
+                  {item.summary && <p className='timeline__summary'>{item.summary}</p>}
+
+                  {item.bullets.length > 0 && (
+                    <ul className='bullets'>
+                      {item.bullets.map(bullet => (
+                        <li key={bullet.slice(0, 32)}>{bullet}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {item.tech.length > 0 && (
+                    <ul className='chips timeline__tech' aria-label='Technologies'>
+                      {item.tech.map(tech => (
+                        <li key={tech} className='chip chip--tech'>
+                          {tech}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </article>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export default Experience;
