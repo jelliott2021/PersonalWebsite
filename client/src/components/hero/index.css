@@ -395,3 +395,8 @@
     display: none;
   }
 }
+
+/* Live Boston weather after the time, once it has loaded. */
+.hero__weather {
+  color: var(--text-3);
+}

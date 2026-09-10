@@ -1,5 +1,6 @@
-import React, { useId } from 'react';
+import React, { CSSProperties, useId } from 'react';
 import useBostonTime from '../../hooks/useBostonTime';
+import useBostonWeather from '../../hooks/useBostonWeather';
 import './index.css';
 
 interface SkylineProps {
@@ -81,24 +82,55 @@ const WINDOWS: Window[] = FACADES.flatMap((facade, facadeIndex) => {
   return windows;
 });
 
+const round = (value: number): number => Math.round(value * 10) / 10;
+
+/** Snowflakes: where each starts, how big it is, and how it falls. */
+const FLAKES = Array.from({ length: 48 }, (_, i) => ({
+  x: Math.round(noise(i * 3 + 1) * 1440),
+  r: round(1.1 + noise(i * 3 + 2) * 1.6),
+  duration: round(9 + noise(i * 3 + 3) * 8),
+  delay: round(noise(i * 7 + 5) * -17),
+  sway: Math.round((noise(i * 5 + 4) - 0.5) * 60),
+}));
+
+/** Raindrops: slanted streaks that fall fast. */
+const DROPS = Array.from({ length: 40 }, (_, i) => ({
+  x: Math.round(noise(i * 3 + 11) * 1480),
+  length: Math.round(9 + noise(i * 3 + 12) * 10),
+  duration: round(0.9 + noise(i * 3 + 13) * 0.7),
+  delay: round(noise(i * 7 + 15) * -1.6),
+}));
+
+/** Cloud banks: position, scale, and drift offset. */
+const CLOUDS = [
+  { x: 170, y: 72, scale: 1, delay: 0 },
+  { x: 620, y: 38, scale: 1.35, delay: -30 },
+  { x: 1090, y: 84, scale: 0.9, delay: -60 },
+];
+
 /**
  * Simplified Boston skyline silhouette, drawn left to right: the Zakim
  * Bridge, Bunker Hill Monument, Custom House Tower, the Financial District,
  * Old North Church, the Prudential Tower, 200 Clarendon, Back Bay rowhouses,
  * and a couple of sailboats on the harbor. It keeps Boston time: a sun or
  * moon crosses the sky by the hour, the boats drift, and in dark mode the
- * tower windows light up and twinkle. Decorative only; the silhouette
+ * tower windows light up and twinkle. It also wears Boston's live weather:
+ * clouds, fog, rain, snow, or a storm. Decorative only; the silhouette
  * inherits `currentColor`.
  */
 const Skyline = ({ className = '' }: SkylineProps) => {
   const { hour, sunrise, sunset } = useBostonTime();
   const sky = skyPosition(hour, sunrise, sunset);
+  const condition = useBostonWeather()?.condition;
   // The skyline is drawn twice on the page, so gradient ids must not collide.
   const beamId = `beam-${useId().replace(/:/g, '')}`;
 
+  const cloudy = condition !== undefined && condition !== 'clear';
+  const raining = condition === 'rain' || condition === 'storm';
+
   return (
     <svg
-      className={`skyline ${className}`.trim()}
+      className={`skyline ${condition ? `skyline--${condition}` : ''} ${className}`.replace(/\s+/g, ' ').trim()}
       viewBox='0 0 1440 220'
       preserveAspectRatio='xMidYMax slice'
       aria-hidden='true'
@@ -107,6 +139,20 @@ const Skyline = ({ className = '' }: SkylineProps) => {
         <circle className='skyline__moon' cx={sky.x} cy={sky.y} r='11' />
       ) : (
         <circle className='skyline__sun' cx={sky.x} cy={sky.y} r='13' />
+      )}
+
+      {cloudy && (
+        <g className='skyline__clouds'>
+          {CLOUDS.map(cloud => (
+            <g key={cloud.x} transform={`translate(${cloud.x} ${cloud.y}) scale(${cloud.scale})`}>
+              <g className='skyline__cloud' style={{ animationDelay: `${cloud.delay}s` }}>
+                <ellipse cx='0' cy='0' rx='44' ry='12' />
+                <ellipse cx='-24' cy='4' rx='26' ry='10' />
+                <ellipse cx='26' cy='3' rx='30' ry='11' />
+              </g>
+            </g>
+          ))}
+        </g>
       )}
 
       {/* Slow traffic behind the city: a ferry, a rowing shell, and a plane descending toward Logan */}
@@ -245,6 +291,45 @@ const Skyline = ({ className = '' }: SkylineProps) => {
           />
         ))}
       </g>
+
+      {/* Weather over the city */}
+      {condition === 'fog' && <rect className='skyline__fog' x='0' y='90' width='1440' height='130' />}
+      {condition === 'snow' && (
+        <g className='skyline__snow'>
+          {FLAKES.map(flake => (
+            <circle
+              key={`${flake.x}-${flake.r}`}
+              className='skyline__flake'
+              cx={flake.x}
+              cy='0'
+              r={flake.r}
+              style={
+                {
+                  animationDuration: `${flake.duration}s`,
+                  animationDelay: `${flake.delay}s`,
+                  '--sway': `${flake.sway}px`,
+                } as CSSProperties
+              }
+            />
+          ))}
+        </g>
+      )}
+      {raining && (
+        <g className='skyline__rain'>
+          {DROPS.map(drop => (
+            <line
+              key={`${drop.x}-${drop.length}`}
+              className='skyline__drop'
+              x1={drop.x}
+              y1='0'
+              x2={drop.x - 3}
+              y2={drop.length}
+              style={{ animationDuration: `${drop.duration}s`, animationDelay: `${drop.delay}s` }}
+            />
+          ))}
+        </g>
+      )}
+      {condition === 'storm' && <rect className='skyline__lightning' x='0' y='0' width='1440' height='220' />}
     </svg>
   );
 };

@@ -275,3 +275,124 @@
     opacity: 0;
   }
 }
+
+/* Weather -------------------------------------------------------------- */
+
+/* Clouds drift slowly and cover the sun; heavier weather makes them denser. */
+.skyline__cloud {
+  fill: var(--text-3);
+  opacity: 0.16;
+  animation: skyline-drift-cloud 90s ease-in-out infinite alternate;
+}
+
+[data-theme='dark'] .skyline__cloud {
+  fill: #8fa2c0;
+  opacity: 0.13;
+}
+
+.skyline--overcast .skyline__cloud,
+.skyline--rain .skyline__cloud,
+.skyline--snow .skyline__cloud,
+.skyline--storm .skyline__cloud {
+  opacity: 0.26;
+}
+
+.skyline--cloudy .skyline__sun {
+  fill-opacity: 0.32;
+}
+
+.skyline--overcast .skyline__sun,
+.skyline--rain .skyline__sun,
+.skyline--snow .skyline__sun,
+.skyline--storm .skyline__sun,
+.skyline--fog .skyline__sun {
+  fill-opacity: 0.14;
+}
+
+@keyframes skyline-drift-cloud {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(70px);
+  }
+}
+
+/* Fog: a soft band over the lower city that softens the towers. */
+.skyline__fog {
+  fill: var(--bg);
+  fill-opacity: 0.65;
+}
+
+[data-theme='dark'] .skyline__fog {
+  fill: #9fb0c8;
+  opacity: 0.16;
+}
+
+/* Snow: flakes drift down and sway; rain: streaks fall fast at a slant. */
+.skyline__flake {
+  fill: #ffffff;
+  fill-opacity: 0.85;
+  animation: skyline-snow 12s linear infinite;
+}
+
+:root:not([data-theme='dark']) .skyline__flake {
+  fill: var(--text-3);
+  fill-opacity: 0.65;
+}
+
+@keyframes skyline-snow {
+  from {
+    transform: translate(0, -10px);
+  }
+  to {
+    transform: translate(var(--sway, 20px), 240px);
+  }
+}
+
+.skyline__drop {
+  stroke: var(--text-3);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-opacity: 0.6;
+  animation: skyline-rain 1.2s linear infinite;
+}
+
+[data-theme='dark'] .skyline__drop {
+  stroke: #b9c9e4;
+  stroke-opacity: 0.5;
+}
+
+@keyframes skyline-rain {
+  from {
+    transform: translate(0, -40px);
+  }
+  to {
+    transform: translate(-40px, 260px);
+  }
+}
+
+/* Storm: an occasional flash across the whole sky. */
+.skyline__lightning {
+  fill: #ffffff;
+  opacity: 0;
+  animation: skyline-lightning 14s linear infinite;
+}
+
+@keyframes skyline-lightning {
+  0%,
+  86%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+  87% {
+    opacity: 0.35;
+  }
+  88% {
+    opacity: 0.05;
+  }
+  89.5% {
+    opacity: 0.25;
+  }
+}
