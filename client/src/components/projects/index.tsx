@@ -135,7 +135,14 @@ const useStackProgress = (ref: RefObject<HTMLDivElement>) => {
 
     const update = () => {
       frame = 0;
-      const stacking = window.innerWidth >= STACK_MIN_WIDTH && !reduceMotion;
+      // Only stack when every panel fits on screen below the navbar, so a
+      // stuck panel is never cut off while it is being read.
+      const navHeight =
+        Number.parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--nav-h')) || 68;
+      const room = window.innerHeight - navHeight - 24 - cards.length * 14;
+      const fits = cards.every(card => card.offsetHeight <= room);
+      const stacking = window.innerWidth >= STACK_MIN_WIDTH && !reduceMotion && fits;
+      list.classList.toggle('featured-list--flat', !stacking);
       cards.forEach((card, index) => {
         const next = cards[index + 1];
         let covered = 0;
@@ -183,7 +190,7 @@ const FeaturedProject = ({ project, reverse, index }: FeaturedProjectProps) => (
       <div className='featured__media'>
         <ProjectMedia project={project} />
       </div>
-      <div className='featured__body card'>
+      <div className='featured__body'>
         <div className='featured__top'>
           <span className='eyebrow'>
             Featured project
