@@ -7,12 +7,20 @@ interface SkylineProps {
 }
 
 /**
- * Where the sun (6 AM to 8 PM) or moon (8 PM to 6 AM) sits in the sky:
- * an arc from the left horizon to the right, peaking in the middle.
+ * Where the sun (sunrise to sunset) or moon (sunset to sunrise) sits in the
+ * sky: an arc from the left horizon to the right, peaking in the middle.
+ * Hours are fractional Boston hours.
  */
-export const skyPosition = (hour: number) => {
-  const isNight = hour < 6 || hour >= 20;
-  const t = isNight ? ((hour + 4) % 24) / 10 : (hour - 6) / 14;
+export const skyPosition = (hour: number, sunrise: number, sunset: number) => {
+  const isNight = hour < sunrise || hour >= sunset;
+  let t: number;
+  if (isNight) {
+    const nightLength = Math.max(1, 24 - sunset + sunrise);
+    const sinceSunset = hour >= sunset ? hour - sunset : hour + 24 - sunset;
+    t = Math.min(1, sinceSunset / nightLength);
+  } else {
+    t = (hour - sunrise) / Math.max(1, sunset - sunrise);
+  }
   return {
     isNight,
     x: Math.round(120 + t * 1200),
@@ -83,8 +91,8 @@ const WINDOWS: Window[] = FACADES.flatMap((facade, facadeIndex) => {
  * inherits `currentColor`.
  */
 const Skyline = ({ className = '' }: SkylineProps) => {
-  const { hour } = useBostonTime();
-  const sky = skyPosition(hour);
+  const { hour, sunrise, sunset } = useBostonTime();
+  const sky = skyPosition(hour, sunrise, sunset);
 
   return (
     <svg
