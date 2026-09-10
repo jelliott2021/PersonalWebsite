@@ -73,3 +73,26 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Hover: the chip takes on the tool's brand colour and the logo pops. */
+.skill {
+  --skill-color: var(--accent);
+}
+
+.skill:hover {
+  border-color: var(--skill-color);
+  background: color-mix(in srgb, var(--skill-color) 10%, var(--bg));
+}
+
+.skill__icon {
+  transition: color 0.2s ease, transform 0.3s var(--ease);
+}
+
+.skill:hover .skill__icon {
+  color: var(--skill-color);
+  transform: scale(1.2) rotate(-8deg);
+}
+
+.skill:hover .skill__dot {
+  background: var(--skill-color);
+}

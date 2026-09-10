@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import { SKILL_GROUPS } from '../../data/skills';
 import SectionHeader from '../sectionHeader';
 import Reveal from '../reveal';
@@ -23,7 +23,7 @@ const Skills = () => (
             <p className='skills__blurb'>{group.blurb}</p>
             <ul className='skills__list'>
               {group.skills.map(skill => (
-                <li key={skill.name} className='skill'>
+                <li key={skill.name} className='skill' style={skill.color ? ({ '--skill-color': skill.color } as CSSProperties) : undefined}>
                   <span className='skill__icon' aria-hidden='true'>
                     {skill.icon ? React.createElement(skill.icon) : <span className='skill__dot' />}
                   </span>

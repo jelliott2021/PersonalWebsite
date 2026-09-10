@@ -141,3 +141,59 @@
 .media__size {
   opacity: 0.75;
 }
+
+/* Hover life: the poster grid and artwork drift outward, the GIF zooms, and
+   a ring pulses out from the play button while the card is hovered. */
+.media--tile::after,
+.media--gif img {
+  transition: transform 0.7s var(--ease);
+}
+
+.media--playable:hover::after,
+.featured:hover .media--tile::after,
+.project-card:hover .media--tile::after {
+  transform: scale(1.08);
+}
+
+.featured:hover .media--gif img,
+.project-card:hover .media--gif img {
+  transform: scale(1.04);
+}
+
+.featured:hover .media--playable .media__icon,
+.project-card:hover .media--playable .media__icon {
+  transform: scale(1.08);
+  opacity: 0.34;
+}
+
+.featured:hover .media--playable .media__play,
+.project-card:hover .media--playable .media__play {
+  transform: scale(1.08);
+  background: #fff;
+}
+
+.media__play::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  opacity: 0;
+}
+
+.media--playable:hover .media__play::before,
+.featured:hover .media--playable .media__play::before,
+.project-card:hover .media--playable .media__play::before {
+  animation: media-pulse 1.6s ease-out infinite;
+}
+
+@keyframes media-pulse {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.85;
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+  }
+}
