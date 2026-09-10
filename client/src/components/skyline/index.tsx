@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useId } from 'react';
 import useBostonTime from '../../hooks/useBostonTime';
 import './index.css';
 
@@ -93,6 +93,8 @@ const WINDOWS: Window[] = FACADES.flatMap((facade, facadeIndex) => {
 const Skyline = ({ className = '' }: SkylineProps) => {
   const { hour, sunrise, sunset } = useBostonTime();
   const sky = skyPosition(hour, sunrise, sunset);
+  // The skyline is drawn twice on the page, so gradient ids must not collide.
+  const beamId = `beam-${useId().replace(/:/g, '')}`;
 
   return (
     <svg
@@ -161,8 +163,13 @@ const Skyline = ({ className = '' }: SkylineProps) => {
         <rect x='1097' y='170' width='26' height='50' />
         <polygon points='1097,170 1123,170 1110,158' />
 
-        {/* Harbor */}
+        {/* Harbor, with Boston Light on its islet */}
         <rect x='1150' y='206' width='290' height='2' />
+        <polygon points='1150,220 1158,212 1170,209 1190,209 1204,213 1212,220' />
+        <polygon points='1173,209 1187,209 1185,170 1175,170' />
+        <rect x='1172' y='164' width='16' height='6' />
+        <rect x='1176' y='156' width='8' height='8' />
+        <polygon points='1174,156 1186,156 1180,150' />
         <g className='skyline__boat'>
           <polygon points='1250,204 1300,204 1290,214 1258,214' />
           <rect x='1273' y='150' width='2' height='54' />
@@ -187,6 +194,16 @@ const Skyline = ({ className = '' }: SkylineProps) => {
         strokeWidth='1.2'
         fill='none'
       />
+
+      {/* Boston Light's lantern and sweeping beam, shown in dark mode */}
+      <defs>
+        <linearGradient id={beamId} x1='0' y1='0' x2='1' y2='0'>
+          <stop offset='0' stopColor='#ffe9b3' stopOpacity='0.55' />
+          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
+        </linearGradient>
+      </defs>
+      <polygon className='skyline__beam' points='1180,160 1420,146 1420,174' fill={`url(#${beamId})`} />
+      <circle className='skyline__lantern' cx='1180' cy='160' r='2.6' />
 
       {/* Lit windows, shown in dark mode */}
       <g className='skyline__windows'>

@@ -98,3 +98,45 @@
     transform: translateX(-4px) rotate(-1.5deg);
   }
 }
+
+/* Boston Light: in dark mode the lantern glows and a beam sweeps around it. */
+.skyline__beam,
+.skyline__lantern {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.skyline__lantern {
+  fill: #ffe9b3;
+}
+
+[data-theme='dark'] .skyline__beam {
+  opacity: 1;
+  transform-box: view-box;
+  transform-origin: 1180px 160px;
+  animation: skyline-sweep 9s linear infinite;
+}
+
+[data-theme='dark'] .skyline__lantern {
+  opacity: 1;
+  animation: skyline-flash 9s ease-in-out infinite;
+}
+
+@keyframes skyline-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes skyline-flash {
+  0%,
+  100% {
+    fill-opacity: 0.45;
+  }
+  50% {
+    fill-opacity: 1;
+  }
+}
