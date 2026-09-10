@@ -9,9 +9,8 @@
       content="Portfolio of John Elliott, a Boston-based software developer at MEDITECH building full-stack applications with TypeScript, Angular, React, and Node.js."
     />
     <meta name="author" content="John Elliott" />
-    <meta name="color-scheme" content="light dark" />
-    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f4ec" />
-    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a1424" />
+    <meta name="color-scheme" content="light" />
+    <meta name="theme-color" content="#f7f4ec" />
     <link rel="canonical" href="https://www.johnedwardelliott.com/" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
@@ -43,14 +42,12 @@
       rel="stylesheet"
     />
 
-    <!-- Apply the saved (or system) theme before first paint to avoid a flash. -->
+    <!-- Apply the saved theme before first paint to avoid a flash. Light is the default. -->
     <script>
       (function () {
         try {
           var saved = localStorage.getItem('theme');
-          var dark = saved
-            ? saved === 'dark'
-            : window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var dark = saved === 'dark';
           document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light');
         } catch (e) {
           /* ignore */

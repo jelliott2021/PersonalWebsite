@@ -7,13 +7,13 @@
   overflow: hidden;
 }
 
-/* Boston skyline along the bottom edge, tinted with the accent and faded at the sides. */
+/* Boston skyline along the bottom edge, tinted with the accent and faded at the sides. Height follows the SVG ratio; min-height keeps it legible on phones. */
 .hero__skyline {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
-  height: clamp(110px, 16vw, 200px);
+  min-height: 110px;
   color: var(--accent);
   opacity: 0.12;
   pointer-events: none;
@@ -354,10 +354,6 @@
     min-height: 0;
     padding-top: 3rem;
     padding-bottom: 8rem;
-  }
-
-  .hero__skyline {
-    height: 110px;
   }
 
   .hero__badges {

@@ -4,9 +4,15 @@ export type Theme = 'light' | 'dark';
 
 const STORAGE_KEY = 'theme';
 
+/** Browser chrome colours, matching --bg in tokens.css for each theme. */
+const themeColors: Record<Theme, string> = {
+  light: '#f7f4ec',
+  dark: '#0a1424',
+};
+
 /**
  * Reads the theme that the inline script in index.html already applied to
- * <html>, falling back to the system preference.
+ * <html>. Light is the default; dark is only used when the visitor chose it.
  */
 const getInitialTheme = (): Theme => {
   if (typeof document !== 'undefined') {
@@ -15,39 +21,23 @@ const getInitialTheme = (): Theme => {
       return attr;
     }
   }
-  if (typeof window !== 'undefined' && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-    return 'dark';
-  }
   return 'light';
 };
 
 /**
- * Light/dark theme with persistence. A saved choice wins; otherwise the site
- * follows the operating system and keeps following it if it changes.
+ * Light/dark theme with persistence. The site opens in light mode and only
+ * switches to dark when the visitor toggles it; that choice is remembered.
  */
 const useTheme = () => {
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (meta) {
+      meta.content = themeColors[theme];
+    }
   }, [theme]);
-
-  useEffect(() => {
-    const media = window.matchMedia('(prefers-color-scheme: dark)');
-    const onChange = (event: MediaQueryListEvent) => {
-      let saved: string | null = null;
-      try {
-        saved = localStorage.getItem(STORAGE_KEY);
-      } catch {
-        // Storage can be unavailable (private mode, blocked cookies). Follow the system.
-      }
-      if (!saved) {
-        setTheme(event.matches ? 'dark' : 'light');
-      }
-    };
-    media.addEventListener('change', onChange);
-    return () => media.removeEventListener('change', onChange);
-  }, []);
 
   const toggle = useCallback(() => {
     const next: Theme = theme === 'dark' ? 'light' : 'dark';

@@ -1,5 +1,11 @@
+/*
+ * Keeps the viewBox's 1440:220 ratio so the full silhouette is always visible.
+ * Parents set a min-height for narrow screens, where `slice` crops the sides
+ * instead of shrinking the drawing.
+ */
 .skyline {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 1440 / 220;
 }

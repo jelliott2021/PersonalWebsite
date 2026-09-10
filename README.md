@@ -13,7 +13,7 @@ code example only; the site itself is fully static.)
 
 - **Single-page layout** with sticky navigation that highlights the section you are reading
 - **Hero, About, Experience, Projects, Skills, Education, and Contact** sections driven by data files
-- **Light and dark themes** that follow the system preference, with a manual toggle that is remembered
+- **Light and dark themes**, light by default, with a manual toggle that is remembered
 - **Featured project showcase** with click-to-play demo videos (nothing downloads until you press play)
 - **Test-account and hosting notes** for live demos, tucked behind a disclosure
 - **Scroll-reveal animations** that respect `prefers-reduced-motion`
