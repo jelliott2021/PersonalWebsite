@@ -32,31 +32,29 @@ export const profile = {
   sourceUrl: 'https://github.com/jelliott2021/PersonalWebsite',
   photo: '/linkedin.jpg',
 
-  headline: 'I build full-stack software for systems people depend on.',
+  headline: 'I build full-stack software that people can depend on.',
   intro:
-    'I’m a software developer at MEDITECH, building REST and FHIR APIs, authentication flows, ' +
-    'and the Angular admin tools behind healthcare software used by more than 1,000 ' +
-    'organizations. I work mostly in TypeScript across Angular, React, and Node.js, and I care ' +
-    'about clear APIs, thorough tests, and code that holds up in production.',
+    'I’m a full-stack developer at MEDITECH, just outside Boston, building healthcare software ' +
+    'that more than 1,000 organizations rely on every day. I finished my Computer Science degree ' +
+    'at Northeastern in three and a half years, and on the side I maintain an open-source project ' +
+    'with 240+ GitHub stars and run the server that hosts my own apps.',
 
   about: [
-    'At MEDITECH in Canton, MA, I work across the stack on production healthcare software: ' +
-      'designing REST APIs, protocols, and new resources, building the Angular administrative ' +
-      'app that manages their configuration, and working on the MFA sign-in and authentication ' +
-      'flow. I’m also part of a small team on the Cloud Platform building a new API gateway and ' +
-      'the FHIR APIs it serves. Because that software runs in more than 1,000 healthcare ' +
-      'organizations, I put a premium on reliability, clean interfaces, and tests that catch ' +
-      'problems before release.',
-    'I earned my B.S. in Computer Science from Northeastern University’s Khoury College in ' +
-      'December 2024. During my degree I spent a six-month co-op at MFS Investment Management ' +
-      'writing Java and Selenium test automation, and I was a teaching assistant for CS3200 ' +
-      'Database Design, supporting 287 students through office hours and grading.',
-    'Massachusetts is home. I grew up in Milton, just south of Boston, and I’ve spent most of ' +
-      'my life around the city and the state, from summers working in Wellfleet on the Cape to ' +
-      'college at Northeastern and now building software in Canton.',
-    'Away from the keyboard I’m usually on a course or a court: golf, tennis, pickleball, ' +
-      'spikeball, skiing, and soccer. I also tinker with 3D printing and run my side projects ' +
-      'on a home Ubuntu server I manage myself, which is how Docker Wake Up started.',
+    'At MEDITECH I get to work across the whole stack: Angular on the frontend, REST and FHIR ' +
+      'APIs and databases on the backend, and the pipelines that carry it all to production on ' +
+      'Google Cloud. ' +
+      'When your code runs in more than 1,000 healthcare organizations, reliability and good ' +
+      'tests stop being nice-to-haves, and I like that.',
+    'Outside of work I build things end to end and keep them running. I made a real-time ' +
+      'multiplayer party game with roughly 100 monthly active players. Docker Wake Up is an open-source reverse proxy ' +
+      'that has picked up 240+ stars on GitHub. Both live on a hardened Ubuntu server I manage ' +
+      'myself, with automated deployments on every push.',
+    'I earned my B.S. in Computer Science from Northeastern in three and a half years, including a ' +
+      'six-month co-op at MFS Investment Management and a semester as a teaching assistant for ' +
+      'Database Design along the way. I grew up in Milton, just south of Boston, and I’ve lived ' +
+      'and worked around the city my whole life.',
+    'When I’m not at the keyboard, I’m usually on a course or a court playing golf, tennis, pickleball, ' +
+      'skiing, or soccer.',
   ],
 
   interests: [
@@ -72,8 +70,8 @@ export const profile = {
   ],
 
   stats: [
-    { value: '1,000+', label: 'healthcare organizations run software I help build' },
-    { value: '287', label: 'students supported as a Database Design TA' },
+    { value: '1,000+', label: 'healthcare organizations use software I help build' },
+    { value: '287', label: 'students supported as a Database Design teaching assistant' },
     { value: '240+', label: 'GitHub stars on Docker Wake Up, my open-source reverse proxy' },
   ] as Stat[],
 };
