@@ -43,7 +43,7 @@ const Contact = () => {
             index='06'
             title='What’s next?'
             caption='Contact'
-            size='sm'
+            size='md'
             className='contact__sign'
           />
           <h2 className='contact__title'>Let’s talk.</h2>

@@ -101,6 +101,31 @@ const DROPS = Array.from({ length: 40 }, (_, i) => ({
   delay: round(noise(i * 7 + 15) * -1.6),
 }));
 
+/**
+ * Gulls crossing the sky: height, size, where in their flight they start,
+ * and an offset into the wing-beat cycle so they don't flap in unison.
+ */
+const GULLS = [
+  { y: 50, scale: 1, duration: 44, delay: -12, beat: 0 },
+  { y: 72, scale: 0.8, duration: 38, delay: -27, beat: -1.1 },
+  { y: 42, scale: 0.9, duration: 52, delay: -40, beat: -2.2 },
+];
+
+/** Cars on the Zakim deck: direction and timing. */
+const CARS = [
+  { back: false, duration: 14, delay: 0 },
+  { back: false, duration: 17, delay: -7 },
+  { back: true, duration: 15, delay: -3 },
+  { back: true, duration: 19, delay: -11 },
+];
+
+/** Sun glints on the harbor water. */
+const GLINTS = Array.from({ length: 9 }, (_, i) => ({
+  x: 1160 + i * 32 + Math.round(noise(i + 40) * 14),
+  delay: round(noise(i + 50) * -3),
+  duration: round(2.4 + noise(i + 60) * 2),
+}));
+
 /** Cloud banks: position, scale, and drift offset. */
 const CLOUDS = [
   { x: 170, y: 72, scale: 1, delay: 0 },
@@ -126,6 +151,8 @@ const Skyline = ({ className = '' }: SkylineProps) => {
   const gradientId = useId().replace(/:/g, '');
   const beamId = `beam-${gradientId}`;
   const flareId = `flare-${gradientId}`;
+  const haloId = `halo-${gradientId}`;
+  const moonId = `moon-${gradientId}`;
 
   const cloudy = condition !== undefined && condition !== 'clear';
   const raining = condition === 'rain' || condition === 'storm';
@@ -137,10 +164,24 @@ const Skyline = ({ className = '' }: SkylineProps) => {
       preserveAspectRatio='xMidYMax slice'
       aria-hidden='true'
       focusable='false'>
+      <defs>
+        <radialGradient id={haloId}>
+          <stop offset='0' stopColor='#f6c15a' stopOpacity='0.45' />
+          <stop offset='1' stopColor='#f6c15a' stopOpacity='0' />
+        </radialGradient>
+        {/* A second circle cut out of the first makes the crescent. */}
+        <mask id={moonId}>
+          <circle cx={sky.x} cy={sky.y} r='11' fill='#fff' />
+          <circle cx={sky.x + 5.5} cy={sky.y - 3} r='9.5' fill='#000' />
+        </mask>
+      </defs>
       {sky.isNight ? (
-        <circle className='skyline__moon' cx={sky.x} cy={sky.y} r='11' />
+        <circle className='skyline__moon' cx={sky.x} cy={sky.y} r='11' mask={`url(#${moonId})`} />
       ) : (
-        <circle className='skyline__sun' cx={sky.x} cy={sky.y} r='13' />
+        <>
+          <circle className='skyline__halo' cx={sky.x} cy={sky.y} r='34' fill={`url(#${haloId})`} />
+          <circle className='skyline__sun' cx={sky.x} cy={sky.y} r='13' />
+        </>
       )}
 
       {cloudy && (
@@ -268,6 +309,58 @@ const Skyline = ({ className = '' }: SkylineProps) => {
         strokeWidth='1.2'
         fill='none'
       />
+
+      {/* Daytime life: gulls over the city, cars on the Zakim deck, and sun on the water */}
+      <g className='skyline__gulls'>
+        {GULLS.map(gull => (
+          <g key={gull.y} transform={`translate(0 ${gull.y}) scale(${gull.scale})`}>
+            <g
+              className='skyline__gull'
+              style={{ animationDuration: `${gull.duration}s`, animationDelay: `${gull.delay}s` }}>
+              <path
+                className='skyline__wing skyline__wing--left'
+                d='M0 0 q-3.5 -3.5 -7 -0.5'
+                style={{ animationDelay: `${gull.beat}s` }}
+              />
+              <path
+                className='skyline__wing skyline__wing--right'
+                d='M0 0 q3.5 -3.5 7 -0.5'
+                style={{ animationDelay: `${gull.beat}s` }}
+              />
+            </g>
+          </g>
+        ))}
+      </g>
+      <g className='skyline__cars'>
+        {CARS.map(car => (
+          <rect
+            key={`${car.back}-${car.duration}`}
+            className={`skyline__car ${car.back ? 'skyline__car--back' : ''}`.trim()}
+            x='22'
+            y='183'
+            width='6'
+            height='2.2'
+            rx='0.6'
+            style={{ animationDuration: `${car.duration}s`, animationDelay: `${car.delay}s` }}
+          />
+        ))}
+      </g>
+      {!sky.isNight && (
+        <g className='skyline__glints'>
+          {GLINTS.map(glint => (
+            <rect
+              key={glint.x}
+              className='skyline__glint'
+              x={glint.x}
+              y='209'
+              width='6'
+              height='1.2'
+              rx='0.6'
+              style={{ animationDuration: `${glint.duration}s`, animationDelay: `${glint.delay}s` }}
+            />
+          ))}
+        </g>
+      )}
 
       {/* Boston Light's lantern and beam, shown in dark mode. The beacon turns
           like the real one: the beam sweeps right along the horizon, swings

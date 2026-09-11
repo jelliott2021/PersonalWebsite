@@ -41,14 +41,11 @@
   fill-opacity: 0.55;
 }
 
-/* Tower windows light up in dark mode; some stay dark, some twinkle. */
+/* Tower windows. In dark mode they light up warm, some dark, some twinkling.
+   In light mode they are plain glass: faint, still cutouts in the page colour. */
 .skyline__windows {
-  opacity: 0;
-  transition: opacity 0.8s ease;
-}
-
-[data-theme='dark'] .skyline__windows {
   opacity: 1;
+  transition: opacity 0.8s ease;
 }
 
 .skyline__window {
@@ -58,6 +55,19 @@
 
 .skyline__window--dark {
   fill-opacity: 0.06;
+}
+
+:root:not([data-theme='dark']) .skyline__window {
+  fill: var(--bg);
+  fill-opacity: 0.9;
+}
+
+:root:not([data-theme='dark']) .skyline__window--dark {
+  fill-opacity: 0.4;
+}
+
+:root:not([data-theme='dark']) .skyline__window--twinkle {
+  animation: none;
 }
 
 .skyline__window--twinkle {
@@ -452,5 +462,189 @@
   }
   89.5% {
     opacity: 0.25;
+  }
+}
+
+/* Daytime life --------------------------------------------------------- */
+
+/* A soft halo breathes around the sun; heavy weather all but hides it. */
+.skyline__halo {
+  opacity: 0.85;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: skyline-breathe 6s ease-in-out infinite alternate;
+}
+
+[data-theme='dark'] .skyline__halo {
+  opacity: 0.45;
+}
+
+.skyline--cloudy .skyline__halo {
+  opacity: 0.4;
+}
+
+.skyline--overcast .skyline__halo,
+.skyline--rain .skyline__halo,
+.skyline--snow .skyline__halo,
+.skyline--storm .skyline__halo,
+.skyline--fog .skyline__halo {
+  opacity: 0.12;
+}
+
+@keyframes skyline-breathe {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.18);
+  }
+}
+
+/* Gulls glide across the sky in daylight, wings beating slowly. */
+.skyline__gull {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-opacity: calc(var(--skyline-alpha) * 3.2);
+  opacity: 0;
+  animation: skyline-glide 44s linear infinite;
+}
+
+/* Each wing pivots at the body, the two in opposite directions, so the beat
+   reads as wings rising and falling rather than the shape stretching. */
+.skyline__wing {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  /* Two quick beats, then a long glide with the wings held slightly raised. */
+  animation: skyline-flap-left 3s ease-in-out infinite;
+}
+
+.skyline__wing--right {
+  animation-name: skyline-flap-right;
+}
+
+[data-theme='dark'] .skyline__gulls {
+  display: none;
+}
+
+@keyframes skyline-glide {
+  0% {
+    transform: translate(-40px, 0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(1500px, -12px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-flap-left {
+  0%,
+  44%,
+  100% {
+    transform: rotate(12deg);
+  }
+  8%,
+  26% {
+    transform: rotate(46deg);
+  }
+  17%,
+  35% {
+    transform: rotate(-20deg);
+  }
+}
+
+@keyframes skyline-flap-right {
+  0%,
+  44%,
+  100% {
+    transform: rotate(-12deg);
+  }
+  8%,
+  26% {
+    transform: rotate(-46deg);
+  }
+  17%,
+  35% {
+    transform: rotate(20deg);
+  }
+}
+
+/* Cars cross the Zakim deck both ways; at night they are headlights. */
+.skyline__car {
+  fill: currentColor;
+  fill-opacity: calc(var(--skyline-alpha) * 4);
+  opacity: 0;
+  animation: skyline-drive 14s linear infinite;
+}
+
+.skyline__car--back {
+  animation-name: skyline-drive-back;
+}
+
+[data-theme='dark'] .skyline__car {
+  fill: #ffe9b3;
+  fill-opacity: 0.85;
+}
+
+@keyframes skyline-drive {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(268px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-drive-back {
+  0% {
+    transform: translateX(268px);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+
+/* Sun on the harbor: small glints that come and go on the water. */
+.skyline__glint {
+  fill: #f0a83a;
+  fill-opacity: 0;
+  animation: skyline-shimmer 3s ease-in-out infinite;
+}
+
+[data-theme='dark'] .skyline__glint {
+  fill: #dfe8f5;
+}
+
+@keyframes skyline-shimmer {
+  0%,
+  100% {
+    fill-opacity: 0;
+  }
+  50% {
+    fill-opacity: 0.75;
   }
 }
