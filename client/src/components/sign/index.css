@@ -127,3 +127,24 @@
     white-space: normal;
   }
 }
+
+/* Dark mode: the white strip goes to a soft light grey, still the pale strip
+   of a real platform sign but without glaring against the navy, and the
+   line band is dimmed a touch to match. */
+[data-theme='dark'] .sign {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+[data-theme='dark'] .sign__band {
+  filter: saturate(0.92) brightness(0.88);
+}
+
+[data-theme='dark'] .sign__foot {
+  background: #a1a2a1;
+  color: #141414;
+  border-top: 1px solid rgba(0, 0, 0, 0.18);
+}
+
+[data-theme='dark'] .sign__num {
+  color: #5c5f5c;
+}

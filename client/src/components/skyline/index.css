@@ -1,5 +1,650 @@
+/*
+ * Keeps the viewBox's 1440:220 ratio so the full silhouette is always visible.
+ * Parents set a min-height for narrow screens, where `slice` crops the sides
+ * instead of shrinking the drawing, and set --skyline-alpha for how faint
+ * the silhouette should be. Sun, moon, and windows carry their own colours.
+ */
 .skyline {
   display: block;
   width: 100%;
-  height: 100%;
+  height: auto;
+  aspect-ratio: 1440 / 220;
+  --skyline-alpha: 0.12;
+  color: var(--accent);
+}
+
+.skyline__city {
+  fill-opacity: var(--skyline-alpha);
+}
+
+.skyline__cables {
+  stroke-opacity: calc(var(--skyline-alpha) * 0.8);
+}
+
+/* Sun by day, moon by night, placed along an arc by the hour in Boston. */
+.skyline__sun {
+  fill: #f0a83a;
+  fill-opacity: 0.5;
+}
+
+.skyline__moon {
+  fill: #8e9db8;
+  fill-opacity: 0.7;
+}
+
+[data-theme='dark'] .skyline__sun {
+  fill-opacity: 0.35;
+}
+
+[data-theme='dark'] .skyline__moon {
+  fill: #f3efe3;
+  fill-opacity: 0.55;
+}
+
+/* Tower windows. In dark mode they light up warm, some dark, some twinkling.
+   In light mode they are plain glass: faint, still cutouts in the page colour. */
+.skyline__windows {
+  opacity: 1;
+  transition: opacity 0.8s ease;
+}
+
+.skyline__window {
+  fill: #ffd27a;
+  fill-opacity: 0.7;
+}
+
+.skyline__window--dark {
+  fill-opacity: 0.06;
+}
+
+:root:not([data-theme='dark']) .skyline__window {
+  fill: var(--bg);
+  fill-opacity: 0.9;
+}
+
+:root:not([data-theme='dark']) .skyline__window--dark {
+  fill-opacity: 0.4;
+}
+
+:root:not([data-theme='dark']) .skyline__window--twinkle {
+  animation: none;
+}
+
+.skyline__window--twinkle {
+  animation: skyline-twinkle 4s ease-in-out infinite;
+}
+
+@keyframes skyline-twinkle {
+  0%,
+  100% {
+    fill-opacity: 0.75;
+  }
+  50% {
+    fill-opacity: 0.1;
+  }
+}
+
+/* Sailboats rock gently on the harbour. */
+.skyline__boat {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: skyline-drift 8s ease-in-out infinite;
+}
+
+.skyline__boat--small {
+  animation-duration: 10.5s;
+  animation-delay: -3s;
+}
+
+@keyframes skyline-drift {
+  0%,
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  25% {
+    transform: translateX(5px) rotate(1.5deg);
+  }
+  75% {
+    transform: translateX(-4px) rotate(-1.5deg);
+  }
+}
+
+/* Boston Light: in dark mode the lantern glows and the beacon turns. Seen
+   side-on, a turning beam sweeps out to the right, foreshortens and flares
+   as it swings toward the viewer, sweeps out to the left, then dims as it
+   turns away, once every ten seconds like the real light. The horizontal
+   scale follows a cosine; the flare peaks when the beam points at us. */
+.skyline__beam,
+.skyline__flare,
+.skyline__lantern {
+  opacity: 0;
+  transition: opacity 0.8s ease;
+}
+
+.skyline__lantern {
+  fill: #ffe9b3;
+}
+
+[data-theme='dark'] .skyline__beam {
+  opacity: 1;
+  transform-box: view-box;
+  transform-origin: 1180px 160px;
+  animation: skyline-sweep 10s linear infinite;
+}
+
+[data-theme='dark'] .skyline__flare {
+  opacity: 0;
+  animation: skyline-flare 10s linear infinite;
+}
+
+[data-theme='dark'] .skyline__lantern {
+  opacity: 1;
+  animation: skyline-flash 10s linear infinite;
+}
+
+@keyframes skyline-sweep {
+  0% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+  12.5% {
+    transform: scale(0.707, 1.5);
+    opacity: 1;
+  }
+  25% {
+    transform: scale(0, 2.4);
+    opacity: 1;
+  }
+  37.5% {
+    transform: scale(-0.707, 1.5);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(-1, 1);
+    opacity: 1;
+  }
+  62.5% {
+    transform: scale(-0.707, 1.15);
+    opacity: 0.45;
+  }
+  75% {
+    transform: scale(0, 1.3);
+    opacity: 0.2;
+  }
+  87.5% {
+    transform: scale(0.707, 1.15);
+    opacity: 0.45;
+  }
+  100% {
+    transform: scale(1, 1);
+    opacity: 1;
+  }
+}
+
+@keyframes skyline-flare {
+  0%,
+  16%,
+  34%,
+  100% {
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes skyline-flash {
+  0%,
+  100% {
+    fill-opacity: 0.4;
+  }
+  20% {
+    fill-opacity: 0.6;
+  }
+  25% {
+    fill-opacity: 1;
+  }
+  30% {
+    fill-opacity: 0.6;
+  }
+}
+
+/* Slow traffic: a ferry, a rowing shell, and a plane on cycles of minutes,
+   so they reward lingering rather than demanding attention. Each starts
+   invisible and only its keyframes show it, which also keeps them hidden
+   under reduced motion. */
+.skyline__traffic {
+  fill: currentColor;
+  fill-opacity: var(--skyline-alpha);
+}
+
+.skyline__ferry,
+.skyline__shell,
+.skyline__plane {
+  opacity: 0;
+}
+
+.skyline__ferry {
+  animation: skyline-ferry 150s linear infinite;
+}
+
+.skyline__shell {
+  animation: skyline-shell 120s linear infinite;
+  animation-delay: -70s;
+}
+
+.skyline__oars {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: skyline-row 1.8s ease-in-out infinite;
+}
+
+.skyline__plane {
+  animation: skyline-flight 200s linear infinite;
+  animation-delay: -20s;
+}
+
+.skyline__beacon,
+.skyline__strobe {
+  opacity: 0;
+}
+
+[data-theme='dark'] .skyline__beacon {
+  fill: #ff5a5a;
+  fill-opacity: 1;
+  animation: skyline-blink 1.2s steps(2, jump-none) infinite;
+}
+
+[data-theme='dark'] .skyline__strobe {
+  fill: #ffffff;
+  fill-opacity: 1;
+  animation: skyline-blink 2s steps(2, jump-none) infinite;
+  animation-delay: 0.4s;
+}
+
+@keyframes skyline-ferry {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  4% {
+    opacity: 1;
+  }
+  56% {
+    opacity: 1;
+  }
+  60% {
+    transform: translateX(-250px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-250px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-shell {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  30% {
+    opacity: 1;
+  }
+  34% {
+    transform: translateX(200px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(200px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-row {
+  0%,
+  100% {
+    transform: rotate(-9deg);
+  }
+  50% {
+    transform: rotate(9deg);
+  }
+}
+
+@keyframes skyline-flight {
+  0% {
+    transform: translate(-30px, 26px);
+    opacity: 0;
+  }
+  3% {
+    opacity: 1;
+  }
+  27% {
+    opacity: 1;
+  }
+  30% {
+    transform: translate(1470px, 74px);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(1470px, 74px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-blink {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+/* Weather -------------------------------------------------------------- */
+
+/* Clouds drift slowly and cover the sun; heavier weather makes them denser. */
+.skyline__cloud {
+  fill: var(--text-3);
+  opacity: 0.16;
+  animation: skyline-drift-cloud 90s ease-in-out infinite alternate;
+}
+
+[data-theme='dark'] .skyline__cloud {
+  fill: #8fa2c0;
+  opacity: 0.13;
+}
+
+.skyline--overcast .skyline__cloud,
+.skyline--rain .skyline__cloud,
+.skyline--snow .skyline__cloud,
+.skyline--storm .skyline__cloud {
+  opacity: 0.26;
+}
+
+.skyline--cloudy .skyline__sun {
+  fill-opacity: 0.32;
+}
+
+.skyline--overcast .skyline__sun,
+.skyline--rain .skyline__sun,
+.skyline--snow .skyline__sun,
+.skyline--storm .skyline__sun,
+.skyline--fog .skyline__sun {
+  fill-opacity: 0.14;
+}
+
+@keyframes skyline-drift-cloud {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(70px);
+  }
+}
+
+/* Fog: a soft band over the lower city that softens the towers. */
+.skyline__fog {
+  fill: var(--bg);
+  fill-opacity: 0.65;
+}
+
+[data-theme='dark'] .skyline__fog {
+  fill: #9fb0c8;
+  opacity: 0.16;
+}
+
+/* Snow: flakes drift down and sway; rain: streaks fall fast at a slant. */
+.skyline__flake {
+  fill: #ffffff;
+  fill-opacity: 0.85;
+  animation: skyline-snow 12s linear infinite;
+}
+
+:root:not([data-theme='dark']) .skyline__flake {
+  fill: var(--text-3);
+  fill-opacity: 0.65;
+}
+
+@keyframes skyline-snow {
+  from {
+    transform: translate(0, -10px);
+  }
+  to {
+    transform: translate(var(--sway, 20px), 240px);
+  }
+}
+
+.skyline__drop {
+  stroke: var(--text-3);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-opacity: 0.6;
+  animation: skyline-rain 1.2s linear infinite;
+}
+
+[data-theme='dark'] .skyline__drop {
+  stroke: #b9c9e4;
+  stroke-opacity: 0.5;
+}
+
+@keyframes skyline-rain {
+  from {
+    transform: translate(0, -40px);
+  }
+  to {
+    transform: translate(-40px, 260px);
+  }
+}
+
+/* Storm: an occasional flash across the whole sky. */
+.skyline__lightning {
+  fill: #ffffff;
+  opacity: 0;
+  animation: skyline-lightning 14s linear infinite;
+}
+
+@keyframes skyline-lightning {
+  0%,
+  86%,
+  92%,
+  100% {
+    opacity: 0;
+  }
+  87% {
+    opacity: 0.35;
+  }
+  88% {
+    opacity: 0.05;
+  }
+  89.5% {
+    opacity: 0.25;
+  }
+}
+
+/* Daytime life --------------------------------------------------------- */
+
+/* A soft halo breathes around the sun; heavy weather all but hides it. */
+.skyline__halo {
+  opacity: 0.85;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: skyline-breathe 6s ease-in-out infinite alternate;
+}
+
+[data-theme='dark'] .skyline__halo {
+  opacity: 0.45;
+}
+
+.skyline--cloudy .skyline__halo {
+  opacity: 0.4;
+}
+
+.skyline--overcast .skyline__halo,
+.skyline--rain .skyline__halo,
+.skyline--snow .skyline__halo,
+.skyline--storm .skyline__halo,
+.skyline--fog .skyline__halo {
+  opacity: 0.12;
+}
+
+@keyframes skyline-breathe {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.18);
+  }
+}
+
+/* Gulls glide across the sky in daylight, wings beating slowly. */
+.skyline__gull {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-opacity: calc(var(--skyline-alpha) * 3.2);
+  opacity: 0;
+  animation: skyline-glide 44s linear infinite;
+}
+
+/* Each wing pivots at the body, the two in opposite directions, so the beat
+   reads as wings rising and falling rather than the shape stretching. */
+.skyline__wing {
+  transform-box: view-box;
+  transform-origin: 0 0;
+  /* Two quick beats, then a long glide with the wings held slightly raised. */
+  animation: skyline-flap-left 3s ease-in-out infinite;
+}
+
+.skyline__wing--right {
+  animation-name: skyline-flap-right;
+}
+
+[data-theme='dark'] .skyline__gulls {
+  display: none;
+}
+
+@keyframes skyline-glide {
+  0% {
+    transform: translate(-40px, 0);
+    opacity: 0;
+  }
+  5% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(1500px, -12px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-flap-left {
+  0%,
+  44%,
+  100% {
+    transform: rotate(12deg);
+  }
+  8%,
+  26% {
+    transform: rotate(46deg);
+  }
+  17%,
+  35% {
+    transform: rotate(-20deg);
+  }
+}
+
+@keyframes skyline-flap-right {
+  0%,
+  44%,
+  100% {
+    transform: rotate(-12deg);
+  }
+  8%,
+  26% {
+    transform: rotate(-46deg);
+  }
+  17%,
+  35% {
+    transform: rotate(20deg);
+  }
+}
+
+/* Cars cross the Zakim deck both ways; at night they are headlights. */
+.skyline__car {
+  fill: currentColor;
+  fill-opacity: calc(var(--skyline-alpha) * 4);
+  opacity: 0;
+  animation: skyline-drive 14s linear infinite;
+}
+
+.skyline__car--back {
+  animation-name: skyline-drive-back;
+}
+
+[data-theme='dark'] .skyline__car {
+  fill: #ffe9b3;
+  fill-opacity: 0.85;
+}
+
+@keyframes skyline-drive {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(268px);
+    opacity: 0;
+  }
+}
+
+@keyframes skyline-drive-back {
+  0% {
+    transform: translateX(268px);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  94% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+
+/* Sun on the harbor: small glints that come and go on the water. */
+.skyline__glint {
+  fill: #f0a83a;
+  fill-opacity: 0;
+  animation: skyline-shimmer 3s ease-in-out infinite;
+}
+
+[data-theme='dark'] .skyline__glint {
+  fill: #dfe8f5;
+}
+
+@keyframes skyline-shimmer {
+  0%,
+  100% {
+    fill-opacity: 0;
+  }
+  50% {
+    fill-opacity: 0.75;
+  }
 }

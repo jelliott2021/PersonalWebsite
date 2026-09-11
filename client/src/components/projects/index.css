@@ -344,3 +344,19 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* Hover: the featured pair lifts together, media a touch more than the card. */
+.featured__media {
+  transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+
+.featured:hover .featured__media {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg), 0 36px 60px -30px rgba(0, 0, 0, 0.35);
+}
+
+.featured:hover .featured__body {
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-lg);
+}

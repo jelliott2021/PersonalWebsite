@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { CSSProperties, useId } from 'react';
+import useBostonTime from '../../hooks/useBostonTime';
+import useBostonWeather from '../../hooks/useBostonWeather';
 import './index.css';
 
 interface SkylineProps {
@@ -6,96 +8,433 @@ interface SkylineProps {
 }
 
 /**
+ * Where the sun (sunrise to sunset) or moon (sunset to sunrise) sits in the
+ * sky: an arc from the left horizon to the right, peaking in the middle.
+ * Hours are fractional Boston hours.
+ */
+export const skyPosition = (hour: number, sunrise: number, sunset: number) => {
+  const isNight = hour < sunrise || hour >= sunset;
+  let t: number;
+  if (isNight) {
+    const nightLength = Math.max(1, 24 - sunset + sunrise);
+    const sinceSunset = hour >= sunset ? hour - sunset : hour + 24 - sunset;
+    t = Math.min(1, sinceSunset / nightLength);
+  } else {
+    t = (hour - sunrise) / Math.max(1, sunset - sunrise);
+  }
+  return {
+    isNight,
+    x: Math.round(120 + t * 1200),
+    y: Math.round(150 - Math.sin(Math.PI * t) * 110),
+  };
+};
+
+/** Tower facades that get lit windows: the face rectangle and its window grid. */
+const FACADES = [
+  { x: 458, y: 76, w: 34, h: 72, cols: 2, rows: 4 }, // Custom House Tower
+  { x: 520, y: 140, w: 45, h: 76, cols: 3, rows: 4 },
+  { x: 570, y: 118, w: 55, h: 98, cols: 3, rows: 5 },
+  { x: 630, y: 150, w: 40, h: 66, cols: 2, rows: 3 },
+  { x: 675, y: 130, w: 32, h: 86, cols: 2, rows: 4 },
+  { x: 810, y: 56, w: 60, h: 158, cols: 3, rows: 8 }, // Prudential Tower
+  { x: 900, y: 66, w: 52, h: 148, cols: 3, rows: 7 }, // 200 Clarendon
+];
+
+type WindowKind = 'lit' | 'twinkle' | 'dark';
+
+interface Window {
+  x: number;
+  y: number;
+  kind: WindowKind;
+  delay: number;
+  duration: number;
+}
+
+/** Stable pseudo-random value in [0, 1) so the lit pattern never reshuffles. */
+const noise = (n: number): number => {
+  const x = Math.sin(n * 12.9898) * 43758.5453;
+  return x - Math.floor(x);
+};
+
+const WINDOWS: Window[] = FACADES.flatMap((facade, facadeIndex) => {
+  const cellW = facade.w / facade.cols;
+  const cellH = facade.h / facade.rows;
+  const windows: Window[] = [];
+  for (let row = 0; row < facade.rows; row += 1) {
+    for (let col = 0; col < facade.cols; col += 1) {
+      const seed = facadeIndex * 100 + row * facade.cols + col;
+      const roll = noise(seed);
+      let kind: WindowKind = 'lit';
+      if (roll < 0.18) {
+        kind = 'dark';
+      } else if (roll < 0.5) {
+        kind = 'twinkle';
+      }
+      windows.push({
+        x: Math.round((facade.x + cellW * col + cellW / 2 - 1.5) * 10) / 10,
+        y: Math.round((facade.y + cellH * row + cellH / 2 - 2) * 10) / 10,
+        kind,
+        delay: Math.round(noise(seed + 7) * 60) / 10,
+        duration: Math.round((3 + noise(seed + 13) * 4) * 10) / 10,
+      });
+    }
+  }
+  return windows;
+});
+
+const round = (value: number): number => Math.round(value * 10) / 10;
+
+/** Snowflakes: where each starts, how big it is, and how it falls. */
+const FLAKES = Array.from({ length: 48 }, (_, i) => ({
+  x: Math.round(noise(i * 3 + 1) * 1440),
+  r: round(1.1 + noise(i * 3 + 2) * 1.6),
+  duration: round(9 + noise(i * 3 + 3) * 8),
+  delay: round(noise(i * 7 + 5) * -17),
+  sway: Math.round((noise(i * 5 + 4) - 0.5) * 60),
+}));
+
+/** Raindrops: slanted streaks that fall fast. */
+const DROPS = Array.from({ length: 40 }, (_, i) => ({
+  x: Math.round(noise(i * 3 + 11) * 1480),
+  length: Math.round(9 + noise(i * 3 + 12) * 10),
+  duration: round(0.9 + noise(i * 3 + 13) * 0.7),
+  delay: round(noise(i * 7 + 15) * -1.6),
+}));
+
+/**
+ * Gulls crossing the sky: height, size, where in their flight they start,
+ * and an offset into the wing-beat cycle so they don't flap in unison.
+ */
+const GULLS = [
+  { y: 50, scale: 1, duration: 44, delay: -12, beat: 0 },
+  { y: 72, scale: 0.8, duration: 38, delay: -27, beat: -1.1 },
+  { y: 42, scale: 0.9, duration: 52, delay: -40, beat: -2.2 },
+];
+
+/** Cars on the Zakim deck: direction and timing. */
+const CARS = [
+  { back: false, duration: 14, delay: 0 },
+  { back: false, duration: 17, delay: -7 },
+  { back: true, duration: 15, delay: -3 },
+  { back: true, duration: 19, delay: -11 },
+];
+
+/** Sun glints on the harbor water. */
+const GLINTS = Array.from({ length: 9 }, (_, i) => ({
+  x: 1160 + i * 32 + Math.round(noise(i + 40) * 14),
+  delay: round(noise(i + 50) * -3),
+  duration: round(2.4 + noise(i + 60) * 2),
+}));
+
+/** Cloud banks: position, scale, and drift offset. */
+const CLOUDS = [
+  { x: 170, y: 72, scale: 1, delay: 0 },
+  { x: 620, y: 38, scale: 1.35, delay: -30 },
+  { x: 1090, y: 84, scale: 0.9, delay: -60 },
+];
+
+/**
  * Simplified Boston skyline silhouette, drawn left to right: the Zakim
  * Bridge, Bunker Hill Monument, Custom House Tower, the Financial District,
  * Old North Church, the Prudential Tower, 200 Clarendon, Back Bay rowhouses,
- * and a couple of sailboats on the harbor. Decorative only; it inherits
- * `currentColor` so the parent controls tint and opacity.
+ * and a couple of sailboats on the harbor. It keeps Boston time: a sun or
+ * moon crosses the sky by the hour, the boats drift, and in dark mode the
+ * tower windows light up and twinkle. It also wears Boston's live weather:
+ * clouds, fog, rain, snow, or a storm. Decorative only; the silhouette
+ * inherits `currentColor`.
  */
-const Skyline = ({ className = '' }: SkylineProps) => (
-  <svg
-    className={`skyline ${className}`.trim()}
-    viewBox='0 0 1440 220'
-    preserveAspectRatio='xMidYMax slice'
-    aria-hidden='true'
-    focusable='false'>
-    <g fill='currentColor'>
-      {/* Zakim Bridge deck, towers, and masts */}
-      <rect x='20' y='186' width='290' height='5' />
-      <polygon points='100,220 107,100 113,100 120,220' />
-      <rect x='108.5' y='62' width='3' height='40' />
-      <polygon points='205,220 212,100 218,100 225,220' />
-      <rect x='213.5' y='62' width='3' height='40' />
+const Skyline = ({ className = '' }: SkylineProps) => {
+  const { hour, sunrise, sunset } = useBostonTime();
+  const sky = skyPosition(hour, sunrise, sunset);
+  const condition = useBostonWeather()?.condition;
+  // The skyline is drawn twice on the page, so gradient ids must not collide.
+  const gradientId = useId().replace(/:/g, '');
+  const beamId = `beam-${gradientId}`;
+  const flareId = `flare-${gradientId}`;
+  const haloId = `halo-${gradientId}`;
+  const moonId = `moon-${gradientId}`;
 
-      {/* Bunker Hill Monument */}
-      <polygon points='325,220 341,220 337,108 333,98 329,108' />
+  const cloudy = condition !== undefined && condition !== 'clear';
+  const raining = condition === 'rain' || condition === 'storm';
 
-      {/* Charlestown and North End low-rise */}
-      <rect x='355' y='178' width='30' height='42' />
-      <rect x='390' y='168' width='25' height='52' />
-      <rect x='418' y='185' width='20' height='35' />
+  return (
+    <svg
+      className={`skyline ${condition ? `skyline--${condition}` : ''} ${className}`.replace(/\s+/g, ' ').trim()}
+      viewBox='0 0 1440 220'
+      preserveAspectRatio='xMidYMax slice'
+      aria-hidden='true'
+      focusable='false'>
+      <defs>
+        <radialGradient id={haloId}>
+          <stop offset='0' stopColor='#f6c15a' stopOpacity='0.45' />
+          <stop offset='1' stopColor='#f6c15a' stopOpacity='0' />
+        </radialGradient>
+        {/* A second circle cut out of the first makes the crescent. */}
+        <mask id={moonId}>
+          <circle cx={sky.x} cy={sky.y} r='11' fill='#fff' />
+          <circle cx={sky.x + 5.5} cy={sky.y - 3} r='9.5' fill='#000' />
+        </mask>
+      </defs>
+      {sky.isNight ? (
+        <circle className='skyline__moon' cx={sky.x} cy={sky.y} r='11' mask={`url(#${moonId})`} />
+      ) : (
+        <>
+          <circle className='skyline__halo' cx={sky.x} cy={sky.y} r='34' fill={`url(#${haloId})`} />
+          <circle className='skyline__sun' cx={sky.x} cy={sky.y} r='13' />
+        </>
+      )}
 
-      {/* Custom House Tower */}
-      <rect x='440' y='150' width='70' height='70' />
-      <rect x='458' y='70' width='34' height='80' />
-      <polygon points='456,70 494,70 475,40' />
-      <rect x='473' y='32' width='4' height='8' />
+      {cloudy && (
+        <g className='skyline__clouds'>
+          {CLOUDS.map(cloud => (
+            <g key={cloud.x} transform={`translate(${cloud.x} ${cloud.y}) scale(${cloud.scale})`}>
+              <g className='skyline__cloud' style={{ animationDelay: `${cloud.delay}s` }}>
+                <ellipse cx='0' cy='0' rx='44' ry='12' />
+                <ellipse cx='-24' cy='4' rx='26' ry='10' />
+                <ellipse cx='26' cy='3' rx='30' ry='11' />
+              </g>
+            </g>
+          ))}
+        </g>
+      )}
 
-      {/* Financial District */}
-      <rect x='520' y='135' width='45' height='85' />
-      <rect x='570' y='112' width='55' height='108' />
-      <rect x='630' y='145' width='40' height='75' />
-      <rect x='675' y='125' width='32' height='95' />
-      <rect x='712' y='160' width='28' height='60' />
+      {/* Slow traffic behind the city: a ferry, a rowing shell, and a plane descending toward Logan */}
+      <g className='skyline__traffic'>
+        <g className='skyline__ferry'>
+          <polygon points='1400,214 1462,214 1456,206 1406,206' />
+          <rect x='1412' y='198' width='36' height='8' rx='1' />
+          <rect x='1418' y='193' width='14' height='5' rx='1' />
+          <rect x='1440' y='194' width='3' height='4' />
+        </g>
+        <g className='skyline__shell'>
+          <polygon points='1226,213 1288,213 1292,211 1222,211' />
+          <rect x='1254' y='205' width='3' height='6' rx='1' />
+          <g className='skyline__oars'>
+            <rect x='1243' y='208' width='11' height='1' />
+            <rect x='1257' y='208' width='11' height='1' />
+          </g>
+        </g>
+        <g className='skyline__plane'>
+          <rect x='0' y='0.4' width='12' height='1.6' rx='0.8' />
+          <polygon points='4,1.2 7.5,1.2 5.5,4.4' />
+          <polygon points='4,1.2 7.5,1.2 5.5,-2' />
+          <polygon points='0,1.2 2.2,1.2 0,-1.2' />
+          <circle className='skyline__beacon' cx='12.6' cy='1.2' r='1' />
+          <circle className='skyline__strobe' cx='5.5' cy='-2' r='0.9' />
+        </g>
+      </g>
 
-      {/* Old North Church */}
-      <rect x='745' y='175' width='36' height='45' />
-      <rect x='753' y='120' width='20' height='55' />
-      <polygon points='751,120 775,120 763,72' />
+      <g className='skyline__city' fill='currentColor'>
+        {/* Zakim Bridge deck, towers, and masts */}
+        <rect x='20' y='186' width='290' height='5' />
+        <polygon points='100,220 107,100 113,100 120,220' />
+        <rect x='108.5' y='62' width='3' height='40' />
+        <polygon points='205,220 212,100 218,100 225,220' />
+        <rect x='213.5' y='62' width='3' height='40' />
 
-      {/* Prudential Tower */}
-      <rect x='810' y='48' width='60' height='172' />
-      <rect x='828' y='42' width='24' height='6' />
-      <rect x='838' y='18' width='4' height='30' />
+        {/* Bunker Hill Monument */}
+        <polygon points='325,220 341,220 337,108 333,98 329,108' />
 
-      {/* 200 Clarendon */}
-      <polygon points='898,220 898,58 954,50 954,220' />
+        {/* Charlestown and North End low-rise */}
+        <rect x='355' y='178' width='30' height='42' />
+        <rect x='390' y='168' width='25' height='52' />
+        <rect x='418' y='185' width='20' height='35' />
 
-      {/* Back Bay rowhouses */}
-      <rect x='985' y='165' width='26' height='55' />
-      <polygon points='985,165 1011,165 998,153' />
-      <rect x='1013' y='172' width='26' height='48' />
-      <polygon points='1013,172 1039,172 1026,160' />
-      <rect x='1041' y='168' width='26' height='52' />
-      <polygon points='1041,168 1067,168 1054,156' />
-      <rect x='1069' y='175' width='26' height='45' />
-      <polygon points='1069,175 1095,175 1082,163' />
-      <rect x='1097' y='170' width='26' height='50' />
-      <polygon points='1097,170 1123,170 1110,158' />
+        {/* Custom House Tower */}
+        <rect x='440' y='150' width='70' height='70' />
+        <rect x='458' y='70' width='34' height='80' />
+        <polygon points='456,70 494,70 475,40' />
+        <rect x='473' y='32' width='4' height='8' />
 
-      {/* Harbor */}
-      <rect x='1150' y='206' width='290' height='2' />
-      <polygon points='1250,204 1300,204 1290,214 1258,214' />
-      <rect x='1273' y='150' width='2' height='54' />
-      <polygon points='1276,152 1276,202 1298,202' />
-      <polygon points='1271,160 1271,202 1253,202' />
-      <polygon points='1380,208 1412,208 1406,214 1385,214' />
-      <rect x='1394' y='175' width='2' height='33' />
-      <polygon points='1397,177 1397,206 1411,206' />
+        {/* Financial District */}
+        <rect x='520' y='135' width='45' height='85' />
+        <rect x='570' y='112' width='55' height='108' />
+        <rect x='630' y='145' width='40' height='75' />
+        <rect x='675' y='125' width='32' height='95' />
+        <rect x='712' y='160' width='28' height='60' />
 
-      {/* Ground line */}
-      <rect x='0' y='218' width='1440' height='2' />
-    </g>
+        {/* Old North Church */}
+        <rect x='745' y='175' width='36' height='45' />
+        <rect x='753' y='120' width='20' height='55' />
+        <polygon points='751,120 775,120 763,72' />
 
-    {/* Zakim cables */}
-    <path
-      d='M110 66 L40 186 M110 66 L62 186 M110 66 L84 186 M110 66 L136 186 M110 66 L158 186 M110 66 L180 186 M215 66 L145 186 M215 66 L167 186 M215 66 L189 186 M215 66 L241 186 M215 66 L263 186 M215 66 L285 186'
-      stroke='currentColor'
-      strokeWidth='1.2'
-      fill='none'
-      opacity='0.8'
-    />
-  </svg>
-);
+        {/* Prudential Tower */}
+        <rect x='810' y='48' width='60' height='172' />
+        <rect x='828' y='42' width='24' height='6' />
+        <rect x='838' y='18' width='4' height='30' />
+
+        {/* 200 Clarendon */}
+        <polygon points='898,220 898,58 954,50 954,220' />
+
+        {/* Back Bay rowhouses */}
+        <rect x='985' y='165' width='26' height='55' />
+        <polygon points='985,165 1011,165 998,153' />
+        <rect x='1013' y='172' width='26' height='48' />
+        <polygon points='1013,172 1039,172 1026,160' />
+        <rect x='1041' y='168' width='26' height='52' />
+        <polygon points='1041,168 1067,168 1054,156' />
+        <rect x='1069' y='175' width='26' height='45' />
+        <polygon points='1069,175 1095,175 1082,163' />
+        <rect x='1097' y='170' width='26' height='50' />
+        <polygon points='1097,170 1123,170 1110,158' />
+
+        {/* Harbor, with Boston Light on its islet */}
+        <rect x='1150' y='206' width='290' height='2' />
+        <polygon points='1150,220 1158,212 1170,209 1190,209 1204,213 1212,220' />
+        <polygon points='1173,209 1187,209 1185,170 1175,170' />
+        <rect x='1172' y='164' width='16' height='6' />
+        <rect x='1176' y='156' width='8' height='8' />
+        <polygon points='1174,156 1186,156 1180,150' />
+        <g className='skyline__boat'>
+          <polygon points='1250,204 1300,204 1290,214 1258,214' />
+          <rect x='1273' y='150' width='2' height='54' />
+          <polygon points='1276,152 1276,202 1298,202' />
+          <polygon points='1271,160 1271,202 1253,202' />
+        </g>
+        <g className='skyline__boat skyline__boat--small'>
+          <polygon points='1380,208 1412,208 1406,214 1385,214' />
+          <rect x='1394' y='175' width='2' height='33' />
+          <polygon points='1397,177 1397,206 1411,206' />
+        </g>
+
+        {/* Ground line */}
+        <rect x='0' y='218' width='1440' height='2' />
+      </g>
+
+      {/* Zakim cables */}
+      <path
+        className='skyline__cables'
+        d='M110 66 L40 186 M110 66 L62 186 M110 66 L84 186 M110 66 L136 186 M110 66 L158 186 M110 66 L180 186 M215 66 L145 186 M215 66 L167 186 M215 66 L189 186 M215 66 L241 186 M215 66 L263 186 M215 66 L285 186'
+        stroke='currentColor'
+        strokeWidth='1.2'
+        fill='none'
+      />
+
+      {/* Daytime life: gulls over the city, cars on the Zakim deck, and sun on the water */}
+      <g className='skyline__gulls'>
+        {GULLS.map(gull => (
+          <g key={gull.y} transform={`translate(0 ${gull.y}) scale(${gull.scale})`}>
+            <g
+              className='skyline__gull'
+              style={{ animationDuration: `${gull.duration}s`, animationDelay: `${gull.delay}s` }}>
+              <path
+                className='skyline__wing skyline__wing--left'
+                d='M0 0 q-3.5 -3.5 -7 -0.5'
+                style={{ animationDelay: `${gull.beat}s` }}
+              />
+              <path
+                className='skyline__wing skyline__wing--right'
+                d='M0 0 q3.5 -3.5 7 -0.5'
+                style={{ animationDelay: `${gull.beat}s` }}
+              />
+            </g>
+          </g>
+        ))}
+      </g>
+      <g className='skyline__cars'>
+        {CARS.map(car => (
+          <rect
+            key={`${car.back}-${car.duration}`}
+            className={`skyline__car ${car.back ? 'skyline__car--back' : ''}`.trim()}
+            x='22'
+            y='183'
+            width='6'
+            height='2.2'
+            rx='0.6'
+            style={{ animationDuration: `${car.duration}s`, animationDelay: `${car.delay}s` }}
+          />
+        ))}
+      </g>
+      {!sky.isNight && (
+        <g className='skyline__glints'>
+          {GLINTS.map(glint => (
+            <rect
+              key={glint.x}
+              className='skyline__glint'
+              x={glint.x}
+              y='209'
+              width='6'
+              height='1.2'
+              rx='0.6'
+              style={{ animationDuration: `${glint.duration}s`, animationDelay: `${glint.delay}s` }}
+            />
+          ))}
+        </g>
+      )}
+
+      {/* Boston Light's lantern and beam, shown in dark mode. The beacon turns
+          like the real one: the beam sweeps right along the horizon, swings
+          toward the viewer and flares, sweeps left, dims as it turns away. */}
+      <defs>
+        <linearGradient id={beamId} x1='0' y1='0' x2='1' y2='0'>
+          <stop offset='0' stopColor='#ffe9b3' stopOpacity='0.55' />
+          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
+        </linearGradient>
+        <radialGradient id={flareId}>
+          <stop offset='0' stopColor='#fff6dc' stopOpacity='0.9' />
+          <stop offset='0.35' stopColor='#ffe9b3' stopOpacity='0.35' />
+          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
+        </radialGradient>
+      </defs>
+      <polygon className='skyline__beam' points='1180,160 1420,146 1420,174' fill={`url(#${beamId})`} />
+      <circle className='skyline__flare' cx='1180' cy='160' r='36' fill={`url(#${flareId})`} />
+      <circle className='skyline__lantern' cx='1180' cy='160' r='2.6' />
+
+      {/* Lit windows, shown in dark mode */}
+      <g className='skyline__windows'>
+        {WINDOWS.map(window => (
+          <rect
+            key={`${window.x}-${window.y}`}
+            className={`skyline__window skyline__window--${window.kind}`}
+            x={window.x}
+            y={window.y}
+            width='3'
+            height='4'
+            style={{ animationDelay: `${window.delay}s`, animationDuration: `${window.duration}s` }}
+          />
+        ))}
+      </g>
+
+      {/* Weather over the city */}
+      {condition === 'fog' && <rect className='skyline__fog' x='0' y='90' width='1440' height='130' />}
+      {condition === 'snow' && (
+        <g className='skyline__snow'>
+          {FLAKES.map(flake => (
+            <circle
+              key={`${flake.x}-${flake.r}`}
+              className='skyline__flake'
+              cx={flake.x}
+              cy='0'
+              r={flake.r}
+              style={
+                {
+                  animationDuration: `${flake.duration}s`,
+                  animationDelay: `${flake.delay}s`,
+                  '--sway': `${flake.sway}px`,
+                } as CSSProperties
+              }
+            />
+          ))}
+        </g>
+      )}
+      {raining && (
+        <g className='skyline__rain'>
+          {DROPS.map(drop => (
+            <line
+              key={`${drop.x}-${drop.length}`}
+              className='skyline__drop'
+              x1={drop.x}
+              y1='0'
+              x2={drop.x - 3}
+              y2={drop.length}
+              style={{ animationDuration: `${drop.duration}s`, animationDelay: `${drop.delay}s` }}
+            />
+          ))}
+        </g>
+      )}
+      {condition === 'storm' && <rect className='skyline__lightning' x='0' y='0' width='1440' height='220' />}
+    </svg>
+  );
+};
 
 export default Skyline;

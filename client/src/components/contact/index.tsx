@@ -43,14 +43,14 @@ const Contact = () => {
             index='06'
             title='What’s next?'
             caption='Contact'
-            size='sm'
+            size='md'
             className='contact__sign'
           />
           <h2 className='contact__title'>Let’s talk.</h2>
           <p className='contact__text'>
-            I’m always happy to chat about software, new opportunities, or the best pickleball
-            courts in Boston. Email is the fastest way to reach me, and I try to reply within a day
-            or two.
+            Open to new opportunities and always happy to talk software, or the best pickleball
+            courts in Boston. Email is the fastest way to reach me, and I usually reply within a
+            day.
           </p>
 
           <div className='contact__actions'>

@@ -10,6 +10,7 @@ import {
 } from 'react-icons/fi';
 import { profile } from '../../data/profile';
 import useBostonTime from '../../hooks/useBostonTime';
+import useBostonWeather from '../../hooks/useBostonWeather';
 import Skyline from '../skyline';
 import './index.css';
 
@@ -20,6 +21,7 @@ import './index.css';
  */
 const Hero = () => {
   const { time, greeting } = useBostonTime();
+  const weather = useBostonWeather();
 
   return (
     <section id='home' className='hero' aria-label='Introduction'>
@@ -35,6 +37,12 @@ const Hero = () => {
                 <span aria-hidden='true'> · </span>
                 <time>{time}</time> ET
               </span>
+              {weather && (
+                <span className='hero__weather'>
+                  <span aria-hidden='true'> · </span>
+                  {Math.round(weather.temperature)}°F and {weather.label}
+                </span>
+              )}
             </span>
           </p>
           <h1 className='hero__title'>

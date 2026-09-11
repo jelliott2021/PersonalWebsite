@@ -1,0 +1,149 @@
+.gh-cal {
+  margin-top: 2.5rem;
+  padding: 1.25rem 1.5rem 1rem;
+}
+
+.gh-cal__head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+
+.gh-cal__label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  margin: 0;
+}
+
+.gh-cal__total {
+  color: var(--text-2);
+  font-size: 0.9rem;
+}
+
+.gh-cal__profile {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-2);
+}
+
+/* The grid scales with the card; on narrow screens it scrolls sideways. */
+.gh-cal__scroll {
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+}
+
+.gh-cal__grid {
+  display: block;
+  width: 100%;
+  min-width: 620px;
+  height: auto;
+}
+
+.gh-cal__month,
+.gh-cal__weekday {
+  fill: var(--text-3);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+/* Intensity buckets: empty days in the border tone, active days in the
+   accent at rising opacity. */
+.gh-cal__cell {
+  fill: var(--border);
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: 0;
+  transform: scale(0.5);
+  animation: gh-cal-pop 0.45s var(--ease) forwards;
+  animation-delay: calc(var(--col, 0) * 12ms + 120ms);
+  animation-play-state: paused;
+}
+
+.reveal.is-visible .gh-cal__cell {
+  animation-play-state: running;
+}
+
+.gh-cal__cell--1 {
+  fill: var(--accent);
+  fill-opacity: 0.28;
+}
+
+.gh-cal__cell--2 {
+  fill: var(--accent);
+  fill-opacity: 0.52;
+}
+
+.gh-cal__cell--3 {
+  fill: var(--accent);
+  fill-opacity: 0.76;
+}
+
+.gh-cal__cell--4 {
+  fill: var(--accent);
+  fill-opacity: 1;
+}
+
+@keyframes gh-cal-pop {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.gh-cal__legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-3);
+}
+
+.gh-cal__legend span:first-child {
+  margin-right: 0.2rem;
+}
+
+.gh-cal__legend span:last-child {
+  margin-left: 0.2rem;
+}
+
+.gh-cal__swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 2px;
+  background: var(--border);
+}
+
+.gh-cal__swatch.gh-cal__cell--1 {
+  background: var(--accent);
+  opacity: 0.28;
+}
+
+.gh-cal__swatch.gh-cal__cell--2 {
+  background: var(--accent);
+  opacity: 0.52;
+}
+
+.gh-cal__swatch.gh-cal__cell--3 {
+  background: var(--accent);
+  opacity: 0.76;
+}
+
+.gh-cal__swatch.gh-cal__cell--4 {
+  background: var(--accent);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gh-cal__cell {
+    animation-delay: 0s;
+  }
+}
