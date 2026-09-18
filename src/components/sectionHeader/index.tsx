@@ -1,4 +1,3 @@
-import React from 'react';
 import Sign from '../sign';
 import './index.css';
 

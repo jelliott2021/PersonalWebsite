@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { prefersReducedMotion } from '../lib/motion';
 
 export interface ParsedStat {
   /** Text before the number, such as "$". */
@@ -24,19 +25,22 @@ export const parseStat = (value: string): ParsedStat | null => {
   }
   const [, prefix, digits, suffix] = match;
   const target = Number(digits.replace(/,/g, ''));
-  if (Number.isNaN(target)) {
-    return null;
-  }
   const fraction = digits.split('.')[1] ?? '';
   return { prefix, target, suffix, grouped: digits.includes(','), decimals: fraction.length };
 };
 
-const easeOutCubic = (t: number): number => 1 - (1 - t) ** 3;
+/** Starts fast and settles slowly, so the final digits linger. */
+export const easeOutCubic = (t: number): number => 1 - (1 - t) ** 3;
 
 /**
  * Counts from zero to `target` once `active` turns true, easing out so the
  * last digits settle slowly. Jumps straight to the target when the visitor
  * prefers reduced motion.
+ *
+ * @param target Number to finish on.
+ * @param active Starts the animation the first time it becomes true.
+ * @param decimals Decimal places to keep while counting.
+ * @param duration Animation length in milliseconds.
  */
 const useCountUp = (target: number, active: boolean, decimals = 0, duration = 1400): number => {
   const [value, setValue] = useState(0);
@@ -46,11 +50,7 @@ const useCountUp = (target: number, active: boolean, decimals = 0, duration = 14
       return undefined;
     }
 
-    const reduceMotion =
-      typeof window.matchMedia === 'function' &&
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (reduceMotion || target === 0) {
+    if (prefersReducedMotion() || target === 0) {
       setValue(target);
       return undefined;
     }

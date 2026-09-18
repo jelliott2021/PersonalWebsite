@@ -1,4 +1,3 @@
-import React from 'react';
 import useCountUp, { parseStat } from '../../hooks/useCountUp';
 import useReveal from '../../hooks/useReveal';
 

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiAward, FiMapPin } from 'react-icons/fi';
 import { EDUCATION } from '../../data/education';
 import SectionHeader from '../sectionHeader';

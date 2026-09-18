@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiBookOpen, FiBriefcase, FiHome, FiMail, FiMapPin } from 'react-icons/fi';
 import { profile } from '../../data/profile';
 import { EDUCATION } from '../../data/education';

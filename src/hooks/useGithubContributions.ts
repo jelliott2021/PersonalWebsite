@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react';
+import fetchJson from '../lib/fetchJson';
+import { readSession, writeSession } from '../lib/storage';
+import { ContributionDay, toLevel } from '../lib/contributions';
+
+export type { ContributionDay } from '../lib/contributions';
 
 const CACHE_PREFIX = 'gh-contrib:';
 
-export interface ContributionDay {
-  /** Calendar date as YYYY-MM-DD. */
-  date: string;
-  count: number;
-  /** GitHub's own 0 to 4 intensity bucket for the day. */
-  level: 0 | 1 | 2 | 3 | 4;
-}
+/** GitHub only exposes the calendar through its authenticated GraphQL API; this mirror serves the same data. */
+export const contributionsUrl = (user: string): string =>
+  `https://github-contributions-api.jogruber.de/v4/${user}?y=last`;
 
 export interface Contributions {
   /** Contributions over the whole window. */
@@ -21,60 +22,40 @@ interface ApiResponse {
   contributions?: { date?: string; count?: number; level?: number }[];
 }
 
-const toLevel = (value: number | undefined): ContributionDay['level'] => {
-  const level = Math.round(value ?? 0);
-  if (level <= 0) {
-    return 0;
+/** Normalises the mirror's payload into sorted days with clamped levels. */
+export const parseContributions = (data: ApiResponse): Contributions => {
+  const days: ContributionDay[] = (data.contributions ?? [])
+    .filter(day => typeof day.date === 'string')
+    .map(day => ({ date: day.date as string, count: day.count ?? 0, level: toLevel(day.level) }))
+    .sort((a, b) => (a.date < b.date ? -1 : 1));
+  if (days.length === 0) {
+    throw new Error('No contribution data');
   }
-  return (level >= 4 ? 4 : level) as ContributionDay['level'];
+  return { total: days.reduce((sum, day) => sum + day.count, 0), days };
 };
 
 /**
- * A GitHub user's contribution calendar for the last year. GitHub only
- * exposes the calendar through its authenticated GraphQL API, so this reads
- * the public mirror at github-contributions-api.jogruber.de, which serves
- * the same data GitHub draws on the profile page. Undefined while loading,
- * null when the request fails. Cached for the browser session.
+ * A GitHub user's contribution calendar for the last year. Undefined while
+ * loading, null when the request fails. Cached for the browser session.
  */
 const useGithubContributions = (user: string): Contributions | null | undefined => {
   const [value, setValue] = useState<Contributions | null | undefined>(undefined);
 
   useEffect(() => {
     const key = `${CACHE_PREFIX}${user}`;
-    try {
-      const cached = sessionStorage.getItem(key);
-      if (cached) {
-        setValue(JSON.parse(cached) as Contributions);
-        return undefined;
-      }
-    } catch {
-      // Session storage can be unavailable; fall through to the fetch.
+    const cached = readSession<Contributions>(key);
+    if (cached) {
+      setValue(cached);
+      return undefined;
     }
 
     const controller = new AbortController();
 
-    fetch(`https://github-contributions-api.jogruber.de/v4/${user}?y=last`, {
-      signal: controller.signal,
-    })
-      .then(response => (response.ok ? response.json() : Promise.reject(new Error(response.statusText))))
-      .then((data: ApiResponse) => {
-        const days: ContributionDay[] = (data.contributions ?? [])
-          .filter(day => typeof day.date === 'string')
-          .map(day => ({ date: day.date as string, count: day.count ?? 0, level: toLevel(day.level) }))
-          .sort((a, b) => (a.date < b.date ? -1 : 1));
-        if (days.length === 0) {
-          throw new Error('No contribution data');
-        }
-        const result: Contributions = {
-          total: days.reduce((sum, day) => sum + day.count, 0),
-          days,
-        };
+    fetchJson<ApiResponse>(contributionsUrl(user), { signal: controller.signal })
+      .then(data => {
+        const result = parseContributions(data);
         setValue(result);
-        try {
-          sessionStorage.setItem(key, JSON.stringify(result));
-        } catch {
-          // Ignore: caching is a nicety.
-        }
+        writeSession(key, result);
       })
       .catch(() => {
         if (!controller.signal.aborted) {

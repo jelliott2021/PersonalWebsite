@@ -1,83 +1,21 @@
-import React, { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import { FiExternalLink, FiGithub } from 'react-icons/fi';
 import { profile } from '../../data/profile';
 import useGithubContributions from '../../hooks/useGithubContributions';
-import type { ContributionDay } from '../../hooks/useGithubContributions';
+import {
+  CELL,
+  GAP,
+  LEFT,
+  STEP,
+  TOP,
+  WEEKDAY_LABELS,
+  describeDay,
+  describeTotal,
+  monthLabels,
+  toWeeks,
+} from '../../lib/contributions';
 import Reveal from '../reveal';
 import './index.css';
-
-const GITHUB_USER = profile.githubHandle;
-
-/** Cell geometry in SVG units; the drawing scales to the card width. */
-const CELL = 11;
-const GAP = 3;
-const STEP = CELL + GAP;
-const LEFT = 28;
-const TOP = 16;
-
-const WEEKDAY_LABELS = ['', 'Mon', '', 'Wed', '', 'Fri', ''];
-const MONTH_LABELS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-type Week = (ContributionDay | null)[];
-
-const parseDate = (iso: string): Date => new Date(`${iso}T00:00:00`);
-
-/** Groups days into Sunday-first columns, padding the first week with blanks. */
-const toWeeks = (days: ContributionDay[]): Week[] => {
-  const weeks: Week[] = [];
-  if (days.length === 0) {
-    return weeks;
-  }
-  let week: Week = new Array<null>(parseDate(days[0].date).getDay()).fill(null);
-  days.forEach(day => {
-    week.push(day);
-    if (week.length === 7) {
-      weeks.push(week);
-      week = [];
-    }
-  });
-  if (week.length > 0) {
-    while (week.length < 7) {
-      week.push(null);
-    }
-    weeks.push(week);
-  }
-  return weeks;
-};
-
-/** One label per month, placed at the first column that starts the month. */
-const monthLabels = (weeks: Week[]): { x: number; label: string }[] => {
-  const labels: { x: number; label: string }[] = [];
-  let lastMonth = -1;
-  weeks.forEach((week, index) => {
-    const firstDay = week.find(day => day !== null);
-    if (!firstDay) {
-      return;
-    }
-    const month = parseDate(firstDay.date).getMonth();
-    if (month !== lastMonth) {
-      labels.push({ x: LEFT + index * STEP, label: MONTH_LABELS[month] });
-      lastMonth = month;
-    }
-  });
-  // Drop a first label that would collide with the next one.
-  if (labels.length > 1 && labels[1].x - labels[0].x < STEP * 3) {
-    labels.shift();
-  }
-  return labels;
-};
-
-const describe = (day: ContributionDay): string => {
-  const date = parseDate(day.date).toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  if (day.count === 0) {
-    return `No contributions on ${date}`;
-  }
-  return `${day.count} contribution${day.count === 1 ? '' : 's'} on ${date}`;
-};
 
 /**
  * The GitHub contribution graph for the last year, drawn as an SVG heatmap
@@ -86,7 +24,7 @@ const describe = (day: ContributionDay): string => {
  * all if it can't be fetched, so the page never shows an empty box.
  */
 const GithubCalendar = () => {
-  const data = useGithubContributions(GITHUB_USER);
+  const data = useGithubContributions(profile.githubHandle);
 
   if (!data) {
     return null;
@@ -96,7 +34,7 @@ const GithubCalendar = () => {
   // A little room on the right so the last month label isn't clipped.
   const width = LEFT + weeks.length * STEP - GAP + 14;
   const height = TOP + 7 * STEP - GAP;
-  const summary = `${data.total.toLocaleString()} contribution${data.total === 1 ? '' : 's'} in the last year`;
+  const summary = describeTotal(data.total);
 
   return (
     <Reveal className='card gh-cal'>
@@ -105,12 +43,17 @@ const GithubCalendar = () => {
           <FiGithub aria-hidden='true' /> A year on GitHub
         </span>
         <span className='gh-cal__total'>{summary}</span>
-        <a className='gh-cal__profile' href={profile.github} target='_blank' rel='noopener noreferrer'>
-          @{GITHUB_USER} <FiExternalLink aria-hidden='true' />
+        <a
+          className='gh-cal__profile'
+          href={profile.github}
+          target='_blank'
+          rel='noopener noreferrer'>
+          @{profile.githubHandle} <FiExternalLink aria-hidden='true' />
         </a>
       </div>
 
-      <div className='gh-cal__scroll'>
+      {/* Scrolls sideways on narrow screens, so keyboard users need to be able to focus it. */}
+      <div className='gh-cal__scroll' role='region' aria-label='Contribution calendar' tabIndex={0}>
         <svg
           className='gh-cal__grid'
           viewBox={`0 0 ${width} ${height}`}
@@ -140,7 +83,7 @@ const GithubCalendar = () => {
                   height={CELL}
                   rx='2'
                   style={{ '--col': column } as CSSProperties}>
-                  <title>{describe(day)}</title>
+                  <title>{describeDay(day)}</title>
                 </rect>
               ) : null,
             ),

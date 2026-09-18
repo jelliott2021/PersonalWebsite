@@ -92,7 +92,8 @@ export const PROJECTS: Project[] = [
   {
     id: 'home-server',
     title: 'Ubuntu Home Server',
-    tagline: 'The self-managed Ubuntu Server that hosts this site, BoozeBrawl, and my other projects.',
+    tagline:
+      'The self-managed Ubuntu Server that hosts this site, BoozeBrawl, and my other projects.',
     description:
       'A production-style server I administer from the command line. Every service runs in Docker Compose on its own isolated network behind a reverse proxy with automatic TLS, and redeploys itself when I push to GitHub. Health checks and offline alerts tell me when something breaks, and every container’s logs are a click away in Dozzle.',
     highlights: [
@@ -103,7 +104,16 @@ export const PROJECTS: Project[] = [
       'Health checks on every service with alerts when one goes offline, and container logs streamed in Dozzle.',
       'Day-to-day operations over SSH: systemd services, Docker networking, DNS, and disk and network troubleshooting.',
     ],
-    tech: ['Ubuntu Server', 'Docker Compose', 'NGINX', 'Cloudflare', 'Linux', 'GitHub Actions', 'Networking', 'SSH'],
+    tech: [
+      'Ubuntu Server',
+      'Docker Compose',
+      'NGINX',
+      'Cloudflare',
+      'Linux',
+      'GitHub Actions',
+      'Networking',
+      'SSH',
+    ],
     period: '2021 – Present',
     status: 'self-hosted',
     featured: true,

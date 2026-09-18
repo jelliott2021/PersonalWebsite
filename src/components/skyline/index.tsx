@@ -1,137 +1,14 @@
-import React, { CSSProperties, useId } from 'react';
+import { CSSProperties, useId } from 'react';
 import useBostonTime from '../../hooks/useBostonTime';
 import useBostonWeather from '../../hooks/useBostonWeather';
+import { CARS, CLOUDS, DROPS, FLAKES, GLINTS, GULLS, WINDOWS, skyPosition } from './scenery';
 import './index.css';
+
+export { skyPosition } from './scenery';
 
 interface SkylineProps {
   className?: string;
 }
-
-/**
- * Where the sun (sunrise to sunset) or moon (sunset to sunrise) sits in the
- * sky: an arc from the left horizon to the right, peaking in the middle.
- * Hours are fractional Boston hours.
- */
-export const skyPosition = (hour: number, sunrise: number, sunset: number) => {
-  const isNight = hour < sunrise || hour >= sunset;
-  let t: number;
-  if (isNight) {
-    const nightLength = Math.max(1, 24 - sunset + sunrise);
-    const sinceSunset = hour >= sunset ? hour - sunset : hour + 24 - sunset;
-    t = Math.min(1, sinceSunset / nightLength);
-  } else {
-    t = (hour - sunrise) / Math.max(1, sunset - sunrise);
-  }
-  return {
-    isNight,
-    x: Math.round(120 + t * 1200),
-    y: Math.round(150 - Math.sin(Math.PI * t) * 110),
-  };
-};
-
-/** Tower facades that get lit windows: the face rectangle and its window grid. */
-const FACADES = [
-  { x: 458, y: 76, w: 34, h: 72, cols: 2, rows: 4 }, // Custom House Tower
-  { x: 520, y: 140, w: 45, h: 76, cols: 3, rows: 4 },
-  { x: 570, y: 118, w: 55, h: 98, cols: 3, rows: 5 },
-  { x: 630, y: 150, w: 40, h: 66, cols: 2, rows: 3 },
-  { x: 675, y: 130, w: 32, h: 86, cols: 2, rows: 4 },
-  { x: 810, y: 56, w: 60, h: 158, cols: 3, rows: 8 }, // Prudential Tower
-  { x: 900, y: 66, w: 52, h: 148, cols: 3, rows: 7 }, // 200 Clarendon
-];
-
-type WindowKind = 'lit' | 'twinkle' | 'dark';
-
-interface Window {
-  x: number;
-  y: number;
-  kind: WindowKind;
-  delay: number;
-  duration: number;
-}
-
-/** Stable pseudo-random value in [0, 1) so the lit pattern never reshuffles. */
-const noise = (n: number): number => {
-  const x = Math.sin(n * 12.9898) * 43758.5453;
-  return x - Math.floor(x);
-};
-
-const WINDOWS: Window[] = FACADES.flatMap((facade, facadeIndex) => {
-  const cellW = facade.w / facade.cols;
-  const cellH = facade.h / facade.rows;
-  const windows: Window[] = [];
-  for (let row = 0; row < facade.rows; row += 1) {
-    for (let col = 0; col < facade.cols; col += 1) {
-      const seed = facadeIndex * 100 + row * facade.cols + col;
-      const roll = noise(seed);
-      let kind: WindowKind = 'lit';
-      if (roll < 0.18) {
-        kind = 'dark';
-      } else if (roll < 0.5) {
-        kind = 'twinkle';
-      }
-      windows.push({
-        x: Math.round((facade.x + cellW * col + cellW / 2 - 1.5) * 10) / 10,
-        y: Math.round((facade.y + cellH * row + cellH / 2 - 2) * 10) / 10,
-        kind,
-        delay: Math.round(noise(seed + 7) * 60) / 10,
-        duration: Math.round((3 + noise(seed + 13) * 4) * 10) / 10,
-      });
-    }
-  }
-  return windows;
-});
-
-const round = (value: number): number => Math.round(value * 10) / 10;
-
-/** Snowflakes: where each starts, how big it is, and how it falls. */
-const FLAKES = Array.from({ length: 48 }, (_, i) => ({
-  x: Math.round(noise(i * 3 + 1) * 1440),
-  r: round(1.1 + noise(i * 3 + 2) * 1.6),
-  duration: round(9 + noise(i * 3 + 3) * 8),
-  delay: round(noise(i * 7 + 5) * -17),
-  sway: Math.round((noise(i * 5 + 4) - 0.5) * 60),
-}));
-
-/** Raindrops: slanted streaks that fall fast. */
-const DROPS = Array.from({ length: 40 }, (_, i) => ({
-  x: Math.round(noise(i * 3 + 11) * 1480),
-  length: Math.round(9 + noise(i * 3 + 12) * 10),
-  duration: round(0.9 + noise(i * 3 + 13) * 0.7),
-  delay: round(noise(i * 7 + 15) * -1.6),
-}));
-
-/**
- * Gulls crossing the sky: height, size, where in their flight they start,
- * and an offset into the wing-beat cycle so they don't flap in unison.
- */
-const GULLS = [
-  { y: 50, scale: 1, duration: 44, delay: -12, beat: 0 },
-  { y: 72, scale: 0.8, duration: 38, delay: -27, beat: -1.1 },
-  { y: 42, scale: 0.9, duration: 52, delay: -40, beat: -2.2 },
-];
-
-/** Cars on the Zakim deck: direction and timing. */
-const CARS = [
-  { back: false, duration: 14, delay: 0 },
-  { back: false, duration: 17, delay: -7 },
-  { back: true, duration: 15, delay: -3 },
-  { back: true, duration: 19, delay: -11 },
-];
-
-/** Sun glints on the harbor water. */
-const GLINTS = Array.from({ length: 9 }, (_, i) => ({
-  x: 1160 + i * 32 + Math.round(noise(i + 40) * 14),
-  delay: round(noise(i + 50) * -3),
-  duration: round(2.4 + noise(i + 60) * 2),
-}));
-
-/** Cloud banks: position, scale, and drift offset. */
-const CLOUDS = [
-  { x: 170, y: 72, scale: 1, delay: 0 },
-  { x: 620, y: 38, scale: 1.35, delay: -30 },
-  { x: 1090, y: 84, scale: 0.9, delay: -60 },
-];
 
 /**
  * Simplified Boston skyline silhouette, drawn left to right: the Zakim
@@ -156,10 +33,13 @@ const Skyline = ({ className = '' }: SkylineProps) => {
 
   const cloudy = condition !== undefined && condition !== 'clear';
   const raining = condition === 'rain' || condition === 'storm';
+  const classes = ['skyline', condition ? `skyline--${condition}` : '', className]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <svg
-      className={`skyline ${condition ? `skyline--${condition}` : ''} ${className}`.replace(/\s+/g, ' ').trim()}
+      className={classes}
       viewBox='0 0 1440 220'
       preserveAspectRatio='xMidYMax slice'
       aria-hidden='true'
@@ -174,7 +54,18 @@ const Skyline = ({ className = '' }: SkylineProps) => {
           <circle cx={sky.x} cy={sky.y} r='11' fill='#fff' />
           <circle cx={sky.x + 5.5} cy={sky.y - 3} r='9.5' fill='#000' />
         </mask>
+        {/* Boston Light's beam and flare, shown in dark mode. */}
+        <linearGradient id={beamId} x1='0' y1='0' x2='1' y2='0'>
+          <stop offset='0' stopColor='#ffe9b3' stopOpacity='0.55' />
+          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
+        </linearGradient>
+        <radialGradient id={flareId}>
+          <stop offset='0' stopColor='#fff6dc' stopOpacity='0.9' />
+          <stop offset='0.35' stopColor='#ffe9b3' stopOpacity='0.35' />
+          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
+        </radialGradient>
       </defs>
+
       {sky.isNight ? (
         <circle className='skyline__moon' cx={sky.x} cy={sky.y} r='11' mask={`url(#${moonId})`} />
       ) : (
@@ -365,18 +256,11 @@ const Skyline = ({ className = '' }: SkylineProps) => {
       {/* Boston Light's lantern and beam, shown in dark mode. The beacon turns
           like the real one: the beam sweeps right along the horizon, swings
           toward the viewer and flares, sweeps left, dims as it turns away. */}
-      <defs>
-        <linearGradient id={beamId} x1='0' y1='0' x2='1' y2='0'>
-          <stop offset='0' stopColor='#ffe9b3' stopOpacity='0.55' />
-          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
-        </linearGradient>
-        <radialGradient id={flareId}>
-          <stop offset='0' stopColor='#fff6dc' stopOpacity='0.9' />
-          <stop offset='0.35' stopColor='#ffe9b3' stopOpacity='0.35' />
-          <stop offset='1' stopColor='#ffe9b3' stopOpacity='0' />
-        </radialGradient>
-      </defs>
-      <polygon className='skyline__beam' points='1180,160 1420,146 1420,174' fill={`url(#${beamId})`} />
+      <polygon
+        className='skyline__beam'
+        points='1180,160 1420,146 1420,174'
+        fill={`url(#${beamId})`}
+      />
       <circle className='skyline__flare' cx='1180' cy='160' r='36' fill={`url(#${flareId})`} />
       <circle className='skyline__lantern' cx='1180' cy='160' r='2.6' />
 
@@ -396,7 +280,9 @@ const Skyline = ({ className = '' }: SkylineProps) => {
       </g>
 
       {/* Weather over the city */}
-      {condition === 'fog' && <rect className='skyline__fog' x='0' y='90' width='1440' height='130' />}
+      {condition === 'fog' && (
+        <rect className='skyline__fog' x='0' y='90' width='1440' height='130' />
+      )}
       {condition === 'snow' && (
         <g className='skyline__snow'>
           {FLAKES.map(flake => (
@@ -408,8 +294,8 @@ const Skyline = ({ className = '' }: SkylineProps) => {
               r={flake.r}
               style={
                 {
-                  animationDuration: `${flake.duration}s`,
-                  animationDelay: `${flake.delay}s`,
+                  'animationDuration': `${flake.duration}s`,
+                  'animationDelay': `${flake.delay}s`,
                   '--sway': `${flake.sway}px`,
                 } as CSSProperties
               }
@@ -432,7 +318,9 @@ const Skyline = ({ className = '' }: SkylineProps) => {
           ))}
         </g>
       )}
-      {condition === 'storm' && <rect className='skyline__lightning' x='0' y='0' width='1440' height='220' />}
+      {condition === 'storm' && (
+        <rect className='skyline__lightning' x='0' y='0' width='1440' height='220' />
+      )}
     </svg>
   );
 };

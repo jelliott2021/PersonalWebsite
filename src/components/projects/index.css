@@ -148,7 +148,10 @@
   background: var(--warning-soft);
   color: var(--warning);
   text-decoration: none;
-  transition: transform 0.2s var(--ease), background-color 0.2s ease, color 0.2s ease;
+  transition:
+    transform 0.2s var(--ease),
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .stars svg {
@@ -347,12 +350,16 @@
 
 /* Hover: the featured pair lifts together, media a touch more than the card. */
 .featured__media {
-  transition: transform 0.45s var(--ease), box-shadow 0.45s var(--ease);
+  transition:
+    transform 0.45s var(--ease),
+    box-shadow 0.45s var(--ease);
 }
 
 .featured:hover .featured__media {
   transform: translateY(-6px);
-  box-shadow: var(--shadow-lg), 0 36px 60px -30px rgba(0, 0, 0, 0.35);
+  box-shadow:
+    var(--shadow-lg),
+    0 36px 60px -30px rgba(0, 0, 0, 0.35);
 }
 
 .featured:hover .featured__body {

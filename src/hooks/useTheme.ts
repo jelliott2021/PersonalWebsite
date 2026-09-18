@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
+import { prefersDarkScheme, prefersReducedMotion } from '../lib/motion';
+import { readLocal, writeLocal } from '../lib/storage';
 
 export type Theme = 'light' | 'dark';
 
@@ -9,45 +11,48 @@ export interface ToggleOrigin {
   y: number;
 }
 
-const STORAGE_KEY = 'theme';
+export const STORAGE_KEY = 'theme';
 
 /** Browser chrome colours, matching --bg in tokens.css for each theme. */
-const themeColors: Record<Theme, string> = {
+export const THEME_COLORS: Record<Theme, string> = {
   light: '#f7f4ec',
   dark: '#0a1424',
 };
+
+/** Length of the circular wipe, in milliseconds. */
+export const WIPE_DURATION = 750;
 
 type ViewTransitionDocument = Document & {
   startViewTransition?: (update: () => void) => { ready: Promise<void> };
 };
 
-const prefersDark = (): boolean =>
-  typeof window !== 'undefined' &&
-  typeof window.matchMedia === 'function' &&
-  window.matchMedia('(prefers-color-scheme: dark)').matches;
-
 /**
  * Reads the theme that the inline script in index.html already applied to
  * <html>, falling back to the system preference.
  */
-const getInitialTheme = (): Theme => {
-  if (typeof document !== 'undefined') {
-    const attr = document.documentElement.getAttribute('data-theme');
-    if (attr === 'dark' || attr === 'light') {
-      return attr;
-    }
+export const getInitialTheme = (): Theme => {
+  const attr = document.documentElement.getAttribute('data-theme');
+  if (attr === 'dark' || attr === 'light') {
+    return attr;
   }
-  return prefersDark() ? 'dark' : 'light';
+  return prefersDarkScheme() ? 'dark' : 'light';
 };
 
 /** Writes the theme to the document straight away, outside React's schedule. */
-const applyTheme = (theme: Theme) => {
+export const applyTheme = (theme: Theme): void => {
   document.documentElement.setAttribute('data-theme', theme);
   const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
   if (meta) {
-    meta.content = themeColors[theme];
+    meta.content = THEME_COLORS[theme];
   }
 };
+
+/**
+ * Radius of a circle centred on (x, y) that covers the whole viewport, plus
+ * a margin so the wipe clears the last corner while still moving.
+ */
+export const wipeRadius = (x: number, y: number, width: number, height: number): number =>
+  Math.hypot(Math.max(x, width - x), Math.max(y, height - y)) * 1.05 + 24;
 
 /**
  * Light/dark theme with persistence. A saved choice wins; otherwise the site
@@ -68,13 +73,7 @@ const useTheme = () => {
     }
     const media = window.matchMedia('(prefers-color-scheme: dark)');
     const onChange = (event: MediaQueryListEvent) => {
-      let saved: string | null = null;
-      try {
-        saved = localStorage.getItem(STORAGE_KEY);
-      } catch {
-        // Storage can be unavailable (private mode, blocked cookies). Follow the system.
-      }
-      if (!saved) {
+      if (!readLocal(STORAGE_KEY)) {
         setTheme(event.matches ? 'dark' : 'light');
       }
     };
@@ -85,29 +84,17 @@ const useTheme = () => {
   const toggle = useCallback(
     (origin?: ToggleOrigin) => {
       const next: Theme = theme === 'dark' ? 'light' : 'dark';
-      try {
-        localStorage.setItem(STORAGE_KEY, next);
-      } catch {
-        // Ignore: the toggle still works for this page view.
-      }
+      writeLocal(STORAGE_KEY, next);
 
       const doc = document as ViewTransitionDocument;
-      const reduceMotion =
-        typeof window.matchMedia === 'function' &&
-        window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-      if (!doc.startViewTransition || reduceMotion) {
+      if (!doc.startViewTransition || prefersReducedMotion()) {
         setTheme(next);
         return;
       }
 
       const x = origin?.x ?? window.innerWidth - 40;
       const y = origin?.y ?? 40;
-      // Distance to the farthest corner, plus a margin so the circle clears the
-      // corner while it is still moving instead of stalling on the last pixels.
-      const radius =
-        Math.hypot(Math.max(x, window.innerWidth - x), Math.max(y, window.innerHeight - y)) * 1.05 +
-        24;
+      const radius = wipeRadius(x, y, window.innerWidth, window.innerHeight);
 
       const transition = doc.startViewTransition(() => {
         flushSync(() => setTheme(next));
@@ -121,7 +108,7 @@ const useTheme = () => {
               clipPath: [`circle(0px at ${x}px ${y}px)`, `circle(${radius}px at ${x}px ${y}px)`],
             },
             {
-              duration: 750,
+              duration: WIPE_DURATION,
               easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
               fill: 'forwards',
               pseudoElement: '::view-transition-new(root)',
