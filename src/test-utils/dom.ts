@@ -1,3 +1,4 @@
+/* eslint-disable max-classes-per-file */
 /**
  * Browser APIs that jsdom does not implement, installed once for the whole
  * test run. Each mock is controllable from a test: media queries can be
@@ -105,6 +106,48 @@ export class MockIntersectionObserver implements IntersectionObserver {
 export const latestObserver = (): MockIntersectionObserver =>
   intersectionObservers[intersectionObservers.length - 1];
 
+/** Every ResizeObserver created since the last reset, newest last. */
+export const resizeObservers: MockResizeObserver[] = [];
+
+/** Records observed elements and lets a test fire a resize. */
+export class MockResizeObserver implements ResizeObserver {
+  readonly elements = new Set<Element>();
+
+  disconnected = false;
+
+  constructor(private readonly callback: ResizeObserverCallback) {
+    resizeObservers.push(this);
+  }
+
+  observe(element: Element): void {
+    this.elements.add(element);
+  }
+
+  unobserve(element: Element): void {
+    this.elements.delete(element);
+  }
+
+  disconnect(): void {
+    this.disconnected = true;
+    this.elements.clear();
+  }
+
+  /** Reports a size change on every observed element; silent once disconnected. */
+  trigger(): void {
+    if (this.disconnected) {
+      return;
+    }
+    const entries = Array.from(this.elements).map(
+      target => ({ target }) as unknown as ResizeObserverEntry,
+    );
+    this.callback(entries, this);
+  }
+}
+
+/** The resize observer most recently created. */
+export const latestResizeObserver = (): MockResizeObserver =>
+  resizeObservers[resizeObservers.length - 1];
+
 const define = (target: object, name: string, value: unknown) => {
   Object.defineProperty(target, name, { configurable: true, writable: true, value });
 };
@@ -120,6 +163,7 @@ const getComputedStyle = (element: Element): CSSStyleDeclaration => nativeGetCom
 export const installDomMocks = (): void => {
   define(window, 'matchMedia', matchMedia);
   define(window, 'IntersectionObserver', MockIntersectionObserver);
+  define(window, 'ResizeObserver', MockResizeObserver);
   define(window, 'getComputedStyle', getComputedStyle);
   define(
     window,
@@ -142,6 +186,7 @@ export const resetDomMocks = (): void => {
   matchingQueries.clear();
   mediaListeners.clear();
   intersectionObservers.length = 0;
+  resizeObservers.length = 0;
   installDomMocks();
 };
 
