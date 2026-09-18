@@ -44,6 +44,9 @@
   width: 100%;
   min-width: 620px;
   height: auto;
+  /* A full year is about 780 units wide, so this never binds on real data; it
+     stops a sparse calendar from scaling up into a page-length block. */
+  max-height: 200px;
 }
 
 .gh-cal__month,

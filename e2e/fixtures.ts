@@ -8,11 +8,11 @@ export const WEATHER = {
 /** Canned GitHub repository payload. */
 export const REPO = { stargazers_count: 512 };
 
-/** Canned contribution mirror payload covering two weeks. */
+/** Canned contribution mirror payload: a full year, like the real service returns. */
 export const CONTRIBUTIONS = {
-  contributions: Array.from({ length: 14 }, (_, i) => {
-    const date = new Date(Date.UTC(2026, 0, 4 + i)).toISOString().slice(0, 10);
-    return { date, count: i % 3, level: i % 3 };
+  contributions: Array.from({ length: 365 }, (_, i) => {
+    const date = new Date(Date.UTC(2025, 8, 18 + i)).toISOString().slice(0, 10);
+    return { date, count: (i * 7) % 5, level: (i * 7) % 5 };
   }),
 };
 
