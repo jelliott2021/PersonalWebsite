@@ -1,8 +1,7 @@
 /*
  * Keeps the viewBox's 1440:220 ratio so the full silhouette is always visible.
- * Parents set a min-height for narrow screens, where `slice` crops the sides
- * instead of shrinking the drawing, and set --skyline-alpha for how faint
- * the silhouette should be. Sun, moon, and windows carry their own colours.
+ * Parents set --skyline-alpha for how faint the silhouette should be. Sun,
+ * moon, and windows carry their own colours.
  */
 .skyline {
   display: block;
@@ -11,6 +10,20 @@
   aspect-ratio: 1440 / 220;
   --skyline-alpha: 0.12;
   color: var(--accent);
+}
+
+/*
+ * Phones are far narrower than the drawing is wide, so at full width the
+ * city would be a 60px strip. Widen it to 130% (the parent clips the
+ * overflow) so the landmarks stay legible; only the flat bridge deck on the
+ * far left and open water on the far right leave the frame. Parents raise
+ * --skyline-alpha a touch at this size so the thinner lines stay readable.
+ */
+@media (max-width: 640px) {
+  .skyline {
+    width: 130%;
+    margin-left: -15%;
+  }
 }
 
 .skyline__city {
