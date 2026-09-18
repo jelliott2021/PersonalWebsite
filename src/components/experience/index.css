@@ -22,7 +22,9 @@
 .timeline__card {
   opacity: 0;
   transform: translateY(18px);
-  transition: opacity 0.6s var(--ease), transform 0.6s var(--ease);
+  transition:
+    opacity 0.6s var(--ease),
+    transform 0.6s var(--ease);
 }
 
 .timeline__item.is-reached .timeline__period,
@@ -69,14 +71,21 @@
   background: var(--bg-elev);
   border: 3px solid var(--border-strong);
   box-shadow: 0 0 0 3px var(--bg-band);
-  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.4s var(--ease);
+  transition:
+    border-color 0.4s ease,
+    box-shadow 0.4s ease,
+    transform 0.4s var(--ease);
 }
 
 .timeline__item.is-reached .timeline__marker::after {
   border-color: var(--t-red);
   transform: translate(-50%, 0) scale(1.12);
-  box-shadow: 0 0 0 3px var(--bg-band), 0 0 0 8px rgba(218, 41, 28, 0.16);
-  box-shadow: 0 0 0 3px var(--bg-band), 0 0 0 8px color-mix(in srgb, var(--t-red) 18%, transparent);
+  box-shadow:
+    0 0 0 3px var(--bg-band),
+    0 0 0 8px rgba(218, 41, 28, 0.16);
+  box-shadow:
+    0 0 0 3px var(--bg-band),
+    0 0 0 8px color-mix(in srgb, var(--t-red) 18%, transparent);
 }
 
 /* The red line that draws itself down the route as the visitor scrolls,

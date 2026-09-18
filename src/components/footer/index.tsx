@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiArrowUp, FiGithub, FiLinkedin, FiMail } from 'react-icons/fi';
 import { profile } from '../../data/profile';
 import './index.css';

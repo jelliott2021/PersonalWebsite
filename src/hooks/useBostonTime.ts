@@ -16,7 +16,14 @@ export interface BostonTime {
   sunset: number;
 }
 
-const greetingFor = (hour: number): string => {
+/** Used when the sunrise equation cannot be evaluated. */
+export const DEFAULT_SUN = { sunrise: 6, sunset: 20 };
+
+/** How often the clock re-reads, in milliseconds. */
+export const REFRESH_INTERVAL = 30_000;
+
+/** Greeting for a fractional hour of the day. */
+export const greetingFor = (hour: number): string => {
   if (hour >= 5 && hour < 12) {
     return 'Good morning';
   }
@@ -30,7 +37,7 @@ const greetingFor = (hour: number): string => {
 };
 
 /** Numeric date parts of an instant as seen on a Boston clock. */
-const bostonParts = (date: Date) => {
+export const bostonParts = (date: Date) => {
   const parts = new Intl.DateTimeFormat('en-US', {
     year: 'numeric',
     month: 'numeric',
@@ -41,11 +48,18 @@ const bostonParts = (date: Date) => {
     timeZone: TIME_ZONE,
   }).formatToParts(date);
   const part = (type: string) => Number.parseInt(parts.find(p => p.type === type)?.value ?? '', 10);
-  return { year: part('year'), month: part('month'), day: part('day'), hour: part('hour') % 24, minute: part('minute') };
+  return {
+    year: part('year'),
+    month: part('month'),
+    day: part('day'),
+    // Some engines print midnight as "24".
+    hour: part('hour') % 24,
+    minute: part('minute'),
+  };
 };
 
 /** Fractional Boston hour of an instant, such as 15.5 for 3:30 PM. */
-const bostonHour = (date: Date): number => {
+export const bostonHour = (date: Date): number => {
   const { hour, minute } = bostonParts(date);
   if (Number.isNaN(hour)) {
     return 12;
@@ -53,11 +67,9 @@ const bostonHour = (date: Date): number => {
   return hour + (Number.isNaN(minute) ? 0 : minute / 60);
 };
 
-const defaultSun = { sunrise: 6, sunset: 20 };
-
-const read = (): BostonTime => {
+/** Everything the page needs to know about the current moment in Boston. */
+export const readBostonTime = (now: Date = new Date()): BostonTime => {
   try {
-    const now = new Date();
     const time = new Intl.DateTimeFormat('en-US', {
       hour: 'numeric',
       minute: '2-digit',
@@ -65,7 +77,7 @@ const read = (): BostonTime => {
     }).format(now);
     const hour = bostonHour(now);
 
-    let sun = defaultSun;
+    let sun = DEFAULT_SUN;
     const { year, month, day } = bostonParts(now);
     const times = sunTimes(new Date(Date.UTC(year, month - 1, day)), boston.lat, boston.lon);
     if (times) {
@@ -75,13 +87,12 @@ const read = (): BostonTime => {
     return { time, greeting: greetingFor(hour), hour, ...sun };
   } catch {
     // Very old browsers without time-zone support: fall back to the visitor's clock.
-    const now = new Date();
     const hour = now.getHours() + now.getMinutes() / 60;
     return {
       time: now.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' }),
       greeting: greetingFor(hour),
       hour,
-      ...defaultSun,
+      ...DEFAULT_SUN,
     };
   }
 };
@@ -92,10 +103,10 @@ const read = (): BostonTime => {
  * skyline's sun and moon keep honest hours through the year.
  */
 const useBostonTime = (): BostonTime => {
-  const [value, setValue] = useState<BostonTime>(read);
+  const [value, setValue] = useState<BostonTime>(() => readBostonTime());
 
   useEffect(() => {
-    const timer = window.setInterval(() => setValue(read()), 30_000);
+    const timer = window.setInterval(() => setValue(readBostonTime()), REFRESH_INTERVAL);
     return () => window.clearInterval(timer);
   }, []);
 

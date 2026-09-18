@@ -1,4 +1,3 @@
-import React from 'react';
 import { FiExternalLink, FiGithub, FiInfo, FiKey, FiStar } from 'react-icons/fi';
 import { PROJECTS, statusLabels } from '../../data/projects';
 import type { Project } from '../../data/projects';

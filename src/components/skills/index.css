@@ -36,7 +36,10 @@
   color: var(--heading);
   font-size: 0.88rem;
   font-weight: 500;
-  transition: border-color 0.2s ease, transform 0.2s var(--ease), box-shadow 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s var(--ease),
+    box-shadow 0.2s ease;
 }
 
 .skill:hover {
@@ -85,7 +88,9 @@
 }
 
 .skill__icon {
-  transition: color 0.2s ease, transform 0.3s var(--ease);
+  transition:
+    color 0.2s ease,
+    transform 0.3s var(--ease);
 }
 
 .skill:hover .skill__icon {

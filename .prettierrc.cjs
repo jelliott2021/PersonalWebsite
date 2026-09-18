@@ -8,9 +8,9 @@ module.exports = {
   jsxSingleQuote: true,
   trailingComma: 'all',
   bracketSpacing: true,
-  jsxBracketSameLine: true,
+  bracketSameLine: true,
   arrowParens: 'avoid',
-  proseWrap: 'always',
+  proseWrap: 'preserve',
   htmlWhitespaceSensitivity: 'ignore',
   endOfLine: 'lf',
 };

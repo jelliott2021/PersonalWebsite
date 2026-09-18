@@ -1,13 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import {
-  FiCheck,
-  FiCopy,
-  FiFileText,
-  FiGithub,
-  FiLinkedin,
-  FiMail,
-  FiPhone,
-} from 'react-icons/fi';
+import { useEffect, useState } from 'react';
+import { FiCheck, FiCopy, FiFileText, FiGithub, FiLinkedin, FiMail, FiPhone } from 'react-icons/fi';
 import { profile } from '../../data/profile';
 import Reveal from '../reveal';
 import Sign from '../sign';

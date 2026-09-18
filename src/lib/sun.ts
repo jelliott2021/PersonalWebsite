@@ -21,10 +21,15 @@ export const sunTimes = (day: Date, lat: number, lon: number): SunTimes | null =
   const meanSolar = n - lon / 360;
   const anomaly = (357.5291 + 0.985_600_28 * meanSolar) % 360;
   const centre =
-    1.9148 * Math.sin(rad(anomaly)) + 0.02 * Math.sin(rad(2 * anomaly)) + 0.0003 * Math.sin(rad(3 * anomaly));
+    1.9148 * Math.sin(rad(anomaly)) +
+    0.02 * Math.sin(rad(2 * anomaly)) +
+    0.0003 * Math.sin(rad(3 * anomaly));
   const longitude = (anomaly + centre + 180 + 102.9372) % 360;
   const transit =
-    2_451_545.0 + meanSolar + 0.0053 * Math.sin(rad(anomaly)) - 0.0069 * Math.sin(rad(2 * longitude));
+    2_451_545.0 +
+    meanSolar +
+    0.0053 * Math.sin(rad(anomaly)) -
+    0.0069 * Math.sin(rad(2 * longitude));
   const declination = Math.asin(Math.sin(rad(longitude)) * Math.sin(rad(23.4397)));
   const cosHourAngle =
     (Math.sin(rad(-0.833)) - Math.sin(rad(lat)) * Math.sin(declination)) /

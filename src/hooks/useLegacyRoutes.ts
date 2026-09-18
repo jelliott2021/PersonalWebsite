@@ -1,28 +1,34 @@
 import { useEffect } from 'react';
+import { NAV_LINKS } from '../data/navigation';
 
 /**
  * The previous version of this site had separate pages. Old links such as
  * /projects should still land on the right section of the single page.
+ * Maps a lower-case path like "/projects" to the section id "projects".
  */
-const legacyPaths: Record<string, string> = {
-  '/projects': 'projects',
-  '/skills': 'skills',
-  '/experience': 'experience',
-  '/about': 'about',
-  '/contact': 'contact',
-};
+export const LEGACY_PATHS: Readonly<Record<string, string>> = Object.fromEntries(
+  NAV_LINKS.map(link => [`/${link.id}`, link.id]),
+);
+
+/** Section id an old-style path points at, or undefined for any other path. */
+export const legacyTargetFor = (pathname: string): string | undefined =>
+  LEGACY_PATHS[pathname.replace(/\/+$/, '').toLowerCase()];
 
 const scrollToId = (id: string) => {
   const target = document.getElementById(id);
   if (target) {
-    target.scrollIntoView({ block: 'start' });
+    target.scrollIntoView({ block: 'start', behavior: 'instant' });
   }
 };
 
-const useLegacyRoutes = () => {
+/**
+ * On load, rewrites a legacy path to the matching hash and scrolls there.
+ * Also repeats the native hash jump, because the content renders after the
+ * browser has already tried it.
+ */
+const useLegacyRoutes = (): void => {
   useEffect(() => {
-    const path = window.location.pathname.replace(/\/+$/, '').toLowerCase();
-    const legacyTarget = legacyPaths[path];
+    const legacyTarget = legacyTargetFor(window.location.pathname);
 
     if (legacyTarget) {
       window.history.replaceState(null, '', `/#${legacyTarget}`);
@@ -32,7 +38,6 @@ const useLegacyRoutes = () => {
 
     const hash = window.location.hash.slice(1);
     if (hash) {
-      // Content renders after the browser's native hash jump, so repeat it.
       window.requestAnimationFrame(() => scrollToId(hash));
     }
   }, []);

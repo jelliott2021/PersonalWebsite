@@ -1,22 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FiFileText, FiMenu, FiMoon, FiSun, FiX } from 'react-icons/fi';
+import { NAV_LINKS } from '../../data/navigation';
 import { profile } from '../../data/profile';
 import type { Theme, ToggleOrigin } from '../../hooks/useTheme';
 import './index.css';
 
-export interface NavLink {
-  id: string;
-  label: string;
-}
+/** Viewport width above which the collapsible menu is never shown. */
+export const MOBILE_BREAKPOINT = 860;
 
-export const NAV_LINKS: NavLink[] = [
-  { id: 'about', label: 'About' },
-  { id: 'experience', label: 'Experience' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'skills', label: 'Skills' },
-  { id: 'education', label: 'Education' },
-  { id: 'contact', label: 'Contact' },
-];
+/** Scroll distance after which the bar picks up its shadow. */
+export const SCROLL_THRESHOLD = 8;
 
 interface NavbarProps {
   activeId: string;
@@ -56,7 +49,7 @@ const Navbar = ({ activeId, theme, onToggleTheme }: NavbarProps) => {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 8);
+    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
     onScroll();
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
@@ -72,7 +65,7 @@ const Navbar = ({ activeId, theme, onToggleTheme }: NavbarProps) => {
       }
     };
     const onResize = () => {
-      if (window.innerWidth > 860) {
+      if (window.innerWidth > MOBILE_BREAKPOINT) {
         setOpen(false);
       }
     };
@@ -85,10 +78,12 @@ const Navbar = ({ activeId, theme, onToggleTheme }: NavbarProps) => {
   }, [open]);
 
   const themeLabel = theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme';
+  const classes = ['navbar', scrolled ? 'navbar--scrolled' : '', open ? 'navbar--open' : '']
+    .filter(Boolean)
+    .join(' ');
 
   return (
-    <header
-      className={`navbar ${scrolled ? 'navbar--scrolled' : ''} ${open ? 'navbar--open' : ''}`}>
+    <header className={classes}>
       <div className='container navbar__inner'>
         <a href='#home' className='navbar__brand' onClick={() => setOpen(false)}>
           <span className='navbar__logo'>

@@ -106,7 +106,8 @@ export const SKILL_GROUPS: SkillGroup[] = [
   {
     id: 'cloud',
     title: 'Cloud, DevOps & infrastructure',
-    blurb: 'Comfortable owning the deploy: containers, proxies, pipelines, and a Linux server I run like production.',
+    blurb:
+      'Comfortable owning the deploy: containers, proxies, pipelines, and a Linux server I run like production.',
     skills: [
       { name: 'Docker', icon: SiDocker, color: '#2496ED' },
       { name: 'Docker Compose', color: '#2496ED' },

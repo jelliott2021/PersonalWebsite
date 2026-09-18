@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
+import fetchJson from '../lib/fetchJson';
+import { readSession, writeSession } from '../lib/storage';
 
 const CACHE_PREFIX = 'gh-stars:';
+
+/** Public GitHub REST endpoint for a repository. */
+export const repoUrl = (repo: string): string => `https://api.github.com/repos/${repo}`;
 
 /**
  * Returns the GitHub star count for a repository. Starts with the static
@@ -19,31 +24,23 @@ const useGithubStars = (repo?: string, fallback?: number): number | undefined =>
       return undefined;
     }
 
-    try {
-      const cached = sessionStorage.getItem(`${CACHE_PREFIX}${repo}`);
-      if (cached) {
-        setStars(Number(cached));
-        return undefined;
-      }
-    } catch {
-      // Session storage can be unavailable; fall through to the fetch.
+    const key = `${CACHE_PREFIX}${repo}`;
+    const cached = readSession<number>(key);
+    if (typeof cached === 'number') {
+      setStars(cached);
+      return undefined;
     }
 
     const controller = new AbortController();
 
-    fetch(`https://api.github.com/repos/${repo}`, {
+    fetchJson<{ stargazers_count?: unknown }>(repoUrl(repo), {
       signal: controller.signal,
       headers: { Accept: 'application/vnd.github+json' },
     })
-      .then(response => (response.ok ? response.json() : Promise.reject(new Error(response.statusText))))
-      .then((data: { stargazers_count?: unknown }) => {
+      .then(data => {
         if (typeof data.stargazers_count === 'number') {
           setStars(data.stargazers_count);
-          try {
-            sessionStorage.setItem(`${CACHE_PREFIX}${repo}`, String(data.stargazers_count));
-          } catch {
-            // Ignore: caching is a nicety.
-          }
+          writeSession(key, data.stargazers_count);
         }
       })
       .catch(() => {

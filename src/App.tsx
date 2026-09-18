@@ -1,4 +1,3 @@
-import React from 'react';
 import Navbar from './components/navbar';
 import Hero from './components/hero';
 import About from './components/about';
@@ -8,13 +7,12 @@ import Skills from './components/skills';
 import Education from './components/education';
 import Contact from './components/contact';
 import Footer from './components/footer';
+import { SECTION_IDS } from './data/navigation';
 import useTheme from './hooks/useTheme';
 import useActiveSection from './hooks/useActiveSection';
 import useLegacyRoutes from './hooks/useLegacyRoutes';
 
-/** Section ids in page order. Stable reference so hooks don't re-subscribe. */
-const SECTION_IDS = ['home', 'about', 'experience', 'projects', 'skills', 'education', 'contact'];
-
+/** The whole single-page site, sections in reading order. */
 const App = () => {
   const { theme, toggle } = useTheme();
   const activeId = useActiveSection(SECTION_IDS);

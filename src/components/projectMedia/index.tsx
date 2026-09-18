@@ -1,6 +1,7 @@
-import React, { CSSProperties, useEffect, useRef, useState } from 'react';
+import { CSSProperties, useEffect, useRef, useState } from 'react';
 import { FiPlay } from 'react-icons/fi';
 import type { Project } from '../../data/projects';
+import { prefersReducedMotion } from '../../lib/motion';
 import './index.css';
 
 interface ProjectMediaProps {
@@ -12,14 +13,14 @@ interface ProjectMediaProps {
  * Whether hover previews make sense here: a hover-capable, precise pointer,
  * no reduced-motion preference, and no data-saver request.
  */
-const canPreview = (): boolean => {
-  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+export const canPreview = (): boolean => {
+  if (typeof window.matchMedia !== 'function') {
     return false;
   }
   const nav = navigator as Navigator & { connection?: { saveData?: boolean } };
   return (
     window.matchMedia('(hover: hover) and (pointer: fine)').matches &&
-    !window.matchMedia('(prefers-reduced-motion: reduce)').matches &&
+    !prefersReducedMotion() &&
     !nav.connection?.saveData
   );
 };
@@ -40,10 +41,7 @@ const Preview = ({ src, active }: PreviewProps) => {
   const [portrait, setPortrait] = useState(false);
 
   useEffect(() => {
-    const video = ref.current;
-    if (!video) {
-      return;
-    }
+    const video = ref.current as HTMLVideoElement;
     if (active) {
       const attempt = video.play();
       if (attempt) {
@@ -57,12 +55,18 @@ const Preview = ({ src, active }: PreviewProps) => {
     }
   }, [active]);
 
+  const classes = [
+    'media__preview',
+    portrait ? 'media__preview--portrait' : '',
+    showing ? 'is-showing' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
     <video
       ref={ref}
-      className={`media__preview ${portrait ? 'media__preview--portrait' : ''} ${showing ? 'is-showing' : ''}`
-        .replace(/\s+/g, ' ')
-        .trim()}
+      className={classes}
       src={src}
       muted
       loop
@@ -70,6 +74,7 @@ const Preview = ({ src, active }: PreviewProps) => {
       preload='none'
       aria-hidden='true'
       tabIndex={-1}
+      data-testid='media-preview'
       onLoadedMetadata={event =>
         setPortrait(event.currentTarget.videoHeight > event.currentTarget.videoWidth)
       }
@@ -94,8 +99,14 @@ const ProjectMedia = ({ project, compact = false }: ProjectMediaProps) => {
 
   if (project.video && playing) {
     return (
-      <div className={`media media--video ${sizeClass}`}>
-        <video src={project.video} controls autoPlay playsInline preload='metadata'>
+      <div className={`media media--video ${sizeClass}`.trim()}>
+        <video
+          src={project.video}
+          controls
+          autoPlay
+          playsInline
+          preload='metadata'
+          data-testid='media-video'>
           Your browser does not support embedded video.{' '}
           <a href={project.video}>Download the demo instead.</a>
         </video>
@@ -105,7 +116,7 @@ const ProjectMedia = ({ project, compact = false }: ProjectMediaProps) => {
 
   if (project.gif) {
     return (
-      <div className={`media media--gif ${sizeClass}`} style={style}>
+      <div className={`media media--gif ${sizeClass}`.trim()} style={style}>
         <img src={project.gif} alt={`Animated demo of ${project.title}`} />
       </div>
     );
@@ -115,7 +126,7 @@ const ProjectMedia = ({ project, compact = false }: ProjectMediaProps) => {
     return (
       <button
         type='button'
-        className={`media media--tile media--playable ${sizeClass}`}
+        className={`media media--tile media--playable ${sizeClass}`.trim()}
         style={style}
         onClick={() => setPlaying(true)}
         onMouseEnter={() => setHovered(true)}
@@ -126,7 +137,7 @@ const ProjectMedia = ({ project, compact = false }: ProjectMediaProps) => {
         <span className='media__icon' aria-hidden='true'>
           <Icon />
         </span>
-        {previewable && project.preview && <Preview src={project.preview} active={hovered} />}
+        {previewable && <Preview src={project.preview as string} active={hovered} />}
         <span className='media__play' aria-hidden='true'>
           <FiPlay />
         </span>
@@ -139,7 +150,7 @@ const ProjectMedia = ({ project, compact = false }: ProjectMediaProps) => {
   }
 
   return (
-    <div className={`media media--tile ${sizeClass}`} style={style} aria-hidden='true'>
+    <div className={`media media--tile ${sizeClass}`.trim()} style={style} aria-hidden='true'>
       <span className='media__icon'>
         <Icon />
       </span>

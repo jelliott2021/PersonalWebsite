@@ -1,87 +1,73 @@
 module.exports = {
-  plugins: ['prettier', 'react', 'import'],
   root: true,
+  plugins: ['prettier', 'react', 'import'],
   env: {
-    browser: true, // Browser global variables like `window` etc.
-    commonjs: true, // CommonJS global variables and CommonJS scoping.Allows require, exports and module.
-    es6: true, // Enable all ECMAScript 6 features except for modules.
-    jest: true, // Jest global variables like `it` etc.
-    node: true, // Defines things like process.env when generating through node
+    browser: true,
+    es2021: true,
+    jest: true,
+    node: true,
   },
   extends: [
     'airbnb-base',
     'airbnb-typescript',
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier',
     'plugin:react-hooks/recommended',
     'plugin:react/recommended',
+    'plugin:react/jsx-runtime',
+    'prettier',
   ],
   settings: {
     react: {
-      version: 'detect', // Detect react version
+      version: 'detect',
     },
   },
   parserOptions: {
-    project: './tsconfig.json',
+    project: ['./tsconfig.json', './e2e/tsconfig.json'],
     tsconfigRootDir: __dirname,
     warnOnUnsupportedTypeScriptVersion: false,
   },
-  ignorePatterns: ['/*.*', '*.js'],
+  ignorePatterns: ['build/', 'coverage/', 'node_modules/', 'playwright-report/', '*.js', '*.cjs'],
   rules: {
-    'no-underscore-dangle': 0,
-    'no-param-reassign': 0,
-    'no-restricted-syntax': 0,
-    'react/react-in-jsx-scope': 'off',
-    'no-plusplus': 0,
-    'class-methods-use-this': 0,
-    '@typescript-eslint/no-throw-literal': 0,
-    '@typescript-eslint/lines-between-class-members': 0,
-    '@typescript-eslint/no-unused-vars': [1, { args: 'none' }],
-    'import/no-extraneous-dependencies': ['error', { devDependencies: ['**/*.spec.ts'] }],
-    '@typescript-eslint/naming-convention': [
+    'prettier/prettier': 'warn',
+    'no-plusplus': 'off',
+    'no-restricted-syntax': 'off',
+    'react/require-default-props': 'off',
+    '@typescript-eslint/no-unused-vars': ['error', { args: 'none', ignoreRestSiblings: true }],
+    'import/no-extraneous-dependencies': [
       'error',
       {
-        selector: 'variable',
-        format: ['camelCase'],
-      },
-      {
-        selector: 'variable',
-        types: ['function'],
-        format: ['camelCase', 'PascalCase'],
-      },
-      {
-        selector: 'typeLike',
-        format: ['PascalCase'],
-      },
-      {
-        selector: 'variable',
-        format: ['camelCase'],
-        filter: {
-          regex: '^use[A-Z].*',
-          match: true,
-        },
-      },
-      {
-        selector: 'variable',
-        format: ['PascalCase'],
-        filter: {
-          regex: 'Context$',
-          match: true,
-        },
-      },
-      {
-        selector: 'variable',
-        modifiers: ['global', 'const'],
-        types: ['boolean', 'number', 'string', 'array'],
-        format: ['UPPER_CASE'],
-      },
-      {
-        selector: 'memberLike',
-        modifiers: ['private'],
-        format: ['camelCase'],
-        leadingUnderscore: 'require',
+        devDependencies: [
+          'src/**/*.test.{ts,tsx}',
+          'src/setupTests.ts',
+          'src/test-utils/**',
+          'e2e/**',
+          'playwright.config.ts',
+        ],
       },
     ],
+    'import/prefer-default-export': 'off',
+    '@typescript-eslint/naming-convention': [
+      'error',
+      { selector: 'default', format: ['camelCase'], leadingUnderscore: 'allow' },
+      // Components, hooks, and module-level constants.
+      { selector: 'variable', format: ['camelCase', 'PascalCase', 'UPPER_CASE'] },
+      { selector: 'function', format: ['camelCase', 'PascalCase'] },
+      { selector: 'typeLike', format: ['PascalCase'] },
+      { selector: 'enumMember', format: ['PascalCase', 'UPPER_CASE'] },
+      // Third-party payloads (snake_case JSON) and CSS custom properties.
+      { selector: ['property', 'objectLiteralProperty', 'typeProperty'], format: null },
+      { selector: 'import', format: null },
+    ],
   },
+  overrides: [
+    {
+      files: ['e2e/**/*.ts', 'playwright.config.ts'],
+      rules: {
+        // Playwright tests are top-level await style and use test fixtures.
+        'no-await-in-loop': 'off',
+        'no-empty-pattern': 'off',
+      },
+    },
+  ],
 };
