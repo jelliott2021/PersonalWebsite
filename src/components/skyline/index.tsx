@@ -41,7 +41,7 @@ const Skyline = ({ className = '' }: SkylineProps) => {
     <svg
       className={classes}
       viewBox='0 0 1440 220'
-      preserveAspectRatio='xMidYMax slice'
+      preserveAspectRatio='xMidYMax meet'
       aria-hidden='true'
       focusable='false'>
       <defs>
