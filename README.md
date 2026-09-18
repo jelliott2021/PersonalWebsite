@@ -1,6 +1,6 @@
 # Personal Website
 
-Live at https://www.johnedwardelliott.com
+Live at https://johnelliott.net
 
 A single-page portfolio and résumé for John Elliott, built with React and TypeScript. All of the
 content (bio, experience, projects, skills, education) lives in plain data files under `src/data/`,
@@ -144,6 +144,25 @@ avoid GitHub's unauthenticated rate limit.
   build on port 3001 behind the reverse proxy.
 - **`azure-static-web-apps-*.yml`** is a secondary deployment to Azure Static Web Apps with a
   preview environment per pull request.
+
+## Dependencies and `npm audit`
+
+The shipped site depends only on `react`, `react-dom`, and `react-icons`; everything else,
+including `react-scripts`, is a dev dependency, so `npm audit --omit=dev` reports nothing.
+
+The `overrides` block in `package.json` pins patched versions of transitive packages that
+`react-scripts` 5 and `newman` 6 would otherwise install (nth-check, postcss,
+serialize-javascript, the SVG loader, handlebars, lodash, node-forge, jose, qs, uuid, and a few
+more). Those fixes are API-compatible; the unit, end-to-end, and newman suites and `npm start`
+all pass with them. Three advisories remain and are accepted for now:
+
+- **webpack-dev-server** (`npm start` only): CRA 5 is incompatible with the patched v5 line.
+- **csv-parse** in newman: only used for `--iteration-data` CSV files, which this project does not
+  pass; the patched major changes the import shape newman expects.
+- **@faker-js/faker** in the Postman sandbox: bundled into the sandbox VM, so an override has no
+  effect; only reachable through `{{$random*}}` dynamic variables, which the collection avoids.
+
+Re-run `npm audit` after upgrading `react-scripts` or `newman` and drop overrides they no longer need.
 
 ## Demo videos
 
