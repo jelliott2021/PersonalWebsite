@@ -28,7 +28,7 @@ export const profile = {
   linkedin: 'https://www.linkedin.com/in/jelliott2002',
   linkedinHandle: 'jelliott2002',
   resumeUrl: '/John-Elliott-Resume.pdf',
-  siteUrl: 'https://www.johnedwardelliott.com',
+  siteUrl: 'https://johnelliott.net',
   sourceUrl: 'https://github.com/jelliott2021/PersonalWebsite',
   photo: '/linkedin.jpg',
 

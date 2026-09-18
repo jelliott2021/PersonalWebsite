@@ -193,7 +193,7 @@ export const PROJECTS: Project[] = [
     icon: FiCode,
     hue: 215,
     github: 'https://github.com/jelliott2021/PersonalWebsite',
-    live: 'https://www.johnedwardelliott.com',
+    live: 'https://johnelliott.net',
   },
 ];
 
