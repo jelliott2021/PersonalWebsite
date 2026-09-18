@@ -1,37 +1,56 @@
-name: Deploy Main Branch Server
+# Rebuilds and restarts the site container on the self-hosted runner after
+# the CI workflow has passed on main.
+name: Deploy to home server
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: [CI]
+    branches: [main]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 jobs:
   deploy:
-    if: github.event_name == 'push' || github.event.pull_request.merged == true
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: self-hosted
+    concurrency:
+      group: deploy-home-server
+      cancel-in-progress: false
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Deploy to Server
-      run: |
-        set -e
+      - name: Rebuild and restart the container
+        run: |
+          set -euo pipefail
 
-        # Variables
-        WORKDIR=/home/deploy/personalwebsite/dev
-        ENV_FILE=/home/deploy/personalwebsite/.env
+          WORKDIR=/home/deploy/personalwebsite/dev
 
-        # Prepare folder
-        rm -rf $WORKDIR
-        mkdir -p $WORKDIR
+          rm -rf "$WORKDIR"
+          mkdir -p "$WORKDIR"
+          cp -r "$GITHUB_WORKSPACE"/. "$WORKDIR"/
 
-        # Copy checked out code to working directory
-        cp -r $GITHUB_WORKSPACE/* $WORKDIR/
-        cp $ENV_FILE $WORKDIR/server/.env
-        cp $ENV_FILE $WORKDIR/client/.env
+          cd "$WORKDIR"
+          docker compose down || true
+          docker compose up -d --build
+          docker image prune -f
 
-        # Rebuild and restart containers
-        cd $WORKDIR
-        docker compose down || true
-        docker compose up -d --build
+  smoke-test:
+    name: Production smoke tests
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Wait for the site to come back
+        run: sleep 30
+      - name: Run the Production smoke folder with newman
+        run: npm run test:api -- --folder "Production smoke"

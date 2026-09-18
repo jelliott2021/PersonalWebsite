@@ -1,0 +1,12 @@
+node_modules
+build
+coverage
+playwright-report
+test-results
+newman
+e2e
+postman
+.github
+.git
+*.md
+.env*
