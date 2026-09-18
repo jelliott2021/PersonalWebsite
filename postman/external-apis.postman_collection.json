@@ -1,0 +1,274 @@
+{
+  "info": {
+    "name": "Personal Website API tests",
+    "description": "Two folders. `External APIs` holds contract tests for the third-party endpoints the site reads in the browser (Open-Meteo, GitHub, the contribution-calendar mirror); CI runs it on every pull request. `Production smoke` checks the deployed site after a release. Run everything with `npm run test:api`, or one folder with `npm run test:api -- --folder \"External APIs\"`.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Browsers send an Origin header; without it some APIs omit their CORS headers.",
+          "pm.request.headers.upsert({ key: 'Origin', value: pm.environment.get('site_url') });"
+        ]
+      }
+    }
+  ],
+  "item": [
+    {
+      "name": "External APIs",
+      "item": [
+        {
+          "name": "Open-Meteo current conditions for Boston",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://api.open-meteo.com/v1/forecast?latitude=42.36&longitude=-71.06&current=temperature_2m,weather_code,cloud_cover&temperature_unit=fahrenheit&timezone=America%2FNew_York",
+              "protocol": "https",
+              "host": ["api", "open-meteo", "com"],
+              "path": ["v1", "forecast"],
+              "query": [
+                { "key": "latitude", "value": "42.36" },
+                { "key": "longitude", "value": "-71.06" },
+                { "key": "current", "value": "temperature_2m,weather_code,cloud_cover" },
+                { "key": "temperature_unit", "value": "fahrenheit" },
+                { "key": "timezone", "value": "America%2FNew_York" }
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responds 200 with JSON', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "",
+                  "pm.test('reports the Boston time zone', () => {",
+                  "  pm.expect(body.timezone).to.eql('America/New_York');",
+                  "});",
+                  "",
+                  "pm.test('has the fields useBostonWeather reads', () => {",
+                  "  pm.expect(body.current, 'current block').to.be.an('object');",
+                  "  pm.expect(body.current.temperature_2m, 'temperature_2m').to.be.a('number');",
+                  "  pm.expect(body.current.weather_code, 'weather_code').to.be.a('number');",
+                  "  pm.expect(body.current.cloud_cover, 'cloud_cover').to.be.a('number');",
+                  "});",
+                  "",
+                  "pm.test('values are within physical ranges', () => {",
+                  "  pm.expect(body.current.temperature_2m).to.be.within(-40, 130);",
+                  "  pm.expect(body.current.weather_code).to.be.within(0, 99);",
+                  "  pm.expect(body.current.cloud_cover).to.be.within(0, 100);",
+                  "});",
+                  "",
+                  "pm.test('allows browser requests from the site', () => {",
+                  "  pm.expect(pm.response.headers.get('access-control-allow-origin')).to.eql('*');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GitHub repository (star count)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/vnd.github+json" }],
+            "url": {
+              "raw": "https://api.github.com/repos/{{github_repo}}",
+              "protocol": "https",
+              "host": ["api", "github", "com"],
+              "path": ["repos", "{{github_repo}}"]
+            }
+          },
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "// Authenticate when a token is available so CI runners are not rate limited.",
+                  "const token = pm.environment.get('github_token');",
+                  "if (token) {",
+                  "  pm.request.headers.upsert({ key: 'Authorization', value: `Bearer ${token}` });",
+                  "}"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responds 200 with JSON', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "",
+                  "pm.test('is the expected repository', () => {",
+                  "  pm.expect(body.full_name.toLowerCase()).to.eql(pm.environment.get('github_repo').toLowerCase());",
+                  "});",
+                  "",
+                  "pm.test('has a numeric stargazers_count', () => {",
+                  "  pm.expect(body.stargazers_count).to.be.a('number');",
+                  "  pm.expect(body.stargazers_count).to.be.at.least(0);",
+                  "});",
+                  "",
+                  "pm.test('allows browser requests from the site', () => {",
+                  "  pm.expect(pm.response.headers.get('access-control-allow-origin')).to.eql('*');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Contribution calendar mirror",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "https://github-contributions-api.jogruber.de/v4/{{github_user}}?y=last",
+              "protocol": "https",
+              "host": ["github-contributions-api", "jogruber", "de"],
+              "path": ["v4", "{{github_user}}"],
+              "query": [{ "key": "y", "value": "last" }]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responds 200 with JSON', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.response.to.be.json;",
+                  "});",
+                  "",
+                  "const body = pm.response.json();",
+                  "",
+                  "pm.test('returns roughly a year of days', () => {",
+                  "  pm.expect(body.contributions).to.be.an('array');",
+                  "  pm.expect(body.contributions.length).to.be.within(300, 400);",
+                  "});",
+                  "",
+                  "pm.test('every day has the shape parseContributions expects', () => {",
+                  "  body.contributions.forEach(day => {",
+                  "    pm.expect(day.date).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+                  "    pm.expect(day.count).to.be.a('number');",
+                  "    pm.expect(day.level).to.be.within(0, 4);",
+                  "  });",
+                  "});",
+                  "",
+                  "pm.test('allows browser requests from the site', () => {",
+                  "  const origin = pm.response.headers.get('access-control-allow-origin');",
+                  "  pm.expect(origin).to.be.oneOf(['*', pm.environment.get('site_url')]);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Production smoke",
+      "item": [
+        {
+          "name": "Home page",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{site_url}}/", "host": ["{{site_url}}"], "path": [""] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('responds 200 with HTML', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.headers.get('content-type')).to.include('text/html');",
+                  "});",
+                  "",
+                  "pm.test('is the React shell with metadata', () => {",
+                  "  const html = pm.response.text();",
+                  "  pm.expect(html).to.include('<div id=\"root\">');",
+                  "  pm.expect(html).to.include('<title>John Elliott');",
+                  "  pm.expect(html).to.include('rel=\"canonical\"');",
+                  "  pm.expect(html).to.include('application/ld+json');",
+                  "});",
+                  "",
+                  "pm.test('responds within three seconds', () => {",
+                  "  pm.expect(pm.response.responseTime).to.be.below(3000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Legacy route falls back to the app",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{site_url}}/projects",
+              "host": ["{{site_url}}"],
+              "path": ["projects"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('serves the app instead of a 404', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.headers.get('content-type')).to.include('text/html');",
+                  "  pm.expect(pm.response.text()).to.include('<div id=\"root\">');",
+                  "});"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Résumé PDF",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{site_url}}/John-Elliott-Resume.pdf",
+              "host": ["{{site_url}}"],
+              "path": ["John-Elliott-Resume.pdf"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('serves the PDF', () => {",
+                  "  pm.response.to.have.status(200);",
+                  "  pm.expect(pm.response.headers.get('content-type')).to.include('application/pdf');",
+                  "  pm.expect(pm.response.stream.length).to.be.above(10000);",
+                  "});"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
